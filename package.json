@@ -11,6 +11,7 @@
     "browser:install": "PLAYWRIGHT_BROWSERS_PATH=.playwright-browsers playwright install chromium",
     "test:e2e": "PLAYWRIGHT_BROWSERS_PATH=.playwright-browsers playwright test",
     "test:supabase-live": "node scripts/verify-supabase-rls.mjs",
+    "test:sql": "uv run --with pglast python scripts/validate-sql.py",
     "lint": "oxlint src",
     "preview": "vite preview"
   },

@@ -23,6 +23,18 @@ export interface CatalogProvider {
   fetchPage(cursor?: string): Promise<CatalogPage>
 }
 
+export type ImportLedger = {
+  byExternalKey: Map<string, string>
+  byFingerprint: Map<string, string>
+}
+
+const normalize = (value: string) => value.trim().toLocaleLowerCase('de-DE').replace(/[^a-z0-9äöüß]+/g, ' ').trim()
+
+export function catalogFingerprint(recipe: ProviderRecipe) {
+  const ingredients = recipe.ingredients.map(item => normalize(item.canonicalId)).sort().join('|')
+  return `${normalize(recipe.title)}::${recipe.diet}::${ingredients}`
+}
+
 export function evaluateProviderPage(page: CatalogPage, today = new Date()) {
   const catalogErrors = validateCatalog(page.recipes, today)
   const byId = new Map<string, string[]>()
@@ -36,7 +48,13 @@ export function evaluateProviderPage(page: CatalogPage, today = new Date()) {
     for (const kind of ['recipe_text', 'image', 'nutrition'] as const) {
       const right = recipe.rights.find(item => item.assetKind === kind)
       if (!right) rightsErrors.push(`Rechtenachweis fehlt: ${kind}`)
-      else if (!right.storagePermitted) rightsErrors.push(`Lokale Speicherung unzulässig: ${kind}`)
+      else {
+        if (!right.storagePermitted) rightsErrors.push(`Lokale Speicherung unzulässig: ${kind}`)
+        if (kind === 'recipe_text' && !right.modificationPermitted) rightsErrors.push(`Bearbeitung unzulässig: ${kind}`)
+        if (right.validUntil && new Date(`${right.validUntil}T23:59:59Z`).getTime() < today.getTime()) {
+          rightsErrors.push(`Nutzungsrecht abgelaufen: ${kind}`)
+        }
+      }
     }
     if (rightsErrors.length) byId.set(recipe.externalId, [...(byId.get(recipe.externalId) ?? []), ...rightsErrors])
   }
@@ -45,4 +63,37 @@ export function evaluateProviderPage(page: CatalogPage, today = new Date()) {
     rejected: page.recipes.filter(recipe => byId.has(recipe.externalId)).map(recipe => ({ recipe, errors: byId.get(recipe.externalId)! })),
     nextCursor: page.nextCursor,
   }
+}
+
+export function processProviderPage(providerId: string, page: CatalogPage, ledger: ImportLedger, today = new Date()) {
+  const evaluated = evaluateProviderPage(page, today)
+  const accepted: ProviderRecipe[] = []
+  const rejected = [...evaluated.rejected]
+  const unchanged: string[] = []
+
+  for (const recipe of evaluated.accepted) {
+    const externalKey = `${providerId}:${recipe.externalId}`
+    const fingerprint = catalogFingerprint(recipe)
+    const previousFingerprint = ledger.byExternalKey.get(externalKey)
+
+    if (previousFingerprint === fingerprint) {
+      unchanged.push(recipe.externalId)
+      continue
+    }
+
+    const existingOwner = ledger.byFingerprint.get(fingerprint)
+    if (existingOwner && existingOwner !== externalKey) {
+      rejected.push({ recipe, errors: ['Kanonisches Duplikat eines vorhandenen Rezepts'] })
+      continue
+    }
+
+    if (previousFingerprint && ledger.byFingerprint.get(previousFingerprint) === externalKey) {
+      ledger.byFingerprint.delete(previousFingerprint)
+    }
+    ledger.byExternalKey.set(externalKey, fingerprint)
+    ledger.byFingerprint.set(fingerprint, externalKey)
+    accepted.push(recipe)
+  }
+
+  return { accepted, rejected, unchanged, nextCursor: evaluated.nextCursor }
 }

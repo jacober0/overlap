@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { CatalogRecipeCandidate } from '../domain/catalog'
-import { evaluateProviderPage, type ProviderRecipe } from './catalogProvider'
+import { evaluateProviderPage, processProviderPage, type ImportLedger, type ProviderRecipe } from './catalogProvider'
 
 const base: CatalogRecipeCandidate = {
   externalId: 'source-1', title: 'Testgericht mit Gemüse', description: 'Ein ausreichend ausführlich beschriebenes und geprüftes Testgericht.',
@@ -30,5 +30,26 @@ describe('catalog provider boundary', () => {
     const result = evaluateProviderPage({ recipes: [recipe], nextCursor: null }, new Date('2026-08-29'))
     expect(result.accepted).toEqual([])
     expect(result.rejected[0].errors).toContain('Lokale Speicherung unzulässig: recipe_text')
+  })
+
+  it('blockiert abgelaufene oder nicht bearbeitbare Rezepttexte', () => {
+    const recipe = { ...base, rights: rights.map(right => right.assetKind === 'recipe_text' ? { ...right, modificationPermitted: false, validUntil: '2026-08-01' } : right) }
+    const result = evaluateProviderPage({ recipes: [recipe], nextCursor: null }, new Date('2026-08-29T00:00:00Z'))
+    expect(result.rejected[0].errors).toEqual(expect.arrayContaining([
+      'Bearbeitung unzulässig: recipe_text', 'Nutzungsrecht abgelaufen: recipe_text',
+    ]))
+  })
+
+  it('ist über Wiederholung und Seiten hinweg idempotent und quarantänisiert Duplikate', () => {
+    const ledger: ImportLedger = { byExternalKey: new Map(), byFingerprint: new Map() }
+    const recipe = { ...base, rights }
+    const first = processProviderPage('licensed-feed', { recipes: [recipe], nextCursor: '2' }, ledger, new Date('2026-08-29'))
+    const repeated = processProviderPage('licensed-feed', { recipes: [recipe], nextCursor: null }, ledger, new Date('2026-08-29'))
+    const duplicate = processProviderPage('other-feed', { recipes: [{ ...recipe, externalId: 'other-9' }], nextCursor: null }, ledger, new Date('2026-08-29'))
+
+    expect(first.accepted).toHaveLength(1)
+    expect(repeated.unchanged).toEqual(['source-1'])
+    expect(duplicate.rejected[0].errors).toContain('Kanonisches Duplikat eines vorhandenen Rezepts')
+    expect(ledger.byExternalKey.size).toBe(1)
   })
 })
