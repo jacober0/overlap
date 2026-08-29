@@ -1,0 +1,76 @@
+export type CatalogIngredient = {
+  canonicalId: string
+  name: string
+  amount: number
+  unit: string
+}
+
+export type CatalogRecipeCandidate = {
+  externalId: string
+  title: string
+  description: string
+  servings: number
+  totalMinutes: number
+  activeMinutes: number
+  diet: 'omnivor' | 'vegetarisch' | 'vegan' | 'pescetarisch'
+  ingredients: CatalogIngredient[]
+  steps: string[]
+  nutrition: { kcal: number; protein: number; carbs: number; fat: number; fiber: number }
+  estimatedPriceCents: number
+  priceRegion: string
+  priceCheckedAt: string
+  sourceName: string
+  sourceUrl: string
+  contentLicense: string
+  imageUrl: string
+  imageLicense: string
+  attributionText: string
+  reviewedBy: string
+  reviewedAt: string
+}
+
+const secureUrl = (value: string) => {
+  try { return new URL(value).protocol === 'https:' } catch { return false }
+}
+const isoDate = (value: string) => /^\d{4}-\d{2}-\d{2}$/.test(value) && !Number.isNaN(Date.parse(value))
+
+export function validateCatalogRecipe(recipe: CatalogRecipeCandidate, today = new Date()) {
+  const errors: string[] = []
+  if (!recipe.externalId.trim()) errors.push('externalId fehlt')
+  if (recipe.title.trim().length < 3) errors.push('Titel ist zu kurz')
+  if (recipe.description.trim().length < 30) errors.push('Beschreibung ist zu kurz')
+  if (recipe.servings < 1 || recipe.servings > 50) errors.push('Portionszahl ist ungültig')
+  if (recipe.activeMinutes < 1 || recipe.totalMinutes < recipe.activeMinutes) errors.push('Zeitangaben sind inkonsistent')
+  if (recipe.ingredients.length < 4) errors.push('Mindestens vier Zutaten erforderlich')
+  if (new Set(recipe.ingredients.map(item => item.canonicalId)).size !== recipe.ingredients.length) errors.push('Doppelte kanonische Zutaten-ID')
+  if (recipe.ingredients.some(item => !item.canonicalId || !item.name || item.amount <= 0 || !item.unit)) errors.push('Zutat ist unvollständig')
+  if (recipe.steps.length < 3 || recipe.steps.some(step => step.trim().length < 12)) errors.push('Kochschritte sind unvollständig')
+  if (Object.values(recipe.nutrition).some(value => !Number.isFinite(value) || value < 0)) errors.push('Nährwerte sind unvollständig')
+  if (!Number.isInteger(recipe.estimatedPriceCents) || recipe.estimatedPriceCents <= 0) errors.push('Preisschätzung fehlt')
+  if (!recipe.priceRegion.trim()) errors.push('Preisregion fehlt')
+  if (!isoDate(recipe.priceCheckedAt)) errors.push('Preisdatum ist ungültig')
+  else {
+    const ageDays = (today.getTime() - new Date(`${recipe.priceCheckedAt}T00:00:00Z`).getTime()) / 86_400_000
+    if (ageDays > 180 || ageDays < -1) errors.push('Preisschätzung ist veraltet oder liegt in der Zukunft')
+  }
+  if (!recipe.sourceName.trim() || !secureUrl(recipe.sourceUrl)) errors.push('Belastbare HTTPS-Quelle fehlt')
+  if (!recipe.contentLicense.trim()) errors.push('Inhaltslizenz fehlt')
+  if (!secureUrl(recipe.imageUrl) || !recipe.imageLicense.trim()) errors.push('Bildquelle oder Bildlizenz fehlt')
+  if (!recipe.attributionText.trim()) errors.push('Attribution fehlt')
+  if (!recipe.reviewedBy.trim() || !isoDate(recipe.reviewedAt)) errors.push('Menschliche Freigabe fehlt')
+  return errors
+}
+
+export function validateCatalog(recipes: CatalogRecipeCandidate[], today = new Date()) {
+  const ids = new Set<string>()
+  const titles = new Set<string>()
+  return recipes.flatMap(recipe => {
+    const errors = validateCatalogRecipe(recipe, today)
+    const normalizedTitle = recipe.title.trim().toLocaleLowerCase('de-DE')
+    if (ids.has(recipe.externalId)) errors.push('externalId ist nicht eindeutig')
+    if (titles.has(normalizedTitle)) errors.push('Titel ist nicht eindeutig')
+    ids.add(recipe.externalId)
+    titles.add(normalizedTitle)
+    return errors.map(message => ({ externalId: recipe.externalId, message }))
+  })
+}
