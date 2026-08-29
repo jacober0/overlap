@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { rankRecipes } from './engine'
+import { filterRecipesBySearch, rankRecipes } from './engine'
 import type { Preferences, Recipe } from './types'
 
 const recipes: Recipe[] = [
@@ -45,5 +45,12 @@ describe('rankRecipes', () => {
     const [result] = rankRecipes(recipes, [], { ...preferences, pantryIngredients: ['pasta'] })
     expect(result.breakdown.overlap).toBeGreaterThan(0)
     expect(result.reasons.join(' ')).toMatch(/Vorrat/)
+  })
+
+  it('sucht tolerant in Titel, Tags und Zutaten, bevor harte Filter greifen', () => {
+    expect(filterRecipesBySearch(recipes, 'TOMATEN').map(recipe => recipe.id)).toEqual(['pasta'])
+    expect(filterRecipesBySearch(recipes, 'protein reich').map(recipe => recipe.id)).toEqual(['steak'])
+    expect(filterRecipesBySearch(recipes, 'Pasta').map(recipe => recipe.id)).toEqual(['pasta'])
+    expect(filterRecipesBySearch(recipes, '   ')).toEqual(recipes)
   })
 })

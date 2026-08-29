@@ -63,6 +63,17 @@ test('beschädigte Browserdaten führen sicher zum Onboarding', async ({ page })
   await expect(page.getByRole('heading', { name: /Was soll diese Woche leichter machen/ })).toBeVisible()
 })
 
+test('Katalogsuche findet Zutaten und respektiert harte Profilfilter', async ({ page }) => {
+  await page.getByRole('button', { name: /Vorschläge entdecken/ }).click()
+  const search = page.getByRole('searchbox', { name: 'Katalog durchsuchen' })
+
+  await search.fill('Erdnüsse')
+  await expect(page.getByRole('heading', { name: 'Crunchy Nudel-Salat' })).toBeVisible()
+
+  await search.fill('Hähnchen')
+  await expect(page.getByRole('heading', { name: 'Kein passendes Gericht gefunden' })).toBeVisible()
+})
+
 test('Kernseiten haben keine ernsten WCAG-A/AA-Verstöße', async ({ page }) => {
   await expectNoSeriousAccessibilityViolations(page)
   await page.getByRole('button', { name: /Vorschläge entdecken/ }).click()

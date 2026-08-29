@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import './App.css'
 import { createPlanExport } from './domain/export'
-import { rankRecipes } from './domain/engine'
+import { filterRecipesBySearch, rankRecipes } from './domain/engine'
 import { buildShoppingList } from './domain/shopping'
 import type { Allergen, Diet, Preferences, Recipe } from './domain/types'
 import { recipes } from './recipes'
@@ -66,6 +66,7 @@ export default function App() {
   const [cookingIndex, setCookingIndex] = useState(0)
   const [cookingStep, setCookingStep] = useState(0)
   const [accountOpen, setAccountOpen] = useState(false)
+  const [searchQuery, setSearchQuery] = useState('')
   const account = useAccount()
 
   useEffect(() => {
@@ -87,7 +88,7 @@ export default function App() {
     localStorage.setItem('overlap-stage', nextStage); localStorage.setItem('overlap-preferences', JSON.stringify(nextPreferences)); localStorage.setItem('overlap-selected', JSON.stringify(nextSelected)); setStage(nextStage)
     if (account.session) void saveProfilePreferences(account.session.user.id, nextPreferences)
   }
-  const ranked = useMemo(() => rankRecipes(recipes.filter(r => !rejected.includes(r.id)), selected, preferences), [selected, rejected, preferences])
+  const ranked = useMemo(() => rankRecipes(filterRecipesBySearch(recipes.filter(r => !rejected.includes(r.id)), searchQuery), selected, preferences), [selected, rejected, preferences, searchQuery])
   const current = ranked[0]
   const shopping = useMemo(() => buildShoppingList(selected, preferences.servings), [selected, preferences.servings])
   const total = shopping.reduce((sum, item) => sum + item.estimatedCost, 0)
@@ -178,8 +179,9 @@ export default function App() {
 
     {stage === 'discover' && <main className="discover">
       <section className="discover-head"><div><span className="eyebrow">Smart Fill · {ranked.length} Treffer</span><h1>Dein nächster Treffer</h1><p>Mit jeder Auswahl wird der gemeinsame Einkauf schlauer.</p></div><div className="sweetspot"><div><span>Effizient</span><span>Abwechslungsreich</span></div><input aria-label="Effizienz oder Abwechslung" type="range" min="0" max="1" step=".05" value={preferences.variety} onChange={e=>setPreferences({...preferences,variety:+e.target.value})}/><strong>{preferences.variety < .4 ? 'Mehr Zutaten-Overlap' : preferences.variety > .65 ? 'Mehr Vielfalt' : 'Dein Sweetspot'}</strong></div></section>
+      <div className="catalog-search"><label htmlFor="catalog-search">Katalog durchsuchen</label><div><span aria-hidden="true">⌕</span><input id="catalog-search" type="search" value={searchQuery} onChange={event=>setSearchQuery(event.target.value)} placeholder="Gericht, Zutat oder Küche"/>{searchQuery && <button onClick={()=>setSearchQuery('')} aria-label="Suche löschen">×</button>}</div><small>Ernährungsform, Allergene und maximale Kochzeit bleiben harte Filter.</small></div>
       <section className="discover-grid">
-        {current ? <article className="recipe-card"><div className="image-wrap"><img src={current.recipe.image} alt={current.recipe.title}/><span className="score">{current.total}% Match</span><button className="info" onClick={()=>setDetail(true)} aria-label="Rezeptdetails öffnen">i</button></div><div className="recipe-body"><div className="meta"><span>{current.recipe.minutes} Min.</span><span>{money(current.recipe.pricePerServing)} / Portion</span><span>{current.recipe.diet}</span></div><h2>{current.recipe.title}</h2><p>{current.recipe.description}</p><div className="tags">{current.recipe.tags.map(t=><span key={t}>{t}</span>)}</div><div className="nutrition"><span><b>{current.recipe.nutrition.kcal}</b> kcal</span><span><b>{current.recipe.nutrition.protein} g</b> Protein</span><span><b>{current.recipe.nutrition.fiber} g</b> Ballastst.</span></div></div><div className="actions"><button className="reject" onClick={skip}>Nein</button><button className="accept" onClick={choose}>Geil <span>♥</span></button></div></article> : <div className="empty"><h2>Alle passenden Gerichte gesehen</h2><p>Passe Kochzeit oder Ernährungsform an.</p><button onClick={()=>setRejected([])}>Neu starten</button></div>}
+        {current ? <article className="recipe-card"><div className="image-wrap"><img src={current.recipe.image} alt={current.recipe.title}/><span className="score">{current.total}% Match</span><button className="info" onClick={()=>setDetail(true)} aria-label="Rezeptdetails öffnen">i</button></div><div className="recipe-body"><div className="meta"><span>{current.recipe.minutes} Min.</span><span>{money(current.recipe.pricePerServing)} / Portion</span><span>{current.recipe.diet}</span></div><h2>{current.recipe.title}</h2><p>{current.recipe.description}</p><div className="tags">{current.recipe.tags.map(t=><span key={t}>{t}</span>)}</div><div className="nutrition"><span><b>{current.recipe.nutrition.kcal}</b> kcal</span><span><b>{current.recipe.nutrition.protein} g</b> Protein</span><span><b>{current.recipe.nutrition.fiber} g</b> Ballastst.</span></div></div><div className="actions"><button className="reject" onClick={skip}>Nein</button><button className="accept" onClick={choose}>Geil <span>♥</span></button></div></article> : <div className="empty"><h2>{searchQuery ? 'Kein passendes Gericht gefunden' : 'Alle passenden Gerichte gesehen'}</h2><p>{searchQuery ? 'Versuche einen anderen Suchbegriff. Deine harten Profilfilter bleiben aktiv.' : 'Passe Kochzeit oder Ernährungsform an.'}</p><button onClick={()=>searchQuery ? setSearchQuery('') : setRejected([])}>{searchQuery ? 'Suche löschen' : 'Neu starten'}</button></div>}
         <aside><div className="why"><span className="eyebrow">Warum passt das?</span>{current?.reasons.map((reason,index)=><div className="reason" key={reason}><b>{index+1}</b><span>{reason}</span></div>)}<details><summary>Score transparent anzeigen</summary>{current && Object.entries(current.breakdown).map(([key,value])=><div className="scoreline" key={key}><span>{key}</span><progress max="1" value={value}/></div>)}</details></div><div className="selection"><div><span>Deine Woche</span><strong>{selected.length} / {preferences.targetMeals} Gerichte</strong></div><div className="mini-list">{selected.slice(-3).map(r=><span key={r.id}>{r.title}</span>)}</div><button className="smart-fill" disabled={selected.length>=Math.min(preferences.targetMeals,7)} onClick={smartFill}>✦ Smart Fill für {preferences.targetMeals} Gerichte</button><button className="primary" disabled={!selected.length} onClick={()=>persist('plan')}>Wochenplan öffnen →</button><button className="undo" disabled={!selectionHistory.length} onClick={undo}>↶ Letzte Aktion rückgängig</button></div></aside>
       </section>
     </main>}

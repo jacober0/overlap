@@ -18,6 +18,21 @@ describe('Overlap app flow', () => {
     expect(screen.getByRole('button', { name: /Geil/i })).toBeInTheDocument()
   })
 
+  it('durchsucht Titel, Tags und Zutaten, ohne harte Profilfilter zu umgehen', async () => {
+    localStorage.clear()
+    localStorage.setItem('overlap-stage', 'discover')
+    localStorage.setItem('overlap-selected', '[]')
+    render(<App />)
+    const search = screen.getByRole('searchbox', { name: 'Katalog durchsuchen' })
+
+    await userEvent.type(search, 'Erdnüsse')
+    expect(screen.getByRole('heading', { name: 'Crunchy Nudel-Salat' })).toBeInTheDocument()
+
+    await userEvent.clear(search)
+    await userEvent.type(search, 'Hähnchen')
+    expect(screen.getByRole('heading', { name: 'Kein passendes Gericht gefunden' })).toBeInTheDocument()
+  })
+
   it('speichert Mahlzeitenziel, Portionen und ausgeschlossene Zutaten', async () => {
     localStorage.clear()
     render(<App />)

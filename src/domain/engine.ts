@@ -1,6 +1,26 @@
 import type { Preferences, RankedRecipe, Recipe } from './types'
 
 const clamp = (value: number) => Math.max(0, Math.min(1, value))
+const normalizeSearch = (value: string) => value
+  .normalize('NFKD')
+  .replace(/[\u0300-\u036f]/g, '')
+  .toLocaleLowerCase('de-DE')
+  .replace(/[^a-z0-9]+/g, ' ')
+  .trim()
+
+export function filterRecipesBySearch(recipes: Recipe[], query: string) {
+  const terms = normalizeSearch(query).split(/\s+/).filter(Boolean)
+  if (!terms.length) return recipes
+  return recipes.filter(recipe => {
+    const haystack = normalizeSearch([
+      recipe.title,
+      recipe.description,
+      ...recipe.tags,
+      ...recipe.ingredients.flatMap(ingredient => [ingredient.name, ingredient.id]),
+    ].join(' '))
+    return terms.every(term => haystack.includes(term))
+  })
+}
 
 export function rankRecipes(recipes: Recipe[], selected: Recipe[], preferences: Preferences): RankedRecipe[] {
   const selectedIngredientIds = new Set([...preferences.pantryIngredients, ...selected.flatMap((recipe) => recipe.ingredients.map((item) => item.id))])
