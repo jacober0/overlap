@@ -14,6 +14,8 @@ begin
 end;
 $$;
 
+revoke all on function public.set_updated_at() from public, anon, authenticated;
+
 create table public.profiles (
   id uuid primary key references auth.users(id) on delete cascade,
   display_name text check (char_length(display_name) between 1 and 80),
@@ -197,6 +199,8 @@ begin
 end;
 $$;
 
+revoke all on function public.handle_new_user() from public, anon, authenticated;
+
 create trigger on_auth_user_created
 after insert on auth.users
 for each row execute function public.handle_new_user();
@@ -213,27 +217,42 @@ alter table public.meal_plans enable row level security;
 alter table public.meal_plan_entries enable row level security;
 alter table public.shopping_extras enable row level security;
 
+-- Supabase may add schema-level defaults for API roles. Start fail-closed, then grant only
+-- the operations the browser app needs. Catalog imports use a server-side role.
+revoke all on table public.profiles from anon, authenticated;
+revoke all on table public.ingredients from anon, authenticated;
+revoke all on table public.recipes from anon, authenticated;
+revoke all on table public.recipe_ingredients from anon, authenticated;
+revoke all on table public.recipe_steps from anon, authenticated;
+revoke all on table public.recipe_rights from anon, authenticated;
+revoke all on table public.favorites from anon, authenticated;
+revoke all on table public.pantry_items from anon, authenticated;
+revoke all on table public.meal_plans from anon, authenticated;
+revoke all on table public.meal_plan_entries from anon, authenticated;
+revoke all on table public.shopping_extras from anon, authenticated;
+
+grant select, update on table public.profiles to authenticated;
+grant select on table public.ingredients to authenticated;
+grant select on table public.recipes to authenticated;
+grant select on table public.recipe_ingredients to authenticated;
+grant select on table public.recipe_steps to authenticated;
+grant select, insert, delete on table public.favorites to authenticated;
+grant select, insert, update, delete on table public.pantry_items to authenticated;
+grant select, insert, update, delete on table public.meal_plans to authenticated;
+grant select, insert, update, delete on table public.meal_plan_entries to authenticated;
+grant select, insert, update, delete on table public.shopping_extras to authenticated;
+
 create policy "profiles_select_own" on public.profiles for select to authenticated using ((select auth.uid()) = id);
 create policy "profiles_update_own" on public.profiles for update to authenticated using ((select auth.uid()) = id) with check ((select auth.uid()) = id);
 
-create policy "ingredients_read" on public.ingredients for select to anon, authenticated using (true);
-create policy "recipes_read_published_or_own" on public.recipes for select to anon, authenticated
-using (quality_status = 'published' or (select auth.uid()) = created_by);
-create policy "recipes_insert_own_draft" on public.recipes for insert to authenticated
-with check ((select auth.uid()) = created_by and quality_status = 'draft');
-create policy "recipes_update_own_draft" on public.recipes for update to authenticated
-using ((select auth.uid()) = created_by and quality_status = 'draft')
-with check ((select auth.uid()) = created_by and quality_status = 'draft');
-create policy "recipes_delete_own_draft" on public.recipes for delete to authenticated
-using ((select auth.uid()) = created_by and quality_status = 'draft');
+create policy "ingredients_read" on public.ingredients for select to authenticated using (true);
+create policy "recipes_read_published" on public.recipes for select to authenticated
+using (quality_status = 'published');
 
-create policy "recipe_ingredients_read_visible" on public.recipe_ingredients for select to anon, authenticated
-using (exists (select 1 from public.recipes r where r.id = recipe_id and (r.quality_status = 'published' or r.created_by = (select auth.uid()))));
-create policy "recipe_steps_read_visible" on public.recipe_steps for select to anon, authenticated
-using (exists (select 1 from public.recipes r where r.id = recipe_id and (r.quality_status = 'published' or r.created_by = (select auth.uid()))));
-create policy "recipe_rights_own_draft" on public.recipe_rights for all to authenticated
-using (exists (select 1 from public.recipes r where r.id = recipe_id and r.created_by = (select auth.uid()) and r.quality_status = 'draft'))
-with check (exists (select 1 from public.recipes r where r.id = recipe_id and r.created_by = (select auth.uid()) and r.quality_status = 'draft'));
+create policy "recipe_ingredients_read_published" on public.recipe_ingredients for select to authenticated
+using (exists (select 1 from public.recipes r where r.id = recipe_id and r.quality_status = 'published'));
+create policy "recipe_steps_read_published" on public.recipe_steps for select to authenticated
+using (exists (select 1 from public.recipes r where r.id = recipe_id and r.quality_status = 'published'));
 
 create policy "favorites_own_all" on public.favorites for all to authenticated
 using ((select auth.uid()) = user_id) with check ((select auth.uid()) = user_id);
