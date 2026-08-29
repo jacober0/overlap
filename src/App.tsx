@@ -3,7 +3,7 @@ import './App.css'
 import { createPlanExport } from './domain/export'
 import { rankRecipes } from './domain/engine'
 import { buildShoppingList } from './domain/shopping'
-import type { Diet, Preferences, Recipe } from './domain/types'
+import type { Allergen, Diet, Preferences, Recipe } from './domain/types'
 import { recipes } from './recipes'
 import { AccountPanel } from './components/AccountPanel'
 import { useAccount } from './auth/useAccount'
@@ -11,7 +11,12 @@ import { loadProfilePreferences, saveProfilePreferences } from './data/profileRe
 
 type Stage = 'onboarding' | 'discover' | 'plan' | 'shopping' | 'cook'
 type SelectionAction = { kind: 'accepted' | 'rejected'; recipeId: string }
-const initialPreferences: Preferences = { diet: 'vegetarisch', maxMinutes: 35, budgetFocus: .7, variety: .45, anchorTags: ['italienisch'], excludedIngredients: [], pantryIngredients: [], servings: 2, targetMeals: 5 }
+const initialPreferences: Preferences = { diet: 'vegetarisch', maxMinutes: 35, budgetFocus: .7, variety: .45, anchorTags: ['italienisch'], allergens: [], excludedIngredients: [], pantryIngredients: [], servings: 2, targetMeals: 5 }
+const allergenLabels: { id: Allergen; name: string }[] = [
+  { id: 'gluten', name: 'Gluten' }, { id: 'milch', name: 'Milch' }, { id: 'ei', name: 'Ei' },
+  { id: 'erdnuss', name: 'Erdnuss' }, { id: 'soja', name: 'Soja' }, { id: 'sesam', name: 'Sesam' },
+  { id: 'schalenfruechte', name: 'Schalenfrüchte' }, { id: 'fisch', name: 'Fisch' },
+]
 const money = (value: number) => value.toLocaleString('de-DE', { style: 'currency', currency: 'EUR' })
 const days = ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So']
 const stages: Stage[] = ['onboarding', 'discover', 'plan', 'shopping', 'cook']
@@ -153,6 +158,7 @@ export default function App() {
           <label><span>Mahlzeiten pro Woche</span><select aria-label="Mahlzeiten pro Woche" value={preferences.targetMeals} onChange={e=>setPreferences({...preferences,targetMeals:+e.target.value})}>{[1,2,3,4,5,6,7].map(value=><option key={value} value={value}>{value}</option>)}</select></label>
           <label><span>Portionen pro Gericht</span><select aria-label="Portionen pro Gericht" value={preferences.servings} onChange={e=>setPreferences({...preferences,servings:+e.target.value})}>{[1,2,3,4,5,6].map(value=><option key={value} value={value}>{value}</option>)}</select></label>
         </div>
+        <div className="exclusions allergens"><span>Allergene – immer ausschließen</span><div className="chips">{allergenLabels.map(item=>{const active=preferences.allergens.includes(item.id);return <button type="button" key={item.id} className={active?'selected':''} aria-pressed={active} onClick={()=>setPreferences({...preferences,allergens:active?preferences.allergens.filter(id=>id!==item.id):[...preferences.allergens,item.id]})}>{item.name}</button>})}</div><small>Overlap filtert damit auch zugeordnete Zutaten wie Pasta, Joghurt oder Tofu. Spurenhinweise des Produkts bleiben beim Einkauf zusätzlich zu prüfen.</small></div>
         <div className="exclusions"><span>Nicht in meiner Woche</span><div className="chips">{[{id:'tomate',name:'Tomaten'},{id:'paprika',name:'Paprika'},{id:'spinat',name:'Spinat'},{id:'tofu',name:'Tofu'}].map(item=>{const active=preferences.excludedIngredients.includes(item.id);return <button type="button" key={item.id} className={active?'selected':''} aria-label={`${item.name} ${active?'zulassen':'ausschließen'}`} onClick={()=>setPreferences({...preferences,excludedIngredients:active?preferences.excludedIngredients.filter(id=>id!==item.id):[...preferences.excludedIngredients,item.id]})}>{active?'− ':'+ '}{item.name}</button>})}</div></div>
         <div className="exclusions pantry"><span>Schon im Vorrat</span><div className="chips">{[{id:'tomate',name:'Tomaten'},{id:'kichererbse',name:'Kichererbsen'},{id:'reis',name:'Reis'},{id:'spinat',name:'Spinat'}].map(item=>{const active=preferences.pantryIngredients.includes(item.id);return <button type="button" key={item.id} className={active?'selected':''} aria-pressed={active} onClick={()=>setPreferences({...preferences,pantryIngredients:active?preferences.pantryIngredients.filter(id=>id!==item.id):[...preferences.pantryIngredients,item.id]})}>{active?'✓ ':'+ '}{item.name}</button>})}</div></div>
         <div className="step"><span>02</span><div><h2>Dein Wochenrhythmus</h2><p>Damit Vorschläge wirklich in deinen Alltag passen.</p></div></div>

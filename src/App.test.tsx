@@ -33,6 +33,16 @@ describe('Overlap app flow', () => {
     })
   })
 
+  it('speichert Allergene getrennt und filtert zugeordnete Zutaten', async () => {
+    localStorage.clear()
+    render(<App />)
+    await userEvent.click(screen.getByRole('button', { name: 'Gluten' }))
+    await userEvent.click(screen.getByRole('button', { name: /Vorschläge entdecken/i }))
+
+    expect(JSON.parse(localStorage.getItem('overlap-preferences') || '{}')).toMatchObject({ allergens: ['gluten'] })
+    expect(screen.queryByRole('heading', { name: 'Cremige Tomatenpasta' })).not.toBeInTheDocument()
+  })
+
   it('entfernt ein Gericht aus dem Wochenplan und persistiert die Änderung', async () => {
     localStorage.clear()
     localStorage.setItem('overlap-stage', 'plan')

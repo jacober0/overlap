@@ -5,7 +5,7 @@ import type { Diet, Preferences } from './types'
 
 const base: Preferences = {
   diet: 'omnivor', maxMinutes: 60, budgetFocus: .7, variety: .45,
-  anchorTags: [], excludedIngredients: [], pantryIngredients: [], servings: 2, targetMeals: 5,
+  anchorTags: [], allergens: [], excludedIngredients: [], pantryIngredients: [], servings: 2, targetMeals: 5,
 }
 
 describe('recommendation quality invariants', () => {
@@ -23,6 +23,13 @@ describe('recommendation quality invariants', () => {
           }
         }
       }
+    }
+  })
+
+  it('verletzt ausgewählte Allergene nie', () => {
+    for (const allergen of ['gluten', 'milch', 'ei', 'soja', 'erdnuss'] as const) {
+      const ranked = rankRecipes(recipes, [], { ...base, allergens: [allergen] })
+      expect(ranked.every(({ recipe }) => recipe.ingredients.every((item) => !item.allergens?.includes(allergen)))).toBe(true)
     }
   })
 

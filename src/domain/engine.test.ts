@@ -7,7 +7,7 @@ const recipes: Recipe[] = [
     id: 'pasta', title: 'Tomatenpasta', description: '', image: '', minutes: 20, activeMinutes: 15,
     servings: 2, pricePerServing: 2.5, difficulty: 'Einfach', diet: 'vegetarisch',
     tags: ['italienisch', 'comfort'], nutrition: { kcal: 520, protein: 18, carbs: 78, fat: 14, fiber: 7 },
-    ingredients: [{ id: 'tomate', name: 'Tomaten', amount: 400, unit: 'g', category: 'Gemüse', estimatedCost: 1.6 }],
+    ingredients: [{ id: 'pasta', name: 'Pasta', amount: 200, unit: 'g', category: 'Trockenwaren', estimatedCost: 1.6, allergens: ['gluten'] }],
     steps: ['Kochen'],
   },
   {
@@ -20,13 +20,17 @@ const recipes: Recipe[] = [
 
 const preferences: Preferences = {
   diet: 'vegetarisch', maxMinutes: 30, budgetFocus: 0.7, variety: 0.3,
-  anchorTags: ['italienisch'], excludedIngredients: [], pantryIngredients: [], servings: 2, targetMeals: 5,
+  anchorTags: ['italienisch'], allergens: [], excludedIngredients: [], pantryIngredients: [], servings: 2, targetMeals: 5,
 }
 
 describe('rankRecipes', () => {
   it('respektiert harte Ernährungs- und Zeitfilter', () => {
     const ranked = rankRecipes(recipes, [], preferences)
     expect(ranked.map((item) => item.recipe.id)).toEqual(['pasta'])
+  })
+
+  it('schließt zugeordnete Allergene unabhängig vom Zutatennamen hart aus', () => {
+    expect(rankRecipes(recipes, [], { ...preferences, allergens: ['gluten'] })).toHaveLength(0)
   })
 
   it('liefert normalisierte Score-Komponenten und nachvollziehbare Gründe', () => {
@@ -38,7 +42,7 @@ describe('rankRecipes', () => {
   })
 
   it('bewertet und erklärt passende Vorratszutaten als Overlap', () => {
-    const [result] = rankRecipes(recipes, [], { ...preferences, pantryIngredients: ['tomate'] })
+    const [result] = rankRecipes(recipes, [], { ...preferences, pantryIngredients: ['pasta'] })
     expect(result.breakdown.overlap).toBeGreaterThan(0)
     expect(result.reasons.join(' ')).toMatch(/Vorrat/)
   })

@@ -10,6 +10,7 @@ export function rankRecipes(recipes: Recipe[], selected: Recipe[], preferences: 
     .filter((recipe) => !selected.some((item) => item.id === recipe.id))
     .filter((recipe) => preferences.diet === 'omnivor' || recipe.diet === preferences.diet || (preferences.diet === 'vegetarisch' && recipe.diet === 'vegan'))
     .filter((recipe) => recipe.minutes <= preferences.maxMinutes)
+    .filter((recipe) => !recipe.ingredients.some((item) => item.allergens?.some((allergen) => preferences.allergens.includes(allergen))))
     .filter((recipe) => !recipe.ingredients.some((item) => preferences.excludedIngredients.includes(item.id)))
     .map((recipe) => {
       const overlapCount = recipe.ingredients.filter((item) => selectedIngredientIds.has(item.id)).length

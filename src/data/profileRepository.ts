@@ -4,6 +4,7 @@ import { supabase } from '../lib/supabase'
 type ProfileRow = {
   servings: number
   diet: Preferences['diet']
+  allergens: Preferences['allergens']
   excluded_ingredients: string[]
   favorite_cuisines: string[]
   max_cook_minutes: number
@@ -17,6 +18,7 @@ export function toProfileUpdate(preferences: Preferences) {
   return {
     servings: preferences.servings,
     diet: preferences.diet,
+    allergens: preferences.allergens,
     excluded_ingredients: preferences.excludedIngredients,
     favorite_cuisines: preferences.anchorTags,
     max_cook_minutes: preferences.maxMinutes,
@@ -33,6 +35,7 @@ export function mergeProfilePreferences(local: Preferences, row: ProfileRow): Pr
     ...local,
     servings: row.servings,
     diet: row.diet,
+    allergens: row.allergens,
     excludedIngredients: row.excluded_ingredients,
     anchorTags: row.favorite_cuisines,
     maxMinutes: row.max_cook_minutes,
@@ -46,7 +49,7 @@ export async function loadProfilePreferences(userId: string, local: Preferences)
   if (!supabase) return local
   const { data, error } = await supabase
     .from('profiles')
-    .select('servings,diet,excluded_ingredients,favorite_cuisines,max_cook_minutes,budget_focus,overlap_preference,target_meals,onboarding_completed')
+    .select('servings,diet,allergens,excluded_ingredients,favorite_cuisines,max_cook_minutes,budget_focus,overlap_preference,target_meals,onboarding_completed')
     .eq('id', userId)
     .single()
   if (error) throw error

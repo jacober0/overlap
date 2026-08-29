@@ -1,7 +1,11 @@
-import type { Category, Diet, Ingredient, Recipe } from './domain/types'
+import type { Allergen, Category, Diet, Ingredient, Recipe } from './domain/types'
 
 const img = (id: string) => `https://images.unsplash.com/${id}?auto=format&fit=crop&w=1200&q=82`
-const i = (id: string, name: string, amount: number, unit: string, category: Category, estimatedCost: number): Ingredient => ({ id, name, amount, unit, category, estimatedCost })
+const ingredientAllergens: Partial<Record<string, Allergen[]>> = {
+  pasta: ['gluten'], nudeln: ['gluten'], brot: ['gluten'], tortilla: ['gluten'], couscous: ['gluten'], gnocchi: ['gluten'],
+  frischkaese: ['milch'], feta: ['milch'], joghurt: ['milch'], ei: ['ei'], tofu: ['soja'], erdnuss: ['erdnuss'],
+}
+const i = (id: string, name: string, amount: number, unit: string, category: Category, estimatedCost: number): Ingredient => ({ id, name, amount, unit, category, estimatedCost, allergens: ingredientAllergens[id] })
 const r = (id: string, title: string, description: string, image: string, minutes: number, price: number, diet: Diet, tags: string[], nutrition: Recipe['nutrition'], ingredients: Ingredient[], steps: string[]): Recipe => ({ id, title, description, image, minutes, activeMinutes: Math.max(10, minutes - 8), servings: 2, pricePerServing: price, difficulty: minutes <= 25 ? 'Einfach' : 'Mittel', diet, tags, nutrition, ingredients, steps })
 
 export const recipes: Recipe[] = [
