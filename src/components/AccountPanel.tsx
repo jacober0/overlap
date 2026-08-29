@@ -43,7 +43,7 @@ export function AccountPanel({ onClose, onEditPreferences, account }: AccountPan
         <label htmlFor="login-email">E-Mail-Adresse</label>
         <input id="login-email" type="email" autoComplete="email" value={email} onChange={event => setEmail(event.target.value)} placeholder="du@beispiel.de" required />
         <button className="primary wide" disabled={busy}>{busy ? 'Wird gesendet …' : 'Sicheren Login-Link senden'}</button>
-        <small>Kein Passwort nötig. Der einmalige Link läuft über Supabase Auth.</small>
+        <small>Kein Passwort nötig. Der einmalige Link funktioniert nur für eingeladene Beta-Konten.</small>
       </form>}
 
       {account.session && <div className="account-mode synced">

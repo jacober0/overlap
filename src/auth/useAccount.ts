@@ -6,6 +6,10 @@ export function isValidEmail(value: string) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim())
 }
 
+export function getMagicLinkOptions(origin: string) {
+  return { emailRedirectTo: origin, shouldCreateUser: false }
+}
+
 export function useAccount() {
   const [session, setSession] = useState<Session | null>(null)
   const [loading, setLoading] = useState(isSupabaseConfigured)
@@ -34,7 +38,7 @@ export function useAccount() {
     if (!isValidEmail(email)) throw new Error('Bitte gib eine gültige E-Mail-Adresse ein.')
     const { error } = await supabase.auth.signInWithOtp({
       email: email.trim(),
-      options: { emailRedirectTo: window.location.origin },
+      options: getMagicLinkOptions(window.location.origin),
     })
     if (error) throw error
   }

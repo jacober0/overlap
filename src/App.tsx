@@ -7,6 +7,8 @@ import type { Allergen, Diet, Preferences, Recipe } from './domain/types'
 import { recipes } from './recipes'
 import { AccountPanel } from './components/AccountPanel'
 import { useAccount } from './auth/useAccount'
+import { getAccessMode } from './auth/access'
+import { BetaAccessGate } from './components/BetaAccessGate'
 import { loadProfilePreferences, saveProfilePreferences } from './data/profileRepository'
 
 type Stage = 'onboarding' | 'discover' | 'plan' | 'shopping' | 'cook'
@@ -142,6 +144,9 @@ export default function App() {
     URL.revokeObjectURL(url)
   }
 
+  const accessMode = getAccessMode({ configured: account.configured, loading: account.loading, authenticated: Boolean(account.session) })
+  if (accessMode === 'loading' || accessMode === 'login') return <BetaAccessGate account={account} />
+
   return <div className="app">
     <header><Logo /><nav aria-label="Hauptnavigation">
       <button className={stage === 'discover' ? 'active' : ''} onClick={() => persist('discover')}>Entdecken</button>
@@ -167,7 +172,7 @@ export default function App() {
         <div className="step"><span>03</span><div><h2>Worauf hast du Lust?</h2><p>Wähle eine Geschmacksrichtung als Startanker.</p></div></div>
         <div className="chips">{['italienisch','asiatisch','mediterran','orientalisch','deutsch'].map(tag=><button key={tag} className={preferences.anchorTags.includes(tag)?'selected':''} onClick={()=>setPreferences({...preferences,anchorTags:[tag]})}>{tag}</button>)}</div>
         <button className="primary wide" onClick={()=>persist('discover',preferences)}>Vorschläge entdecken <span>→</span></button>
-        <small>Alles bleibt lokal in diesem Browser gespeichert.</small>
+        <small>{account.session ? 'Dein Essensprofil wird sicher mit deinem Konto synchronisiert.' : 'Alles bleibt lokal in diesem Browser gespeichert.'}</small>
       </section>
     </main>}
 
