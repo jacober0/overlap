@@ -1,17 +1,23 @@
 import type { Recipe, ShoppingItem } from './types'
 
-export function buildShoppingList(recipes: Recipe[]): ShoppingItem[] {
+export function buildShoppingList(recipes: Recipe[], servings?: number): ShoppingItem[] {
   const items = new Map<string, ShoppingItem>()
   for (const recipe of recipes) {
+    const scale = servings ? servings / recipe.servings : 1
     for (const ingredient of recipe.ingredients) {
-      const key = `${ingredient.id}:${ingredient.unit}`
+      const scaledIngredient = {
+        ...ingredient,
+        amount: Number((ingredient.amount * scale).toFixed(2)),
+        estimatedCost: Number((ingredient.estimatedCost * scale).toFixed(2)),
+      }
+      const key = `${scaledIngredient.id}:${scaledIngredient.unit}`
       const current = items.get(key)
       if (current) {
-        current.amount += ingredient.amount
-        current.estimatedCost = Number((current.estimatedCost + ingredient.estimatedCost).toFixed(2))
+        current.amount += scaledIngredient.amount
+        current.estimatedCost = Number((current.estimatedCost + scaledIngredient.estimatedCost).toFixed(2))
         if (!current.recipes.includes(recipe.title)) current.recipes.push(recipe.title)
       } else {
-        items.set(key, { ...ingredient, recipes: [recipe.title], checked: false })
+        items.set(key, { ...scaledIngredient, recipes: [recipe.title], checked: false })
       }
     }
   }

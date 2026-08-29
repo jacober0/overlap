@@ -20,7 +20,7 @@ const recipes: Recipe[] = [
 
 const preferences: Preferences = {
   diet: 'vegetarisch', maxMinutes: 30, budgetFocus: 0.7, variety: 0.3,
-  anchorTags: ['italienisch'], excludedIngredients: [], servings: 2,
+  anchorTags: ['italienisch'], excludedIngredients: [], pantryIngredients: [], servings: 2, targetMeals: 5,
 }
 
 describe('rankRecipes', () => {
@@ -35,5 +35,11 @@ describe('rankRecipes', () => {
     expect(result.breakdown.anchorMatch).toBeGreaterThan(0)
     expect(result.breakdown.costFit).toBeGreaterThan(0)
     expect(result.reasons.join(' ')).toMatch(/Geschmack|Budget/)
+  })
+
+  it('bewertet und erklärt passende Vorratszutaten als Overlap', () => {
+    const [result] = rankRecipes(recipes, [], { ...preferences, pantryIngredients: ['tomate'] })
+    expect(result.breakdown.overlap).toBeGreaterThan(0)
+    expect(result.reasons.join(' ')).toMatch(/Vorrat/)
   })
 })

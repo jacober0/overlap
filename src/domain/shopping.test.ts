@@ -20,4 +20,9 @@ describe('buildShoppingList', () => {
     expect(list[0]).toMatchObject({ id: 'tomate', amount: 500, unit: 'g', category: 'Gemüse', estimatedCost: 2 })
     expect(list[0].recipes).toEqual(['A', 'B'])
   })
+
+  it('skaliert Mengen und Kosten auf die gewünschte Portionszahl', () => {
+    const list = buildShoppingList([recipes[0]], 4)
+    expect(list[0]).toMatchObject({ amount: 600, estimatedCost: 2.4 })
+  })
 })
