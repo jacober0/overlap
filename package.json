@@ -10,6 +10,7 @@
     "test": "vitest run src",
     "browser:install": "PLAYWRIGHT_BROWSERS_PATH=.playwright-browsers playwright install chromium",
     "test:e2e": "PLAYWRIGHT_BROWSERS_PATH=.playwright-browsers playwright test",
+    "test:supabase-live": "node scripts/verify-supabase-rls.mjs",
     "lint": "oxlint src",
     "preview": "vite preview"
   },
