@@ -24,10 +24,13 @@ describe('Supabase security contract', () => {
     expect(migration).not.toMatch(/on public\.(profiles|favorites|pantry_items|meal_plans|meal_plan_entries|shopping_extras)[\s\S]{0,180}using \(true\)/)
   })
 
-  it('requires provenance and review state for catalog recipes', () => {
+  it('requires provenance, review state and a protected rights manifest for catalog recipes', () => {
     for (const field of ['source_name text not null', 'source_url text not null', 'content_license text not null', 'quality_status text not null']) {
       expect(migration).toContain(field)
     }
     expect(migration).toContain("quality_status = 'published'")
+    expect(migration).toContain('alter table public.recipe_rights enable row level security')
+    expect(migration).toContain('storage_permitted boolean not null default false')
+    expect(migration).not.toMatch(/recipe_rights[^;]+for select to anon/)
   })
 })

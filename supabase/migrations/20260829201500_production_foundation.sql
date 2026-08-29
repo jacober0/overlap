@@ -96,9 +96,27 @@ create table public.recipe_ingredients (
 create table public.recipe_steps (
   recipe_id uuid not null references public.recipes(id) on delete cascade,
   position smallint not null check (position > 0),
-  instruction text not null check (char_length(instruction) between 5 and 2000),
+  instruction text not null check (char_length(instruction) between 10 and 2000),
   timer_seconds integer check (timer_seconds is null or timer_seconds between 1 and 86400),
   primary key (recipe_id, position)
+);
+
+create table public.recipe_rights (
+  id uuid primary key default gen_random_uuid(),
+  recipe_id uuid not null references public.recipes(id) on delete cascade,
+  asset_kind text not null check (asset_kind in ('recipe_text', 'image', 'nutrition')),
+  source_name text not null,
+  source_url text not null,
+  license text not null,
+  territory text,
+  storage_permitted boolean not null default false,
+  modification_permitted boolean not null default false,
+  valid_from date,
+  valid_until date,
+  deletion_deadline date,
+  attribution_text text,
+  metadata jsonb not null default '{}'::jsonb,
+  unique (recipe_id, asset_kind)
 );
 
 create table public.favorites (
@@ -188,6 +206,7 @@ alter table public.ingredients enable row level security;
 alter table public.recipes enable row level security;
 alter table public.recipe_ingredients enable row level security;
 alter table public.recipe_steps enable row level security;
+alter table public.recipe_rights enable row level security;
 alter table public.favorites enable row level security;
 alter table public.pantry_items enable row level security;
 alter table public.meal_plans enable row level security;
@@ -212,6 +231,9 @@ create policy "recipe_ingredients_read_visible" on public.recipe_ingredients for
 using (exists (select 1 from public.recipes r where r.id = recipe_id and (r.quality_status = 'published' or r.created_by = (select auth.uid()))));
 create policy "recipe_steps_read_visible" on public.recipe_steps for select to anon, authenticated
 using (exists (select 1 from public.recipes r where r.id = recipe_id and (r.quality_status = 'published' or r.created_by = (select auth.uid()))));
+create policy "recipe_rights_own_draft" on public.recipe_rights for all to authenticated
+using (exists (select 1 from public.recipes r where r.id = recipe_id and r.created_by = (select auth.uid()) and r.quality_status = 'draft'))
+with check (exists (select 1 from public.recipes r where r.id = recipe_id and r.created_by = (select auth.uid()) and r.quality_status = 'draft'));
 
 create policy "favorites_own_all" on public.favorites for all to authenticated
 using ((select auth.uid()) = user_id) with check ((select auth.uid()) = user_id);
