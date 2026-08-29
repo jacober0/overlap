@@ -5,12 +5,13 @@ const publishableKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY?.trim()
 
 export const isSupabaseConfigured = Boolean(url && publishableKey)
 
+export const supabaseAuthOptions = {
+  persistSession: true,
+  autoRefreshToken: true,
+  detectSessionInUrl: true,
+  flowType: 'pkce',
+} as const
+
 export const supabase: SupabaseClient | null = isSupabaseConfigured
-  ? createClient(url!, publishableKey!, {
-      auth: {
-        persistSession: true,
-        autoRefreshToken: true,
-        detectSessionInUrl: true,
-      },
-    })
+  ? createClient(url!, publishableKey!, { auth: supabaseAuthOptions })
   : null
