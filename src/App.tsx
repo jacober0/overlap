@@ -1,10 +1,13 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import './App.css'
 import { createPlanExport } from './domain/export'
 import { rankRecipes } from './domain/engine'
 import { buildShoppingList } from './domain/shopping'
 import type { Diet, Preferences, Recipe } from './domain/types'
 import { recipes } from './recipes'
+import { AccountPanel } from './components/AccountPanel'
+import { useAccount } from './auth/useAccount'
+import { loadProfilePreferences, saveProfilePreferences } from './data/profileRepository'
 
 type Stage = 'onboarding' | 'discover' | 'plan' | 'shopping' | 'cook'
 type SelectionAction = { kind: 'accepted' | 'rejected'; recipeId: string }
@@ -55,9 +58,27 @@ export default function App() {
   const [customDraft, setCustomDraft] = useState('')
   const [cookingIndex, setCookingIndex] = useState(0)
   const [cookingStep, setCookingStep] = useState(0)
+  const [accountOpen, setAccountOpen] = useState(false)
+  const account = useAccount()
+
+  useEffect(() => {
+    const userId = account.session?.user.id
+    if (!userId) return
+    let active = true
+    void loadProfilePreferences(userId, preferences).then(remote => {
+      if (!active) return
+      setPreferences(remote)
+      localStorage.setItem('overlap-preferences', JSON.stringify(remote))
+      if (remote === preferences) void saveProfilePreferences(userId, preferences)
+    })
+    return () => { active = false }
+    // A session change is the synchronization boundary; local edits are saved by persist().
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [account.session?.user.id])
 
   const persist = (nextStage: Stage, nextPreferences = preferences, nextSelected = selected) => {
     localStorage.setItem('overlap-stage', nextStage); localStorage.setItem('overlap-preferences', JSON.stringify(nextPreferences)); localStorage.setItem('overlap-selected', JSON.stringify(nextSelected)); setStage(nextStage)
+    if (account.session) void saveProfilePreferences(account.session.user.id, nextPreferences)
   }
   const ranked = useMemo(() => rankRecipes(recipes.filter(r => !rejected.includes(r.id)), selected, preferences), [selected, rejected, preferences])
   const current = ranked[0]
@@ -121,7 +142,7 @@ export default function App() {
       <button className={stage === 'discover' ? 'active' : ''} onClick={() => persist('discover')}>Entdecken</button>
       <button className={stage === 'plan' || stage === 'cook' ? 'active' : ''} onClick={() => persist('plan')}>Wochenplan <b>{selected.length || ''}</b></button>
       <button className={stage === 'shopping' ? 'active' : ''} onClick={() => persist('shopping')}>Einkauf</button>
-    </nav><button className="avatar" onClick={() => persist('onboarding')} aria-label="Präferenzen bearbeiten">JR</button></header>
+    </nav><button className="avatar" onClick={() => setAccountOpen(true)} aria-label="Profil und Konto öffnen">JR</button></header>
 
     {stage === 'onboarding' && <main className="onboarding">
       <section className="intro"><span className="eyebrow">Dein persönlicher Sweetspot</span><h1>Was soll diese Woche <em>leichter</em> machen?</h1><p>Overlap verbindet Gerichte über gemeinsame Zutaten – ohne dass jede Mahlzeit gleich schmeckt.</p><div className="overlap-mark"><span>weniger planen</span><span>cleverer einkaufen</span></div></section>
@@ -159,5 +180,6 @@ export default function App() {
     {stage === 'shopping' && <main className="page shopping"><div className="page-title"><div><span className="eyebrow">Automatisch gebündelt</span><h1>Ein Einkauf. Alles für die Woche.</h1></div><div className="shopping-head-actions"><button className="export-button" onClick={downloadPlan}>↓ Als Text exportieren</button><div className="total"><span>Geschätzt</span><strong>{money(total)}</strong></div></div></div>{[...new Set(shopping.map(i=>i.category))].map(category=><section className="shopping-group" key={category}><h2>{category}</h2>{shopping.filter(i=>i.category===category).map(item=>{const itemKey=`${item.id}:${item.unit}`;return <label className={checked.includes(itemKey)?'checked':''} key={itemKey}><input type="checkbox" data-item-id={itemKey} checked={checked.includes(itemKey)} onChange={()=>toggleChecked(itemKey)}/><span className="checkmark">✓</span><span className="item-name"><b>{item.name}</b><small>für {item.recipes.join(', ')}</small></span><span>{item.amount} {item.unit}</span><strong>{money(item.estimatedCost)}</strong></label>})}</section>)}<section className="shopping-group custom-shopping"><h2>Eigene Ergänzungen</h2><div className="custom-add"><input aria-label="Eigene Einkaufsposition" value={customDraft} onChange={event=>setCustomDraft(event.target.value)} onKeyDown={event=>{if(event.key==='Enter'){event.preventDefault();addCustomItem()}}} placeholder="z. B. Hafermilch"/><button type="button" className="primary" onClick={addCustomItem}>Hinzufügen</button></div>{customItems.map(item=>{const itemKey=`custom:${item.toLocaleLowerCase('de-DE')}`;return <div className={`custom-item ${checked.includes(itemKey)?'checked':''}`} key={itemKey}><button type="button" className="checkmark" aria-label={`${item} abhaken`} onClick={()=>toggleChecked(itemKey)}>✓</button><b>{item}</b><button type="button" className="custom-remove" aria-label={`${item} entfernen`} onClick={()=>persistCustomItems(customItems.filter(value=>value!==item))}>Entfernen</button></div>})}</section>{!shopping.length&&!customItems.length&&<div className="empty"><h2>Noch keine Zutaten</h2><button onClick={()=>persist('discover')}>Gerichte auswählen</button></div>}</main>}
 
     {detail && current && <div className="modal-backdrop" onClick={()=>setDetail(false)}><section className="modal" role="dialog" aria-modal="true" aria-labelledby="recipe-detail" onClick={e=>e.stopPropagation()}><button className="close" onClick={()=>setDetail(false)} aria-label="Schließen">×</button><img src={current.recipe.image} alt=""/><div className="modal-content"><span className="eyebrow">{current.recipe.diet} · {current.recipe.difficulty}</span><h2 id="recipe-detail">{current.recipe.title}</h2><p>{current.recipe.description}</p><h3>Zutaten für {current.recipe.servings} Portionen</h3><ul>{current.recipe.ingredients.map(i=><li key={i.id}><span>{i.name}</span><b>{i.amount} {i.unit}</b></li>)}</ul><h3>Zubereitung</h3><ol>{current.recipe.steps.map(step=><li key={step}>{step}</li>)}</ol><button className="primary wide" onClick={choose}>Zum Wochenplan hinzufügen</button></div></section></div>}
+    {accountOpen && <AccountPanel account={account} onClose={() => setAccountOpen(false)} onEditPreferences={() => { setAccountOpen(false); persist('onboarding') }} />}
   </div>
 }

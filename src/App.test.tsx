@@ -129,4 +129,13 @@ describe('Overlap app flow', () => {
     await userEvent.click(screen.getByRole('button', { name: `${recipes[0].title} als Meal Prep wiederholen` }))
     expect(JSON.parse(localStorage.getItem('overlap-selected') || '[]')).toHaveLength(2)
   })
+
+  it('kennzeichnet den lokalen Modus transparent im Account-Panel', async () => {
+    localStorage.clear()
+    render(<App />)
+    await userEvent.click(screen.getByRole('button', { name: 'Profil und Konto öffnen' }))
+    expect(screen.getByRole('dialog', { name: 'Profil & Synchronisierung' })).toBeInTheDocument()
+    expect(screen.getByText('Lokaler Testmodus')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /Essensprofil bearbeiten/i })).toBeInTheDocument()
+  })
 })
