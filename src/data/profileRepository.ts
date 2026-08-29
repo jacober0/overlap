@@ -45,15 +45,22 @@ export function mergeProfilePreferences(local: Preferences, row: ProfileRow): Pr
   }
 }
 
+export function resolveProfileLoad(local: Preferences, row: ProfileRow) {
+  return {
+    preferences: mergeProfilePreferences(local, row),
+    needsInitialization: !row.onboarding_completed,
+  }
+}
+
 export async function loadProfilePreferences(userId: string, local: Preferences) {
-  if (!supabase) return local
+  if (!supabase) return { preferences: local, needsInitialization: false }
   const { data, error } = await supabase
     .from('profiles')
     .select('servings,diet,allergens,excluded_ingredients,favorite_cuisines,max_cook_minutes,budget_focus,overlap_preference,target_meals,onboarding_completed')
     .eq('id', userId)
     .single()
   if (error) throw error
-  return mergeProfilePreferences(local, data as ProfileRow)
+  return resolveProfileLoad(local, data as ProfileRow)
 }
 
 export async function saveProfilePreferences(userId: string, preferences: Preferences) {

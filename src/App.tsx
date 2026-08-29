@@ -67,18 +67,23 @@ export default function App() {
   const [cookingStep, setCookingStep] = useState(0)
   const [accountOpen, setAccountOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
+  const [syncError, setSyncError] = useState('')
   const account = useAccount()
+
+  const saveRemoteProfile = (userId: string, value: Preferences) => saveProfilePreferences(userId, value)
+    .then(() => setSyncError(''))
+    .catch(() => setSyncError('Dein Profil konnte gerade nicht synchronisiert werden. Die lokalen Änderungen bleiben erhalten.'))
 
   useEffect(() => {
     const userId = account.session?.user.id
     if (!userId) return
     let active = true
-    void loadProfilePreferences(userId, preferences).then(remote => {
+    void loadProfilePreferences(userId, preferences).then(result => {
       if (!active) return
-      setPreferences(remote)
-      localStorage.setItem('overlap-preferences', JSON.stringify(remote))
-      if (remote === preferences) void saveProfilePreferences(userId, preferences)
-    })
+      setPreferences(result.preferences)
+      localStorage.setItem('overlap-preferences', JSON.stringify(result.preferences))
+      if (result.needsInitialization) void saveRemoteProfile(userId, preferences)
+    }).catch(() => { if (active) setSyncError('Dein Profil konnte gerade nicht synchronisiert werden. Die lokalen Daten bleiben verfügbar.') })
     return () => { active = false }
     // A session change is the synchronization boundary; local edits are saved by persist().
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -86,7 +91,7 @@ export default function App() {
 
   const persist = (nextStage: Stage, nextPreferences = preferences, nextSelected = selected) => {
     localStorage.setItem('overlap-stage', nextStage); localStorage.setItem('overlap-preferences', JSON.stringify(nextPreferences)); localStorage.setItem('overlap-selected', JSON.stringify(nextSelected)); setStage(nextStage)
-    if (account.session) void saveProfilePreferences(account.session.user.id, nextPreferences)
+    if (account.session) void saveRemoteProfile(account.session.user.id, nextPreferences)
   }
   const ranked = useMemo(() => rankRecipes(filterRecipesBySearch(recipes.filter(r => !rejected.includes(r.id)), searchQuery), selected, preferences), [selected, rejected, preferences, searchQuery])
   const current = ranked[0]
@@ -154,6 +159,7 @@ export default function App() {
       <button className={stage === 'plan' || stage === 'cook' ? 'active' : ''} onClick={() => persist('plan')}>Wochenplan <b>{selected.length || ''}</b></button>
       <button className={stage === 'shopping' ? 'active' : ''} onClick={() => persist('shopping')}>Einkauf</button>
     </nav><button className="avatar" onClick={() => setAccountOpen(true)} aria-label="Profil und Konto öffnen">JR</button></header>
+    {syncError && <div className="sync-alert" role="status"><span>{syncError}</span><button onClick={()=>account.session && void saveRemoteProfile(account.session.user.id, preferences)}>Erneut versuchen</button></div>}
 
     {stage === 'onboarding' && <main className="onboarding">
       <section className="intro"><span className="eyebrow">Dein persönlicher Sweetspot</span><h1>Was soll diese Woche <em>leichter</em> machen?</h1><p>Overlap verbindet Gerichte über gemeinsame Zutaten – ohne dass jede Mahlzeit gleich schmeckt.</p><div className="overlap-mark"><span>weniger planen</span><span>cleverer einkaufen</span></div></section>
