@@ -37,6 +37,7 @@ export function rankRecipes(recipes: Recipe[], selected: Recipe[], preferences: 
       if (pantryCount > 0) reasons.push(`${pantryCount} Zutaten aus deinem Vorrat`)
       else if (overlap > 0) reasons.push(`${overlapCount} Zutaten nutzt du bereits`)
       if (diversity > 0.65) reasons.push('Bringt Abwechslung in die Woche')
+      if (!reasons.length) reasons.push('Erfüllt deine Ernährungs- und Zeitvorgaben')
       return { recipe, total, breakdown: { overlap, anchorMatch, costFit, diversity, newIngredientPenalty }, reasons }
     })
     .sort((a, b) => b.total - a.total || a.recipe.title.localeCompare(b.recipe.title))
