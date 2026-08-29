@@ -1,0 +1,21 @@
+import { test, expect } from '@playwright/test'
+
+test('Onboarding bis Einkauf funktioniert mobil', async ({ page }) => {
+  await page.goto('/')
+  await page.evaluate(() => localStorage.clear())
+  await page.reload()
+  await expect(page.getByRole('heading', { name: /Was soll diese Woche leichter machen/ })).toBeVisible()
+  await page.getByRole('button', { name: /Vorschläge entdecken/ }).click()
+  await expect(page.getByRole('heading', { name: /Dein nächster Treffer/ })).toBeVisible()
+  await page.getByRole('button', { name: /Geil/ }).click()
+  await expect(page.getByRole('button', { name: /Wochenplan 1/ })).toBeVisible()
+  await page.getByRole('button', { name: /Wochenplan 1/ }).click()
+  await expect(page.getByRole('heading', { name: /Eine Woche, die zusammenpasst/ })).toBeVisible()
+  await page.getByRole('button', { name: /Einkaufsliste erstellen/ }).click()
+  await expect(page.getByRole('heading', { name: /Ein Einkauf. Alles für die Woche/ })).toBeVisible()
+  await expect(page.getByText('3,90 €')).toBeVisible()
+  await expect(page.getByText('0,40 €')).toBeVisible()
+  await page.getByRole('checkbox').first().check()
+  await expect(page.locator('.shopping-group label.checked')).toHaveCount(1)
+  await page.screenshot({ path: 'artifacts/mobile-shopping.png', fullPage: true })
+})
