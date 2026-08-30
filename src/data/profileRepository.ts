@@ -169,10 +169,25 @@ export function createProfileSaveQueue(write: ProfileWriter): ProfileWriter {
   }
 }
 
+export function assertProfileWriteResult(
+  userId: string,
+  result: { data: { id: unknown } | null; error: unknown },
+) {
+  if (result.error) throw result.error
+  if (result.data?.id !== userId) {
+    throw new Error('Der Profilschreibvorgang wurde vom Backend nicht bestätigt.')
+  }
+}
+
 const writeProfilePreferences: ProfileWriter = async (userId, preferences) => {
   if (!supabase) return
-  const { error } = await supabase.from('profiles').update(toProfileUpdate(preferences)).eq('id', userId)
-  if (error) throw error
+  const result = await supabase
+    .from('profiles')
+    .update(toProfileUpdate(preferences))
+    .eq('id', userId)
+    .select('id')
+    .single()
+  assertProfileWriteResult(userId, result)
 }
 
 export const saveProfilePreferences = createProfileSaveQueue(writeProfilePreferences)

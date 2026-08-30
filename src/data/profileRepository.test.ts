@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { Preferences } from '../domain/types'
-import { createProfileSaveQueue, mergeProfilePreferences, preserveConcurrentProfileEdits, resolveLocalProfileForUser, resolveProfileLoad, resolveProfileSynchronization, toProfileUpdate } from './profileRepository'
+import { assertProfileWriteResult, createProfileSaveQueue, mergeProfilePreferences, preserveConcurrentProfileEdits, resolveLocalProfileForUser, resolveProfileLoad, resolveProfileSynchronization, toProfileUpdate } from './profileRepository'
 
 const local: Preferences = {
   diet: 'vegetarisch', maxMinutes: 35, budgetFocus: .7, variety: .45,
@@ -86,6 +86,15 @@ describe('profile synchronization mapping', () => {
     await expect(first).rejects.toThrow('offline')
     await expect(second).resolves.toBeUndefined()
     expect(writes).toEqual([2, 4])
+  })
+
+  it('bestätigt einen Profilschreibvorgang nur für die angeforderte Zeile', () => {
+    expect(() => assertProfileWriteResult('user-1', { data: { id: 'user-1' }, error: null })).not.toThrow()
+    expect(() => assertProfileWriteResult('user-1', { data: null, error: null })).toThrow('nicht bestätigt')
+    expect(() => assertProfileWriteResult('user-1', { data: { id: 'user-2' }, error: null })).toThrow('nicht bestätigt')
+
+    const backendError = new Error('RLS blockiert')
+    expect(() => assertProfileWriteResult('user-1', { data: null, error: backendError })).toThrow(backendError)
   })
 
   it('führt Remote-Werte feldweise mit lokalen Änderungen während des Ladens zusammen', () => {
