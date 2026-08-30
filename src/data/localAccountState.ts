@@ -14,3 +14,13 @@ export function resetLocalAccountData(storage: Pick<Storage, 'removeItem' | 'set
   accountScopedKeys.forEach(key => storage.removeItem(key))
   storage.setItem('overlap-profile-owner', userId)
 }
+
+export function activateLocalAccountData(
+  storage: Pick<Storage, 'getItem' | 'removeItem' | 'setItem'>,
+  userId: string,
+) {
+  const switched = isAccountSwitch(storage.getItem('overlap-profile-owner'), userId)
+  if (switched) resetLocalAccountData(storage, userId)
+  else storage.setItem('overlap-profile-owner', userId)
+  return switched
+}

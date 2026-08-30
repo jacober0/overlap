@@ -10,7 +10,7 @@ import { useAccount } from './auth/useAccount'
 import { getAccessMode } from './auth/access'
 import { BetaAccessGate } from './components/BetaAccessGate'
 import { loadProfilePreferences, resolveLocalProfileForUser, resolveProfileSynchronization, saveProfilePreferences } from './data/profileRepository'
-import { isAccountSwitch, resetLocalAccountData } from './data/localAccountState'
+import { activateLocalAccountData } from './data/localAccountState'
 
 type Stage = 'onboarding' | 'discover' | 'plan' | 'shopping' | 'cook'
 type SelectionAction = { kind: 'accepted' | 'rejected'; recipeId: string }
@@ -106,11 +106,14 @@ export default function App() {
 
   useLayoutEffect(() => {
     const userId = account.session?.user.id
-    if (!userId || !isAccountSwitch(profileOwnerRef.current, userId)) return
+    if (!userId) return
+    // Claim local data before the remote request. Even if profile loading fails or
+    // sign-out happens first, the next account can identify and clear this owner.
+    const switched = activateLocalAccountData(localStorage, userId)
+    profileOwnerRef.current = userId
+    if (!switched) return
     // Reset before paint so one account can never briefly see another account's
     // local profile, plan or shopping state while its own profile is loading.
-    resetLocalAccountData(localStorage, userId)
-    profileOwnerRef.current = userId
     preferencesRef.current = initialPreferences
     setPreferences(initialPreferences)
     setStage('onboarding')

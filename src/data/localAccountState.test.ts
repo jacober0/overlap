@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import { describe, expect, it } from 'vitest'
-import { isAccountSwitch, resetLocalAccountData } from './localAccountState'
+import { activateLocalAccountData, isAccountSwitch, resetLocalAccountData } from './localAccountState'
 
 describe('local account data isolation', () => {
   it('erkennt nur den Wechsel von einem bekannten anderen Konto', () => {
@@ -28,5 +28,26 @@ describe('local account data isolation', () => {
     expect(localStorage.getItem('overlap-custom-items')).toBeNull()
     expect(localStorage.getItem('overlap-profile-owner')).toBe('user-2')
     expect(localStorage.getItem('unrelated-setting')).toBe('keep')
+  })
+
+  it('beansprucht lokale Daten sofort für das erste authentifizierte Konto', () => {
+    localStorage.clear()
+    localStorage.setItem('overlap-selected', '[{"id":"local-plan"}]')
+
+    expect(activateLocalAccountData(localStorage, 'user-1')).toBe(false)
+
+    expect(localStorage.getItem('overlap-profile-owner')).toBe('user-1')
+    expect(localStorage.getItem('overlap-selected')).toBe('[{"id":"local-plan"}]')
+  })
+
+  it('löscht beanspruchte Daten beim nächsten Kontowechsel auch ohne Profilabruf', () => {
+    localStorage.clear()
+    activateLocalAccountData(localStorage, 'user-1')
+    localStorage.setItem('overlap-selected', '[{"id":"private-plan"}]')
+
+    expect(activateLocalAccountData(localStorage, 'user-2')).toBe(true)
+
+    expect(localStorage.getItem('overlap-profile-owner')).toBe('user-2')
+    expect(localStorage.getItem('overlap-selected')).toBeNull()
   })
 })
