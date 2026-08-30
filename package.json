@@ -7,13 +7,14 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "typecheck": "tsc -b --pretty false",
-    "test": "vitest run src",
+    "test": "vitest run src scripts",
+    "images:generate": "node scripts/generate-recipe-images.mjs",
     "browser:install": "PLAYWRIGHT_BROWSERS_PATH=.playwright-browsers playwright install chromium",
     "test:e2e": "PLAYWRIGHT_BROWSERS_PATH=.playwright-browsers playwright test",
     "test:e2e:beta": "PLAYWRIGHT_BROWSERS_PATH=.playwright-browsers playwright test --config playwright.beta.config.ts",
     "test:supabase-live": "node scripts/verify-supabase-rls.mjs",
     "test:sql": "uv run --with pglast python scripts/validate-sql.py",
-    "lint": "oxlint src",
+    "lint": "oxlint src scripts",
     "preview": "vite preview"
   },
   "dependencies": {
