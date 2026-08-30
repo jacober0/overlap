@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import './App.css'
 import { createPlanExport } from './domain/export'
 import { filterRecipesBySearch, rankRecipes } from './domain/engine'
@@ -10,6 +10,7 @@ import { useAccount } from './auth/useAccount'
 import { getAccessMode } from './auth/access'
 import { BetaAccessGate } from './components/BetaAccessGate'
 import { loadProfilePreferences, resolveLocalProfileForUser, resolveProfileSynchronization, saveProfilePreferences } from './data/profileRepository'
+import { isAccountSwitch, resetLocalAccountData } from './data/localAccountState'
 
 type Stage = 'onboarding' | 'discover' | 'plan' | 'shopping' | 'cook'
 type SelectionAction = { kind: 'accepted' | 'rejected'; recipeId: string }
@@ -102,6 +103,29 @@ export default function App() {
   const saveRemoteProfile = (userId: string, value: Preferences) => saveProfilePreferences(userId, value)
     .then(() => setSyncError(''))
     .catch(() => setSyncError('Dein Profil konnte gerade nicht synchronisiert werden. Die lokalen Änderungen bleiben erhalten.'))
+
+  useLayoutEffect(() => {
+    const userId = account.session?.user.id
+    if (!userId || !isAccountSwitch(profileOwnerRef.current, userId)) return
+    // Reset before paint so one account can never briefly see another account's
+    // local profile, plan or shopping state while its own profile is loading.
+    resetLocalAccountData(localStorage, userId)
+    profileOwnerRef.current = userId
+    preferencesRef.current = initialPreferences
+    setPreferences(initialPreferences)
+    setStage('onboarding')
+    setSelected([])
+    setRejected([])
+    setSelectionHistory([])
+    setChecked([])
+    setCustomItems([])
+    setCustomDraft('')
+    setCookingIndex(0)
+    setCookingStep(0)
+    setDetail(false)
+    setSearchQuery('')
+    setSyncError('')
+  }, [account.session?.user.id])
 
   useEffect(() => {
     const userId = account.session?.user.id
