@@ -27,4 +27,21 @@ describe('profile synchronization mapping', () => {
     expect(resolveProfileLoad(local, row)).toEqual({ preferences: local, needsInitialization: true })
     expect(resolveProfileLoad(local, { ...row, onboarding_completed: true })).toMatchObject({ needsInitialization: false })
   })
+
+  it('übernimmt keine ungültigen oder vom Client nicht unterstützten Remote-Werte', () => {
+    const malformed = {
+      servings: 20,
+      diet: 'pescetarisch',
+      allergens: ['gluten', 'unbekannt', 42],
+      excluded_ingredients: null,
+      favorite_cuisines: 'italienisch',
+      max_cook_minutes: 360,
+      budget_focus: -1,
+      overlap_preference: 101,
+      target_meals: 0,
+      onboarding_completed: true,
+    }
+
+    expect(mergeProfilePreferences(local, malformed)).toEqual(local)
+  })
 })

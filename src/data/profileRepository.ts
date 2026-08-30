@@ -2,6 +2,19 @@ import type { Preferences } from '../domain/types'
 import { supabase } from '../lib/supabase'
 
 type ProfileRow = {
+  servings: unknown
+  diet: unknown
+  allergens: unknown
+  excluded_ingredients: unknown
+  favorite_cuisines: unknown
+  max_cook_minutes: unknown
+  budget_focus: unknown
+  overlap_preference: unknown
+  target_meals: unknown
+  onboarding_completed: unknown
+}
+
+type ValidProfileRow = {
   servings: number
   diet: Preferences['diet']
   allergens: Preferences['allergens']
@@ -11,7 +24,26 @@ type ProfileRow = {
   budget_focus: number
   overlap_preference: number
   target_meals: number
-  onboarding_completed: boolean
+  onboarding_completed: true
+}
+
+const supportedDiets = new Set<Preferences['diet']>(['omnivor', 'vegetarisch', 'vegan'])
+const supportedAllergens = new Set<Preferences['allergens'][number]>(['gluten', 'milch', 'ei', 'erdnuss', 'soja', 'sesam', 'schalenfruechte', 'fisch'])
+const isIntegerInRange = (value: unknown, min: number, max: number): value is number => Number.isInteger(value) && (value as number) >= min && (value as number) <= max
+const isStringArray = (value: unknown): value is string[] => Array.isArray(value) && value.every(item => typeof item === 'string')
+
+function isValidCompletedProfile(row: ProfileRow): row is ValidProfileRow {
+  return row.onboarding_completed === true
+    && supportedDiets.has(row.diet as Preferences['diet'])
+    && isIntegerInRange(row.servings, 1, 6)
+    && isIntegerInRange(row.max_cook_minutes, 15, 60)
+    && isIntegerInRange(row.budget_focus, 0, 100)
+    && isIntegerInRange(row.overlap_preference, 0, 100)
+    && isIntegerInRange(row.target_meals, 1, 7)
+    && isStringArray(row.allergens)
+    && row.allergens.every(item => supportedAllergens.has(item as Preferences['allergens'][number]))
+    && isStringArray(row.excluded_ingredients)
+    && isStringArray(row.favorite_cuisines)
 }
 
 export function toProfileUpdate(preferences: Preferences) {
@@ -30,7 +62,7 @@ export function toProfileUpdate(preferences: Preferences) {
 }
 
 export function mergeProfilePreferences(local: Preferences, row: ProfileRow): Preferences {
-  if (!row.onboarding_completed) return local
+  if (!isValidCompletedProfile(row)) return local
   return {
     ...local,
     servings: row.servings,
