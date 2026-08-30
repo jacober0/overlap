@@ -22,6 +22,12 @@ const allergenLabels: { id: Allergen; name: string }[] = [
 const money = (value: number) => value.toLocaleString('de-DE', { style: 'currency', currency: 'EUR' })
 const days = ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So']
 const stages: Stage[] = ['onboarding', 'discover', 'plan', 'shopping', 'cook']
+const diets: Diet[] = ['omnivor', 'vegetarisch', 'vegan']
+const knownAllergens = new Set(allergenLabels.map(item => item.id))
+
+const isRecord = (value: unknown): value is Record<string, unknown> => Boolean(value) && typeof value === 'object' && !Array.isArray(value)
+const isStringArray = (value: unknown): value is string[] => Array.isArray(value) && value.every(item => typeof item === 'string')
+const isNumberInRange = (value: unknown, min: number, max: number): value is number => typeof value === 'number' && Number.isFinite(value) && value >= min && value <= max
 
 function readJson<T>(key: string, fallback: T, isValid: (value: unknown) => boolean): T {
   try {
@@ -33,20 +39,40 @@ function readJson<T>(key: string, fallback: T, isValid: (value: unknown) => bool
 }
 
 function readPreferences(): Preferences {
-  const saved = readJson<Partial<Preferences>>('overlap-preferences', {}, value => Boolean(value) && typeof value === 'object' && !Array.isArray(value))
-  return { ...initialPreferences, ...saved }
+  const saved = readJson<Record<string, unknown>>('overlap-preferences', {}, isRecord)
+  return {
+    diet: diets.includes(saved.diet as Diet) ? saved.diet as Diet : initialPreferences.diet,
+    maxMinutes: isNumberInRange(saved.maxMinutes, 15, 60) ? saved.maxMinutes as number : initialPreferences.maxMinutes,
+    budgetFocus: isNumberInRange(saved.budgetFocus, 0, 1) ? saved.budgetFocus as number : initialPreferences.budgetFocus,
+    variety: isNumberInRange(saved.variety, 0, 1) ? saved.variety as number : initialPreferences.variety,
+    anchorTags: isStringArray(saved.anchorTags) ? saved.anchorTags : initialPreferences.anchorTags,
+    allergens: isStringArray(saved.allergens) ? saved.allergens.filter((item): item is Allergen => knownAllergens.has(item as Allergen)) : initialPreferences.allergens,
+    excludedIngredients: isStringArray(saved.excludedIngredients) ? saved.excludedIngredients : initialPreferences.excludedIngredients,
+    pantryIngredients: isStringArray(saved.pantryIngredients) ? saved.pantryIngredients : initialPreferences.pantryIngredients,
+    servings: isNumberInRange(saved.servings, 1, 6) && Number.isInteger(saved.servings) ? saved.servings as number : initialPreferences.servings,
+    targetMeals: isNumberInRange(saved.targetMeals, 1, 7) && Number.isInteger(saved.targetMeals) ? saved.targetMeals as number : initialPreferences.targetMeals,
+  }
+}
+
+function parseSelected(): { recipes: Recipe[]; valid: boolean } {
+  let saved: unknown
+  try {
+    saved = JSON.parse(localStorage.getItem('overlap-selected') || '[]')
+  } catch {
+    return { recipes: [], valid: false }
+  }
+  if (!Array.isArray(saved)) return { recipes: [], valid: false }
+  const ids = saved.map(item => isRecord(item) && typeof item.id === 'string' ? item.id : '')
+  const selectedRecipes = ids.map(id => recipes.find(recipe => recipe.id === id))
+  if (ids.some(id => !id) || selectedRecipes.some(recipe => !recipe)) return { recipes: [], valid: false }
+  return { recipes: selectedRecipes as Recipe[], valid: true }
 }
 
 function readStage(): Stage {
   const saved = localStorage.getItem('overlap-stage') as Stage
   if (!stages.includes(saved)) return 'onboarding'
   if (['plan', 'shopping', 'cook'].includes(saved)) {
-    try {
-      const selection = JSON.parse(localStorage.getItem('overlap-selected') || '[]')
-      if (!Array.isArray(selection)) return 'onboarding'
-    } catch {
-      return 'onboarding'
-    }
+    if (!parseSelected().valid) return 'onboarding'
   }
   return saved
 }
@@ -56,7 +82,7 @@ function Logo() { return <div className="logo" aria-label="Overlap Startseite"><
 export default function App() {
   const [stage, setStage] = useState<Stage>(readStage)
   const [preferences, setPreferences] = useState<Preferences>(readPreferences)
-  const [selected, setSelected] = useState<Recipe[]>(() => readJson('overlap-selected', [], Array.isArray))
+  const [selected, setSelected] = useState<Recipe[]>(() => parseSelected().recipes)
   const [rejected, setRejected] = useState<string[]>([])
   const [selectionHistory, setSelectionHistory] = useState<SelectionAction[]>([])
   const [detail, setDetail] = useState(false)

@@ -79,6 +79,23 @@ describe('Overlap app flow', () => {
     expect(screen.getByRole('heading', { name: /Was soll diese Woche/i })).toBeInTheDocument()
   })
 
+  it('bereinigt strukturell ungültige Browserdaten vor dem Rendern', () => {
+    localStorage.clear()
+    localStorage.setItem('overlap-stage', 'plan')
+    localStorage.setItem('overlap-selected', JSON.stringify([{ id: 'unbekannt', title: 42 }]))
+    localStorage.setItem('overlap-preferences', JSON.stringify({
+      allergens: 'gluten',
+      excludedIngredients: null,
+      servings: 99,
+      targetMeals: -2,
+    }))
+
+    expect(() => render(<App />)).not.toThrow()
+    expect(screen.getByRole('heading', { name: /Was soll diese Woche leichter machen/i })).toBeInTheDocument()
+    expect(screen.getByLabelText('Portionen pro Gericht')).toHaveValue('2')
+    expect(screen.getByLabelText('Mahlzeiten pro Woche')).toHaveValue('5')
+  })
+
   it('persistiert abgehakte Positionen der Einkaufsliste', async () => {
     localStorage.clear()
     localStorage.setItem('overlap-stage', 'shopping')
