@@ -88,11 +88,15 @@ describe('profile synchronization mapping', () => {
     expect(writes).toEqual([2, 4])
   })
 
-  it('überschreibt keine lokalen Änderungen, die während des Remote-Ladens entstanden sind', () => {
-    const remote = { ...local, servings: 4 }
-    const locallyEdited = { ...local, servings: 3 }
+  it('führt Remote-Werte feldweise mit lokalen Änderungen während des Ladens zusammen', () => {
+    const remote = { ...local, diet: 'vegan' as const, maxMinutes: 20, servings: 4, allergens: ['gluten' as const] }
+    const locallyEdited = { ...local, servings: 3, anchorTags: ['mediterran'] }
 
     expect(preserveConcurrentProfileEdits(local, local, remote)).toBe(remote)
-    expect(preserveConcurrentProfileEdits(local, locallyEdited, remote)).toBe(locallyEdited)
+    expect(preserveConcurrentProfileEdits(local, locallyEdited, remote)).toEqual({
+      ...remote,
+      servings: 3,
+      anchorTags: ['mediterran'],
+    })
   })
 })

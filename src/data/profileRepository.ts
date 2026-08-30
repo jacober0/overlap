@@ -86,12 +86,34 @@ export function resolveProfileLoad(local: Preferences, row: ProfileRow) {
   }
 }
 
+function arePreferenceValuesEqual(
+  first: Preferences[keyof Preferences],
+  second: Preferences[keyof Preferences],
+) {
+  if (!Array.isArray(first) || !Array.isArray(second)) return first === second
+  return first.length === second.length && first.every((value, index) => value === second[index])
+}
+
 export function preserveConcurrentProfileEdits(
   localAtRequest: Preferences,
   currentLocal: Preferences,
   loaded: Preferences,
 ): Preferences {
-  return currentLocal === localAtRequest ? loaded : currentLocal
+  if (currentLocal === localAtRequest) return loaded
+  const value = <Key extends keyof Preferences>(key: Key): Preferences[Key] =>
+    arePreferenceValuesEqual(currentLocal[key], localAtRequest[key]) ? loaded[key] : currentLocal[key]
+  return {
+    diet: value('diet'),
+    maxMinutes: value('maxMinutes'),
+    budgetFocus: value('budgetFocus'),
+    variety: value('variety'),
+    anchorTags: value('anchorTags'),
+    allergens: value('allergens'),
+    excludedIngredients: value('excludedIngredients'),
+    pantryIngredients: value('pantryIngredients'),
+    servings: value('servings'),
+    targetMeals: value('targetMeals'),
+  }
 }
 
 export async function loadProfilePreferences(userId: string, local: Preferences) {
