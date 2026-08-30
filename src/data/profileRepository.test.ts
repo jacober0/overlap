@@ -28,6 +28,11 @@ describe('profile synchronization mapping', () => {
     expect(resolveProfileLoad(local, { ...row, onboarding_completed: true })).toMatchObject({ needsInitialization: false })
   })
 
+  it('startet bei einem ungültigen Completion-Wert keine überschreibende Initialisierung', () => {
+    const row = { servings: 2, diet: 'vegetarisch', allergens: [], excluded_ingredients: [], favorite_cuisines: [], max_cook_minutes: 30, budget_focus: 50, overlap_preference: 50, target_meals: 5, onboarding_completed: null }
+    expect(resolveProfileLoad(local, row)).toEqual({ preferences: local, needsInitialization: false })
+  })
+
   it('übernimmt keine ungültigen oder vom Client nicht unterstützten Remote-Werte', () => {
     const malformed = {
       servings: 20,

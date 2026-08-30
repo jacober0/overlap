@@ -80,7 +80,9 @@ export function mergeProfilePreferences(local: Preferences, row: ProfileRow): Pr
 export function resolveProfileLoad(local: Preferences, row: ProfileRow) {
   return {
     preferences: mergeProfilePreferences(local, row),
-    needsInitialization: !row.onboarding_completed,
+    // Only a genuine database `false` identifies a fresh profile. Malformed values
+    // must never authorize an automatic write that could overwrite remote data.
+    needsInitialization: row.onboarding_completed === false,
   }
 }
 
