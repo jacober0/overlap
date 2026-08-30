@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { Preferences } from '../domain/types'
-import { mergeProfilePreferences, resolveProfileLoad, toProfileUpdate } from './profileRepository'
+import { createProfileSaveQueue, mergeProfilePreferences, resolveProfileLoad, toProfileUpdate } from './profileRepository'
 
 const local: Preferences = {
   diet: 'vegetarisch', maxMinutes: 35, budgetFocus: .7, variety: .45,
@@ -48,5 +48,43 @@ describe('profile synchronization mapping', () => {
     }
 
     expect(mergeProfilePreferences(local, malformed)).toEqual(local)
+  })
+
+  it('serialisiert schnelle Profiländerungen, damit der neueste Stand zuletzt geschrieben wird', async () => {
+    const writes: number[] = []
+    let releaseFirst!: () => void
+    let markFirstStarted!: () => void
+    const firstWrite = new Promise<void>(resolve => { releaseFirst = resolve })
+    const firstStarted = new Promise<void>(resolve => { markFirstStarted = resolve })
+    const save = createProfileSaveQueue(async (_userId, preferences) => {
+      writes.push(preferences.servings)
+      if (preferences.servings === 2) {
+        markFirstStarted()
+        await firstWrite
+      }
+    })
+
+    const first = save('user-1', local)
+    const second = save('user-1', { ...local, servings: 4 })
+    await firstStarted
+    expect(writes).toEqual([2])
+
+    releaseFirst()
+    await Promise.all([first, second])
+    expect(writes).toEqual([2, 4])
+  })
+
+  it('führt den neuesten Profilstand auch nach einem fehlgeschlagenen Vorgänger aus', async () => {
+    const writes: number[] = []
+    const save = createProfileSaveQueue(async (_userId, preferences) => {
+      writes.push(preferences.servings)
+      if (preferences.servings === 2) throw new Error('offline')
+    })
+
+    const first = save('user-1', local)
+    const second = save('user-1', { ...local, servings: 4 })
+    await expect(first).rejects.toThrow('offline')
+    await expect(second).resolves.toBeUndefined()
+    expect(writes).toEqual([2, 4])
   })
 })

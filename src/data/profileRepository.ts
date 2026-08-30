@@ -97,8 +97,27 @@ export async function loadProfilePreferences(userId: string, local: Preferences)
   return resolveProfileLoad(local, data as ProfileRow)
 }
 
-export async function saveProfilePreferences(userId: string, preferences: Preferences) {
+type ProfileWriter = (userId: string, preferences: Preferences) => Promise<void>
+
+export function createProfileSaveQueue(write: ProfileWriter): ProfileWriter {
+  const pendingByUser = new Map<string, Promise<void>>()
+
+  return (userId, preferences) => {
+    const previous = pendingByUser.get(userId) ?? Promise.resolve()
+    const current = previous.catch(() => undefined).then(() => write(userId, preferences))
+    pendingByUser.set(userId, current)
+    void current.then(
+      () => { if (pendingByUser.get(userId) === current) pendingByUser.delete(userId) },
+      () => { if (pendingByUser.get(userId) === current) pendingByUser.delete(userId) },
+    )
+    return current
+  }
+}
+
+const writeProfilePreferences: ProfileWriter = async (userId, preferences) => {
   if (!supabase) return
   const { error } = await supabase.from('profiles').update(toProfileUpdate(preferences)).eq('id', userId)
   if (error) throw error
 }
+
+export const saveProfilePreferences = createProfileSaveQueue(writeProfilePreferences)
