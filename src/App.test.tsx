@@ -86,12 +86,14 @@ describe('Overlap app flow', () => {
     localStorage.setItem('overlap-preferences', JSON.stringify({
       allergens: 'gluten',
       excludedIngredients: null,
+      maxMinutes: 15.5,
       servings: 99,
       targetMeals: -2,
     }))
 
     expect(() => render(<App />)).not.toThrow()
     expect(screen.getByRole('heading', { name: /Was soll diese Woche leichter machen/i })).toBeInTheDocument()
+    expect(screen.getByLabelText('Maximale Kochzeit')).toHaveValue('35')
     expect(screen.getByLabelText('Portionen pro Gericht')).toHaveValue('2')
     expect(screen.getByLabelText('Mahlzeiten pro Woche')).toHaveValue('5')
   })

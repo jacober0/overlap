@@ -43,7 +43,7 @@ function readPreferences(): Preferences {
   const saved = readJson<Record<string, unknown>>('overlap-preferences', {}, isRecord)
   return {
     diet: diets.includes(saved.diet as Diet) ? saved.diet as Diet : initialPreferences.diet,
-    maxMinutes: isNumberInRange(saved.maxMinutes, 15, 60) ? saved.maxMinutes as number : initialPreferences.maxMinutes,
+    maxMinutes: isNumberInRange(saved.maxMinutes, 15, 60) && Number.isInteger(saved.maxMinutes) ? saved.maxMinutes as number : initialPreferences.maxMinutes,
     budgetFocus: isNumberInRange(saved.budgetFocus, 0, 1) ? saved.budgetFocus as number : initialPreferences.budgetFocus,
     variety: isNumberInRange(saved.variety, 0, 1) ? saved.variety as number : initialPreferences.variety,
     anchorTags: isStringArray(saved.anchorTags) ? saved.anchorTags : initialPreferences.anchorTags,
