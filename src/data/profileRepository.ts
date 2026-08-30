@@ -116,6 +116,20 @@ export function preserveConcurrentProfileEdits(
   }
 }
 
+export function resolveProfileSynchronization(
+  localAtRequest: Preferences,
+  currentLocal: Preferences,
+  result: { preferences: Preferences; needsInitialization: boolean },
+) {
+  const preferences = preserveConcurrentProfileEdits(localAtRequest, currentLocal, result.preferences)
+  return {
+    preferences,
+    // A fresh profile must receive edits made while the read was in flight,
+    // rather than the stale snapshot captured before that read started.
+    initializationPreferences: result.needsInitialization ? preferences : null,
+  }
+}
+
 export async function loadProfilePreferences(userId: string, local: Preferences) {
   if (!supabase) return { preferences: local, needsInitialization: false }
   const { data, error } = await supabase

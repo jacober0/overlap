@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { Preferences } from '../domain/types'
-import { createProfileSaveQueue, mergeProfilePreferences, preserveConcurrentProfileEdits, resolveProfileLoad, toProfileUpdate } from './profileRepository'
+import { createProfileSaveQueue, mergeProfilePreferences, preserveConcurrentProfileEdits, resolveProfileLoad, resolveProfileSynchronization, toProfileUpdate } from './profileRepository'
 
 const local: Preferences = {
   diet: 'vegetarisch', maxMinutes: 35, budgetFocus: .7, variety: .45,
@@ -98,5 +98,20 @@ describe('profile synchronization mapping', () => {
       servings: 3,
       anchorTags: ['mediterran'],
     })
+  })
+
+  it('initialisiert ein frisches Remote-Profil mit dem neuesten lokalen Stand', () => {
+    const editedDuringLoad = { ...local, servings: 4, allergens: ['gluten' as const] }
+    const synchronization = resolveProfileSynchronization(local, editedDuringLoad, {
+      preferences: local,
+      needsInitialization: true,
+    })
+
+    expect(synchronization.preferences).toEqual(editedDuringLoad)
+    expect(synchronization.initializationPreferences).toEqual(editedDuringLoad)
+    expect(resolveProfileSynchronization(local, editedDuringLoad, {
+      preferences: local,
+      needsInitialization: false,
+    }).initializationPreferences).toBeNull()
   })
 })

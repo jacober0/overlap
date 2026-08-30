@@ -9,7 +9,7 @@ import { AccountPanel } from './components/AccountPanel'
 import { useAccount } from './auth/useAccount'
 import { getAccessMode } from './auth/access'
 import { BetaAccessGate } from './components/BetaAccessGate'
-import { loadProfilePreferences, preserveConcurrentProfileEdits, saveProfilePreferences } from './data/profileRepository'
+import { loadProfilePreferences, resolveProfileSynchronization, saveProfilePreferences } from './data/profileRepository'
 
 type Stage = 'onboarding' | 'discover' | 'plan' | 'shopping' | 'cook'
 type SelectionAction = { kind: 'accepted' | 'rejected'; recipeId: string }
@@ -109,12 +109,15 @@ export default function App() {
     const localAtRequest = preferencesRef.current
     void loadProfilePreferences(userId, localAtRequest).then(result => {
       if (!active) return
-      const nextPreferences = preserveConcurrentProfileEdits(localAtRequest, preferencesRef.current, result.preferences)
+      const synchronization = resolveProfileSynchronization(localAtRequest, preferencesRef.current, result)
+      const nextPreferences = synchronization.preferences
       if (nextPreferences !== preferencesRef.current) {
         setPreferences(nextPreferences)
         localStorage.setItem('overlap-preferences', JSON.stringify(nextPreferences))
       }
-      if (result.needsInitialization) void saveRemoteProfile(userId, localAtRequest)
+      if (synchronization.initializationPreferences) {
+        void saveRemoteProfile(userId, synchronization.initializationPreferences)
+      }
     }).catch(() => { if (active) setSyncError('Dein Profil konnte gerade nicht synchronisiert werden. Die lokalen Daten bleiben verfügbar.') })
     return () => { active = false }
     // A session change is the synchronization boundary; local edits are saved by persist().
