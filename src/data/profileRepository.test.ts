@@ -121,5 +121,6 @@ describe('profile synchronization mapping', () => {
     expect(resolveLocalProfileForUser(local, null, 'user-1', defaults)).toBe(local)
     expect(resolveLocalProfileForUser(local, 'user-1', 'user-1', defaults)).toBe(local)
     expect(resolveLocalProfileForUser(local, 'user-1', 'user-2', defaults)).toBe(defaults)
+    expect(resolveLocalProfileForUser(local, '', 'user-1', defaults)).toBe(defaults)
   })
 })

@@ -138,7 +138,7 @@ export function resolveLocalProfileForUser(
 ): Preferences {
   // Legacy/unowned local data may seed the first authenticated profile. Once
   // ownership is known, never expose or copy one account's profile to another.
-  return storedOwnerId && storedOwnerId !== userId ? defaults : currentLocal
+  return storedOwnerId !== null && storedOwnerId !== userId ? defaults : currentLocal
 }
 
 export async function loadProfilePreferences(userId: string, local: Preferences) {

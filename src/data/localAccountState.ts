@@ -7,7 +7,10 @@ const accountScopedKeys = [
 ] as const
 
 export function isAccountSwitch(storedOwnerId: string | null, userId: string) {
-  return Boolean(storedOwnerId && storedOwnerId !== userId)
+  // Only the absence of an owner marks legacy data as claimable. Any persisted
+  // value (including a malformed empty string) must be treated as another owner
+  // unless it exactly matches the authenticated account.
+  return storedOwnerId !== null && storedOwnerId !== userId
 }
 
 export function resetLocalAccountData(storage: Pick<Storage, 'removeItem' | 'setItem'>, userId: string) {

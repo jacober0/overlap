@@ -7,6 +7,7 @@ describe('local account data isolation', () => {
     expect(isAccountSwitch(null, 'user-1')).toBe(false)
     expect(isAccountSwitch('user-1', 'user-1')).toBe(false)
     expect(isAccountSwitch('user-1', 'user-2')).toBe(true)
+    expect(isAccountSwitch('', 'user-1')).toBe(true)
   })
 
   it('entfernt persönliche Planungsdaten bei einem Kontowechsel', () => {
