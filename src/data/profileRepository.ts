@@ -130,6 +130,17 @@ export function resolveProfileSynchronization(
   }
 }
 
+export function resolveLocalProfileForUser(
+  currentLocal: Preferences,
+  storedOwnerId: string | null,
+  userId: string,
+  defaults: Preferences,
+): Preferences {
+  // Legacy/unowned local data may seed the first authenticated profile. Once
+  // ownership is known, never expose or copy one account's profile to another.
+  return storedOwnerId && storedOwnerId !== userId ? defaults : currentLocal
+}
+
 export async function loadProfilePreferences(userId: string, local: Preferences) {
   if (!supabase) return { preferences: local, needsInitialization: false }
   const { data, error } = await supabase

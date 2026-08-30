@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { Preferences } from '../domain/types'
-import { createProfileSaveQueue, mergeProfilePreferences, preserveConcurrentProfileEdits, resolveProfileLoad, resolveProfileSynchronization, toProfileUpdate } from './profileRepository'
+import { createProfileSaveQueue, mergeProfilePreferences, preserveConcurrentProfileEdits, resolveLocalProfileForUser, resolveProfileLoad, resolveProfileSynchronization, toProfileUpdate } from './profileRepository'
 
 const local: Preferences = {
   diet: 'vegetarisch', maxMinutes: 35, budgetFocus: .7, variety: .45,
@@ -113,5 +113,13 @@ describe('profile synchronization mapping', () => {
       preferences: local,
       needsInitialization: false,
     }).initializationPreferences).toBeNull()
+  })
+
+  it('übernimmt lokale Profildaten nur ohne bekannten fremden Besitzer', () => {
+    const defaults = { ...local, anchorTags: [], servings: 1 }
+
+    expect(resolveLocalProfileForUser(local, null, 'user-1', defaults)).toBe(local)
+    expect(resolveLocalProfileForUser(local, 'user-1', 'user-1', defaults)).toBe(local)
+    expect(resolveLocalProfileForUser(local, 'user-1', 'user-2', defaults)).toBe(defaults)
   })
 })

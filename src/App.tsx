@@ -9,7 +9,7 @@ import { AccountPanel } from './components/AccountPanel'
 import { useAccount } from './auth/useAccount'
 import { getAccessMode } from './auth/access'
 import { BetaAccessGate } from './components/BetaAccessGate'
-import { loadProfilePreferences, resolveProfileSynchronization, saveProfilePreferences } from './data/profileRepository'
+import { loadProfilePreferences, resolveLocalProfileForUser, resolveProfileSynchronization, saveProfilePreferences } from './data/profileRepository'
 
 type Stage = 'onboarding' | 'discover' | 'plan' | 'shopping' | 'cook'
 type SelectionAction = { kind: 'accepted' | 'rejected'; recipeId: string }
@@ -96,6 +96,7 @@ export default function App() {
   const [syncError, setSyncError] = useState('')
   const account = useAccount()
   const preferencesRef = useRef(preferences)
+  const profileOwnerRef = useRef<string | null>(localStorage.getItem('overlap-profile-owner'))
   preferencesRef.current = preferences
 
   const saveRemoteProfile = (userId: string, value: Preferences) => saveProfilePreferences(userId, value)
@@ -106,9 +107,16 @@ export default function App() {
     const userId = account.session?.user.id
     if (!userId) return
     let active = true
-    const localAtRequest = preferencesRef.current
+    const localAtRequest = resolveLocalProfileForUser(preferencesRef.current, profileOwnerRef.current, userId, initialPreferences)
+    if (localAtRequest !== preferencesRef.current) {
+      preferencesRef.current = localAtRequest
+      setPreferences(localAtRequest)
+      localStorage.setItem('overlap-preferences', JSON.stringify(localAtRequest))
+    }
     void loadProfilePreferences(userId, localAtRequest).then(result => {
       if (!active) return
+      profileOwnerRef.current = userId
+      localStorage.setItem('overlap-profile-owner', userId)
       const synchronization = resolveProfileSynchronization(localAtRequest, preferencesRef.current, result)
       const nextPreferences = synchronization.preferences
       if (nextPreferences !== preferencesRef.current) {
