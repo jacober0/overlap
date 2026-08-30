@@ -86,6 +86,14 @@ export function resolveProfileLoad(local: Preferences, row: ProfileRow) {
   }
 }
 
+export function preserveConcurrentProfileEdits(
+  localAtRequest: Preferences,
+  currentLocal: Preferences,
+  loaded: Preferences,
+): Preferences {
+  return currentLocal === localAtRequest ? loaded : currentLocal
+}
+
 export async function loadProfilePreferences(userId: string, local: Preferences) {
   if (!supabase) return { preferences: local, needsInitialization: false }
   const { data, error } = await supabase

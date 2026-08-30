@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { Preferences } from '../domain/types'
-import { createProfileSaveQueue, mergeProfilePreferences, resolveProfileLoad, toProfileUpdate } from './profileRepository'
+import { createProfileSaveQueue, mergeProfilePreferences, preserveConcurrentProfileEdits, resolveProfileLoad, toProfileUpdate } from './profileRepository'
 
 const local: Preferences = {
   diet: 'vegetarisch', maxMinutes: 35, budgetFocus: .7, variety: .45,
@@ -86,5 +86,13 @@ describe('profile synchronization mapping', () => {
     await expect(first).rejects.toThrow('offline')
     await expect(second).resolves.toBeUndefined()
     expect(writes).toEqual([2, 4])
+  })
+
+  it('überschreibt keine lokalen Änderungen, die während des Remote-Ladens entstanden sind', () => {
+    const remote = { ...local, servings: 4 }
+    const locallyEdited = { ...local, servings: 3 }
+
+    expect(preserveConcurrentProfileEdits(local, local, remote)).toBe(remote)
+    expect(preserveConcurrentProfileEdits(local, locallyEdited, remote)).toBe(locallyEdited)
   })
 })

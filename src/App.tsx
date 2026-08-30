@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import './App.css'
 import { createPlanExport } from './domain/export'
 import { filterRecipesBySearch, rankRecipes } from './domain/engine'
@@ -9,7 +9,7 @@ import { AccountPanel } from './components/AccountPanel'
 import { useAccount } from './auth/useAccount'
 import { getAccessMode } from './auth/access'
 import { BetaAccessGate } from './components/BetaAccessGate'
-import { loadProfilePreferences, saveProfilePreferences } from './data/profileRepository'
+import { loadProfilePreferences, preserveConcurrentProfileEdits, saveProfilePreferences } from './data/profileRepository'
 
 type Stage = 'onboarding' | 'discover' | 'plan' | 'shopping' | 'cook'
 type SelectionAction = { kind: 'accepted' | 'rejected'; recipeId: string }
@@ -95,6 +95,8 @@ export default function App() {
   const [searchQuery, setSearchQuery] = useState('')
   const [syncError, setSyncError] = useState('')
   const account = useAccount()
+  const preferencesRef = useRef(preferences)
+  preferencesRef.current = preferences
 
   const saveRemoteProfile = (userId: string, value: Preferences) => saveProfilePreferences(userId, value)
     .then(() => setSyncError(''))
@@ -104,11 +106,15 @@ export default function App() {
     const userId = account.session?.user.id
     if (!userId) return
     let active = true
-    void loadProfilePreferences(userId, preferences).then(result => {
+    const localAtRequest = preferencesRef.current
+    void loadProfilePreferences(userId, localAtRequest).then(result => {
       if (!active) return
-      setPreferences(result.preferences)
-      localStorage.setItem('overlap-preferences', JSON.stringify(result.preferences))
-      if (result.needsInitialization) void saveRemoteProfile(userId, preferences)
+      const nextPreferences = preserveConcurrentProfileEdits(localAtRequest, preferencesRef.current, result.preferences)
+      if (nextPreferences !== preferencesRef.current) {
+        setPreferences(nextPreferences)
+        localStorage.setItem('overlap-preferences', JSON.stringify(nextPreferences))
+      }
+      if (result.needsInitialization) void saveRemoteProfile(userId, localAtRequest)
     }).catch(() => { if (active) setSyncError('Dein Profil konnte gerade nicht synchronisiert werden. Die lokalen Daten bleiben verfügbar.') })
     return () => { active = false }
     // A session change is the synchronization boundary; local edits are saved by persist().
