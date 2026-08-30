@@ -135,6 +135,31 @@ describe('Overlap app flow', () => {
 
     await userEvent.click(screen.getByRole('button', { name: 'Nächster Schritt' }))
     expect(screen.getByText(recipes[0].steps[1])).toBeInTheDocument()
+    expect(JSON.parse(localStorage.getItem('overlap-cooking') || '{}')).toEqual({ recipeId: recipes[0].id, step: 1 })
+  })
+
+  it('setzt einen laufenden Kochvorgang nach einem Neuladen fort', () => {
+    localStorage.clear()
+    localStorage.setItem('overlap-stage', 'cook')
+    localStorage.setItem('overlap-selected', JSON.stringify([recipes[0]]))
+    localStorage.setItem('overlap-cooking', JSON.stringify({ recipeId: recipes[0].id, step: 1 }))
+
+    render(<App />)
+
+    expect(screen.getByText(`Schritt 2 von ${recipes[0].steps.length}`)).toBeInTheDocument()
+    expect(screen.getByText(recipes[0].steps[1])).toBeInTheDocument()
+  })
+
+  it('fällt bei einem ungültigen gespeicherten Kochfortschritt sicher auf Schritt eins zurück', () => {
+    localStorage.clear()
+    localStorage.setItem('overlap-stage', 'cook')
+    localStorage.setItem('overlap-selected', JSON.stringify([recipes[0]]))
+    localStorage.setItem('overlap-cooking', JSON.stringify({ recipeId: recipes[0].id, step: 999 }))
+
+    render(<App />)
+
+    expect(screen.getByText(`Schritt 1 von ${recipes[0].steps.length}`)).toBeInTheDocument()
+    expect(screen.getByText(recipes[0].steps[0])).toBeInTheDocument()
   })
 
   it('macht immer exakt die letzte Auswahlaktion rückgängig', async () => {

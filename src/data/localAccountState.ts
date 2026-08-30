@@ -4,6 +4,7 @@ const accountScopedKeys = [
   'overlap-selected',
   'overlap-checked',
   'overlap-custom-items',
+  'overlap-cooking',
 ] as const
 
 export function isAccountSwitch(storedOwnerId: string | null, userId: string) {

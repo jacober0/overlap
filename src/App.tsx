@@ -78,6 +78,19 @@ function readStage(): Stage {
   return saved
 }
 
+function readCookingProgress(selectedRecipes: Recipe[]) {
+  const saved = readJson<Record<string, unknown>>('overlap-cooking', {}, isRecord)
+  const recipeIndex = typeof saved.recipeId === 'string'
+    ? selectedRecipes.findIndex(recipe => recipe.id === saved.recipeId)
+    : -1
+  const recipe = selectedRecipes[recipeIndex]
+  const step = saved.step
+  if (!recipe || typeof step !== 'number' || !Number.isInteger(step) || step < 0 || step >= recipe.steps.length) {
+    return { recipeIndex: 0, step: 0 }
+  }
+  return { recipeIndex, step }
+}
+
 function Logo() { return <div className="logo" aria-label="Overlap Startseite"><span>Over</span><span>lap</span></div> }
 
 export default function App() {
@@ -90,8 +103,9 @@ export default function App() {
   const [checked, setChecked] = useState<string[]>(() => readJson('overlap-checked', [], value => Array.isArray(value) && value.every(item => typeof item === 'string')))
   const [customItems, setCustomItems] = useState<string[]>(() => readJson('overlap-custom-items', [], value => Array.isArray(value) && value.every(item => typeof item === 'string')))
   const [customDraft, setCustomDraft] = useState('')
-  const [cookingIndex, setCookingIndex] = useState(0)
-  const [cookingStep, setCookingStep] = useState(0)
+  const [initialCookingProgress] = useState(() => readCookingProgress(selected))
+  const [cookingIndex, setCookingIndex] = useState(initialCookingProgress.recipeIndex)
+  const [cookingStep, setCookingStep] = useState(initialCookingProgress.step)
   const [accountOpen, setAccountOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
   const [syncError, setSyncError] = useState('')
@@ -169,7 +183,13 @@ export default function App() {
   const total = shopping.reduce((sum, item) => sum + item.estimatedCost, 0)
   const cookingRecipe = selected[cookingIndex]
 
-  const startCooking = (index: number) => { setCookingIndex(index); setCookingStep(0); persist('cook') }
+  const saveCookingProgress = (index: number, step: number) => {
+    const recipe = selected[index]
+    if (recipe) localStorage.setItem('overlap-cooking', JSON.stringify({ recipeId: recipe.id, step }))
+  }
+  const startCooking = (index: number) => { setCookingIndex(index); setCookingStep(0); saveCookingProgress(index, 0); persist('cook') }
+  const moveCookingStep = (step: number) => { setCookingStep(step); saveCookingProgress(cookingIndex, step) }
+  const completeCooking = () => { localStorage.removeItem('overlap-cooking'); persist('plan') }
   const choose = () => { if (!current || selected.length >= Math.min(preferences.targetMeals, 7)) return; const next = [...selected, current.recipe]; setSelected(next); setSelectionHistory([...selectionHistory, { kind: 'accepted', recipeId: current.recipe.id }]); localStorage.setItem('overlap-selected', JSON.stringify(next)); setDetail(false) }
   const skip = () => { if (!current) return; setRejected([...rejected, current.recipe.id]); setSelectionHistory([...selectionHistory, { kind: 'rejected', recipeId: current.recipe.id }]); setDetail(false) }
   const undo = () => {
@@ -264,7 +284,7 @@ export default function App() {
 
     {stage === 'plan' && <main className="page"><div className="page-title"><div><span className="eyebrow">Deine Planung</span><h1>Eine Woche, die zusammenpasst.</h1></div><button className="primary" onClick={()=>persist('discover')}>+ Gericht ergänzen</button></div><div className="week-grid">{days.map((day,index)=>{const recipe=selected[index];return <article className={recipe?'day filled':'day'} key={day}><span>{day}</span>{recipe?<><img src={recipe.image} alt=""/><h3>{recipe.title}</h3><p>{recipe.minutes} Min. · {money(recipe.pricePerServing)}</p><div className="day-actions"><button className="day-cook" aria-label={`${recipe.title} kochen`} onClick={()=>startCooking(index)}>Kochen</button><button className="day-repeat" aria-label={`${recipe.title} als Meal Prep wiederholen`} onClick={()=>duplicateSelected(index)} disabled={selected.length>=Math.min(preferences.targetMeals,7)}>+ Prep</button><button className="day-remove" aria-label={`${recipe.title} entfernen`} onClick={()=>removeSelected(index)}>Entfernen</button></div></>:<><div className="plus">+</div><p>Noch frei</p></>}</article>})}</div><section className="plan-summary"><div><span>Geschätzter Einkauf</span><strong>{money(total)}</strong><small>auf Basis der Seed-Preise</small></div><div><span>Gemeinsame Zutaten</span><strong>{shopping.filter(item=>item.recipes.length>1).length}</strong><small>in mehreren Gerichten</small></div><button className="primary" disabled={!selected.length} onClick={()=>persist('shopping')}>Einkaufsliste erstellen →</button></section></main>}
 
-    {stage === 'cook' && <main className="cook-page">{cookingRecipe ? <><section className="cook-hero"><button className="cook-back" onClick={()=>persist('plan')}>← Wochenplan</button><span className="eyebrow">Kochmodus · {preferences.servings} Portionen</span><h1>{cookingRecipe.title}</h1><p>{cookingRecipe.description}</p><img src={cookingRecipe.image} alt={cookingRecipe.title}/></section><section className="cook-workspace"><aside className="cook-ingredients"><h2>Zutaten</h2>{cookingRecipe.ingredients.map(ingredient=>{const amount=Math.round(ingredient.amount*(preferences.servings/cookingRecipe.servings)*100)/100;return <div key={`${ingredient.id}:${ingredient.unit}`}><span>{ingredient.name}</span><b>{amount} {ingredient.unit}</b></div>})}</aside><article className="cook-step"><span className="eyebrow">Schritt {cookingStep+1} von {cookingRecipe.steps.length}</span><progress max={cookingRecipe.steps.length} value={cookingStep+1}/><p>{cookingRecipe.steps[cookingStep]}</p><div><button disabled={cookingStep===0} onClick={()=>setCookingStep(Math.max(0,cookingStep-1))}>Zurück</button><button className="primary" aria-label={cookingStep===cookingRecipe.steps.length-1?'Kochen abschließen':'Nächster Schritt'} onClick={()=>cookingStep===cookingRecipe.steps.length-1?persist('plan'):setCookingStep(cookingStep+1)}>{cookingStep===cookingRecipe.steps.length-1?'Fertig':'Nächster Schritt'} →</button></div></article></section></> : <div className="empty"><h2>Kein Gericht ausgewählt</h2><button onClick={()=>persist('plan')}>Zum Wochenplan</button></div>}</main>}
+    {stage === 'cook' && <main className="cook-page">{cookingRecipe ? <><section className="cook-hero"><button className="cook-back" onClick={()=>persist('plan')}>← Wochenplan</button><span className="eyebrow">Kochmodus · {preferences.servings} Portionen</span><h1>{cookingRecipe.title}</h1><p>{cookingRecipe.description}</p><img src={cookingRecipe.image} alt={cookingRecipe.title}/></section><section className="cook-workspace"><aside className="cook-ingredients"><h2>Zutaten</h2>{cookingRecipe.ingredients.map(ingredient=>{const amount=Math.round(ingredient.amount*(preferences.servings/cookingRecipe.servings)*100)/100;return <div key={`${ingredient.id}:${ingredient.unit}`}><span>{ingredient.name}</span><b>{amount} {ingredient.unit}</b></div>})}</aside><article className="cook-step"><span className="eyebrow">Schritt {cookingStep+1} von {cookingRecipe.steps.length}</span><progress max={cookingRecipe.steps.length} value={cookingStep+1}/><p>{cookingRecipe.steps[cookingStep]}</p><div><button disabled={cookingStep===0} onClick={()=>moveCookingStep(Math.max(0,cookingStep-1))}>Zurück</button><button className="primary" aria-label={cookingStep===cookingRecipe.steps.length-1?'Kochen abschließen':'Nächster Schritt'} onClick={()=>cookingStep===cookingRecipe.steps.length-1?completeCooking():moveCookingStep(cookingStep+1)}>{cookingStep===cookingRecipe.steps.length-1?'Fertig':'Nächster Schritt'} →</button></div></article></section></> : <div className="empty"><h2>Kein Gericht ausgewählt</h2><button onClick={()=>persist('plan')}>Zum Wochenplan</button></div>}</main>}
 
     {stage === 'shopping' && <main className="page shopping"><div className="page-title"><div><span className="eyebrow">Automatisch gebündelt</span><h1>Ein Einkauf. Alles für die Woche.</h1></div><div className="shopping-head-actions"><button className="export-button" onClick={downloadPlan}>↓ Als Text exportieren</button><div className="total"><span>Geschätzt</span><strong>{money(total)}</strong></div></div></div>{[...new Set(shopping.map(i=>i.category))].map(category=><section className="shopping-group" key={category}><h2>{category}</h2>{shopping.filter(i=>i.category===category).map(item=>{const itemKey=`${item.id}:${item.unit}`;return <label className={checked.includes(itemKey)?'checked':''} key={itemKey}><input type="checkbox" data-item-id={itemKey} checked={checked.includes(itemKey)} onChange={()=>toggleChecked(itemKey)}/><span className="checkmark">✓</span><span className="item-name"><b>{item.name}</b><small>für {item.recipes.join(', ')}</small></span><span>{item.amount} {item.unit}</span><strong>{money(item.estimatedCost)}</strong></label>})}</section>)}<section className="shopping-group custom-shopping"><h2>Eigene Ergänzungen</h2><div className="custom-add"><input aria-label="Eigene Einkaufsposition" value={customDraft} onChange={event=>setCustomDraft(event.target.value)} onKeyDown={event=>{if(event.key==='Enter'){event.preventDefault();addCustomItem()}}} placeholder="z. B. Hafermilch"/><button type="button" className="primary" onClick={addCustomItem}>Hinzufügen</button></div>{customItems.map(item=>{const itemKey=`custom:${item.toLocaleLowerCase('de-DE')}`;return <div className={`custom-item ${checked.includes(itemKey)?'checked':''}`} key={itemKey}><button type="button" className="checkmark" aria-label={`${item} abhaken`} onClick={()=>toggleChecked(itemKey)}>✓</button><b>{item}</b><button type="button" className="custom-remove" aria-label={`${item} entfernen`} onClick={()=>persistCustomItems(customItems.filter(value=>value!==item))}>Entfernen</button></div>})}</section>{!shopping.length&&!customItems.length&&<div className="empty"><h2>Noch keine Zutaten</h2><button onClick={()=>persist('discover')}>Gerichte auswählen</button></div>}</main>}
 

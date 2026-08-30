@@ -33,6 +33,8 @@ test('vollständiger lokaler MVP-Flow funktioniert', async ({ page }, testInfo) 
   await expect(page.getByText('Schritt 1 von 3')).toBeVisible()
   await page.getByRole('button', { name: 'Nächster Schritt' }).click()
   await expect(page.getByText('Schritt 2 von 3')).toBeVisible()
+  await page.reload()
+  await expect(page.getByText('Schritt 2 von 3')).toBeVisible()
   await page.getByRole('button', { name: '← Wochenplan', exact: true }).click()
 
   await page.getByRole('button', { name: /Einkaufsliste erstellen/ }).click()

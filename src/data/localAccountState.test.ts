@@ -17,6 +17,7 @@ describe('local account data isolation', () => {
     localStorage.setItem('overlap-selected', '[{"id":"secret-plan"}]')
     localStorage.setItem('overlap-checked', '["tomate:g"]')
     localStorage.setItem('overlap-custom-items', '["Privater Artikel"]')
+    localStorage.setItem('overlap-cooking', '{"recipeId":"secret-plan","step":2}')
     localStorage.setItem('overlap-profile-owner', 'user-1')
     localStorage.setItem('unrelated-setting', 'keep')
 
@@ -27,6 +28,7 @@ describe('local account data isolation', () => {
     expect(localStorage.getItem('overlap-selected')).toBeNull()
     expect(localStorage.getItem('overlap-checked')).toBeNull()
     expect(localStorage.getItem('overlap-custom-items')).toBeNull()
+    expect(localStorage.getItem('overlap-cooking')).toBeNull()
     expect(localStorage.getItem('overlap-profile-owner')).toBe('user-2')
     expect(localStorage.getItem('unrelated-setting')).toBe('keep')
   })
