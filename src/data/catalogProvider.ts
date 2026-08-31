@@ -51,8 +51,10 @@ export function evaluateProviderPage(page: CatalogPage, today = new Date()) {
   for (const recipe of page.recipes) {
     const rightsErrors: string[] = []
     for (const kind of ['recipe_text', 'image', 'nutrition'] as const) {
-      const right = recipe.rights.find(item => item.assetKind === kind)
+      const matchingRights = recipe.rights.filter(item => item.assetKind === kind)
+      const right = matchingRights[0]
       if (!right) rightsErrors.push(`Rechtenachweis fehlt: ${kind}`)
+      else if (matchingRights.length > 1) rightsErrors.push(`Rechtenachweis ist nicht eindeutig: ${kind}`)
       else {
         if (!right.license.trim()) rightsErrors.push(`Lizenznachweis fehlt: ${kind}`)
         if (!right.storagePermitted) rightsErrors.push(`Lokale Speicherung unzulässig: ${kind}`)
