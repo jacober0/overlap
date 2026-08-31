@@ -94,6 +94,13 @@ describe('SQL tenant boundaries', () => {
     expect(migrations).toMatch(/isfinite\s*\(\s*week_start\s*\)/i)
   })
 
+  it('rejects NaN pantry amounts from authenticated browser writes', () => {
+    // PostgreSQL numeric considers NaN greater than ordinary numbers, so the
+    // original `amount >= 0` check does not reject this non-quantity value.
+    expect(migrations).toMatch(/add\s+constraint\s+pantry_items_amount_not_nan[\s\S]*?not\s+valid/i)
+    expect(migrations).toMatch(/amount\s+is\s+null\s+or\s+amount\s*<>\s*'NaN'::numeric/i)
+  })
+
   it('keeps server-managed profile columns immutable through the browser role', () => {
     const revokeAt = migrations.search(/revoke\s+update\s+on\s+table\s+public\.profiles\s+from\s+authenticated/i)
     const columnGrant = migrations.match(/grant\s+update\s*\(([^)]+)\)\s+on\s+table\s+public\.profiles\s+to\s+authenticated/i)
