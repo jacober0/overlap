@@ -87,4 +87,13 @@ describe('catalog publishing gate', () => {
       { externalId: 'editorial-001', message: 'Titel ist nicht eindeutig' },
     ]))
   })
+
+  it('erkennt Katalog-IDs auch mit abweichender Großschreibung und Leerraum als Duplikat', () => {
+    const duplicate = { ...valid, externalId: ' EDITORIAL-001 ', title: 'Eigenständiger zweiter Titel' }
+
+    expect(validateCatalog([valid, duplicate], new Date('2026-08-29T00:00:00Z'))).toContainEqual({
+      externalId: ' EDITORIAL-001 ',
+      message: 'externalId ist nicht eindeutig',
+    })
+  })
 })

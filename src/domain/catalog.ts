@@ -73,10 +73,11 @@ export function validateCatalog(recipes: CatalogRecipeCandidate[], today = new D
   const titles = new Set<string>()
   return recipes.flatMap(recipe => {
     const errors = validateCatalogRecipe(recipe, today)
+    const normalizedExternalId = recipe.externalId.trim().toLocaleLowerCase('de-DE')
     const normalizedTitle = recipe.title.trim().toLocaleLowerCase('de-DE')
-    if (ids.has(recipe.externalId)) errors.push('externalId ist nicht eindeutig')
+    if (ids.has(normalizedExternalId)) errors.push('externalId ist nicht eindeutig')
     if (titles.has(normalizedTitle)) errors.push('Titel ist nicht eindeutig')
-    ids.add(recipe.externalId)
+    ids.add(normalizedExternalId)
     titles.add(normalizedTitle)
     return errors.map(message => ({ externalId: recipe.externalId, message }))
   })
