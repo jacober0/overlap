@@ -67,6 +67,9 @@ export const recipeImageManifest = [
   { id: 'kartoffel-lauch-linsen-pastete', dish: 'A dark oval baking dish of vegan shepherd-style pie with a deeply golden ridged mashed-potato crust, one generous spoonful removed to reveal distinct brown lentils, pale-green leek rings and orange carrot cubes; no meat and no cheese.' },
   { id: 'kabeljau-kichererbsen-tagine', dish: 'A broad dark tagine-style serving bowl of rich red tomato stew with abundant whole chickpeas, red pepper strips and zucchini half-moons, topped by four generous flaky white cod pieces, lemon wedges and parsley; no couscous and no bread.' },
   { id: 'brokkoli-kaese-hirse-taler', dish: 'A charcoal dinner plate with four round golden pan-fried millet patties showing vivid green broccoli pieces and melted cheese flecks, beside a juicy salad of halved red cherry tomatoes, red onion and parsley; vegetarian, no meat and no bread.' },
+  { id: 'kohlrabi-dinkel-erbsen-ragout', dish: 'A deep charcoal bowl of pale creamy kohlrabi ragout with abundant distinct ivory kohlrabi cubes, glossy whole spelt grains and bright green peas, finished with fresh parsley; entirely plant-based, no meat, no rice and no pasta.' },
+  { id: 'haehnchen-pflaumen-couscous', dish: 'A broad charcoal plate of fluffy golden couscous topped with abundant browned chicken breast strips, glossy purple plum quarters, whole chickpeas and orange carrot sticks, finished with fresh parsley; chicken fully cooked, no rice and no sauce pool.' },
+  { id: 'auberginen-quinoa-boote', dish: 'A dark oval baking dish with two roasted aubergine halves used as boats, generously filled with distinct ivory quinoa grains, green lentils and red cherry tomato pieces over tomato sauce, drizzled with pale lemon tahini; entirely plant-based, no meat and no cheese.' },
 ]
 
 const projectRoot = dirname(dirname(fileURLToPath(import.meta.url)))
