@@ -134,6 +134,15 @@ describe('SQL tenant boundaries', () => {
     }
   })
 
+  it('rejects visually empty profile preference values', () => {
+    // Empty and whitespace-only values are not meaningful allergens, exclusions,
+    // or cuisines and otherwise surface as blank filter chips in browser clients.
+    for (const column of ['allergens', 'excluded_ingredients', 'favorite_cuisines']) {
+      expect(migrations).toMatch(new RegExp(`add\\s+constraint\\s+profiles_${column}_nonblank[\\s\\S]*?not\\s+valid`, 'i'))
+      expect(migrations).toMatch(new RegExp(`${column}::text\\s+!~\\s+E?'[^']*\\[\\[:space:\\]\\]\\*[^']*'`, 'i'))
+    }
+  })
+
   it('keeps server-managed profile columns immutable through the browser role', () => {
     const revokeAt = migrations.search(/revoke\s+update\s+on\s+table\s+public\.profiles\s+from\s+authenticated/i)
     const columnGrant = migrations.match(/grant\s+update\s*\(([^)]+)\)\s+on\s+table\s+public\.profiles\s+to\s+authenticated/i)
