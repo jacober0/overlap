@@ -48,7 +48,7 @@ export function validateCatalogRecipe(recipe: CatalogRecipeCandidate, today = ne
   if (!integerInRange(recipe.activeMinutes, 1, 1440) || !integerInRange(recipe.totalMinutes, 1, 1440) || recipe.totalMinutes < recipe.activeMinutes) errors.push('Zeitangaben sind inkonsistent')
   if (recipe.ingredients.length < 4) errors.push('Mindestens vier Zutaten erforderlich')
   if (new Set(recipe.ingredients.map(item => item.canonicalId)).size !== recipe.ingredients.length) errors.push('Doppelte kanonische Zutaten-ID')
-  if (recipe.ingredients.some(item => !item.canonicalId || !item.name || !Number.isFinite(item.amount) || item.amount <= 0 || !item.unit)) errors.push('Zutat ist unvollständig')
+  if (recipe.ingredients.some(item => !item.canonicalId.trim() || !item.name.trim() || !Number.isFinite(item.amount) || item.amount <= 0 || !item.unit.trim())) errors.push('Zutat ist unvollständig')
   if (recipe.steps.length < 3 || recipe.steps.some(step => step.trim().length < 12)) errors.push('Kochschritte sind unvollständig')
   if (Object.values(recipe.nutrition).some(value => !Number.isFinite(value) || value < 0)) errors.push('Nährwerte sind unvollständig')
   if (!Number.isInteger(recipe.estimatedPriceCents) || recipe.estimatedPriceCents <= 0) errors.push('Preisschätzung fehlt')
