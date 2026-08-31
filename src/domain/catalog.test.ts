@@ -71,6 +71,16 @@ describe('catalog publishing gate', () => {
     expect(validateCatalogRecipe(broken, new Date('2026-08-29T00:00:00Z'))).toContain('Zutat ist unvollständig')
   })
 
+  it('blockiert kanonische Zutaten-IDs auch bei abweichender Großschreibung und Leerraum', () => {
+    const broken = {
+      ...valid,
+      ingredients: valid.ingredients.map((item, index) => index === 1
+        ? { ...item, canonicalId: ' POTATO ' }
+        : item),
+    }
+    expect(validateCatalogRecipe(broken, new Date('2026-08-29T00:00:00Z'))).toContain('Doppelte kanonische Zutaten-ID')
+  })
+
   it('blockiert doppelte Katalog-IDs und Titel', () => {
     expect(validateCatalog([valid, { ...valid }], new Date('2026-08-29T00:00:00Z'))).toEqual(expect.arrayContaining([
       { externalId: 'editorial-001', message: 'externalId ist nicht eindeutig' },
