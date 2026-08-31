@@ -31,6 +31,18 @@ describe('catalog publishing gate', () => {
     ]))
   })
 
+  it('blockiert syntaktische ISO-Daten, die keine echten Kalendertage sind', () => {
+    const broken = { ...valid, priceCheckedAt: '2026-02-30', reviewedAt: '2026-02-29' }
+    expect(validateCatalogRecipe(broken, new Date('2026-03-01T00:00:00Z'))).toEqual(expect.arrayContaining([
+      'Preisdatum ist ungültig', 'Menschliche Freigabe fehlt',
+    ]))
+  })
+
+  it('akzeptiert einen echten Schalttag', () => {
+    const leapDay = { ...valid, priceCheckedAt: '2024-02-29', reviewedAt: '2024-02-29' }
+    expect(validateCatalogRecipe(leapDay, new Date('2024-03-01T00:00:00Z'))).toEqual([])
+  })
+
   it('blockiert doppelte Katalog-IDs und Titel', () => {
     expect(validateCatalog([valid, { ...valid }], new Date('2026-08-29T00:00:00Z'))).toEqual(expect.arrayContaining([
       { externalId: 'editorial-001', message: 'externalId ist nicht eindeutig' },
