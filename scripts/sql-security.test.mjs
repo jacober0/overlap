@@ -17,6 +17,16 @@ function latestPolicyDefinition(policyName) {
   return definitions.at(-1)?.[0] ?? ''
 }
 
+function expectPublishedRecipeBoundary(policyName) {
+  const policy = latestPolicyDefinition(policyName)
+
+  // USING must hide legacy references after a recipe is unpublished; WITH CHECK
+  // must reject new references to draft/review/rejected catalog records.
+  expect(policy.match(/from\s+public\.recipes/gi)).toHaveLength(2)
+  expect(policy.match(/r\.id\s*=\s*recipe_id/gi)).toHaveLength(2)
+  expect(policy.match(/r\.quality_status\s*=\s*'published'/gi)).toHaveLength(2)
+}
+
 describe('SQL tenant boundaries', () => {
   it('bindet eigene Einkaufszusätze auch an einen eigenen Wochenplan', () => {
     const policy = latestPolicyDefinition('shopping_extras_own_all')
@@ -29,5 +39,13 @@ describe('SQL tenant boundaries', () => {
     expect(policy.match(/from\s+public\.meal_plans/gi)).toHaveLength(2)
     expect(policy.match(/p\.id\s*=\s*meal_plan_id/gi)).toHaveLength(2)
     expect(policy.match(/p\.user_id\s*=\s*\(select\s+auth\.uid\(\)\)/gi)).toHaveLength(2)
+  })
+
+  it('exposes favorites only for published catalog recipes', () => {
+    expectPublishedRecipeBoundary('favorites_own_all')
+  })
+
+  it('exposes meal-plan entries only for published catalog recipes', () => {
+    expectPublishedRecipeBoundary('meal_plan_entries_own_all')
   })
 })
