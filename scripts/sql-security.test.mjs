@@ -23,8 +23,11 @@ describe('SQL tenant boundaries', () => {
 
     expect(policy).toMatch(/auth\.uid\(\)\)\s*=\s*user_id/i)
     expect(policy).toMatch(/meal_plan_id\s+is\s+null/i)
-    expect(policy).toMatch(/from\s+public\.meal_plans/i)
-    expect(policy).toMatch(/p\.id\s*=\s*meal_plan_id/i)
-    expect(policy).toMatch(/p\.user_id\s*=\s*\(select\s+auth\.uid\(\)\)/i)
+    // Both USING (existing-row visibility/mutation) and WITH CHECK (new row
+    // values) must verify plan ownership. Checking only WITH CHECK leaves any
+    // pre-existing inconsistent row visible to its user_id owner.
+    expect(policy.match(/from\s+public\.meal_plans/gi)).toHaveLength(2)
+    expect(policy.match(/p\.id\s*=\s*meal_plan_id/gi)).toHaveLength(2)
+    expect(policy.match(/p\.user_id\s*=\s*\(select\s+auth\.uid\(\)\)/gi)).toHaveLength(2)
   })
 })
