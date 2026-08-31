@@ -54,6 +54,7 @@ export function evaluateProviderPage(page: CatalogPage, today = new Date()) {
       const right = recipe.rights.find(item => item.assetKind === kind)
       if (!right) rightsErrors.push(`Rechtenachweis fehlt: ${kind}`)
       else {
+        if (!right.license.trim()) rightsErrors.push(`Lizenznachweis fehlt: ${kind}`)
         if (!right.storagePermitted) rightsErrors.push(`Lokale Speicherung unzulässig: ${kind}`)
         if (kind === 'recipe_text' && !right.modificationPermitted) rightsErrors.push(`Bearbeitung unzulässig: ${kind}`)
         if (right.validUntil && !isoDate(right.validUntil)) {

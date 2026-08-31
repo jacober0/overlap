@@ -32,6 +32,14 @@ describe('catalog provider boundary', () => {
     expect(result.rejected[0].errors).toContain('Lokale Speicherung unzulässig: recipe_text')
   })
 
+  it('blockiert leere Lizenznachweise für einzelne Assets', () => {
+    const recipe = { ...base, rights: rights.map(right => right.assetKind === 'nutrition' ? { ...right, license: '  ' } : right) }
+    const result = evaluateProviderPage({ recipes: [recipe], nextCursor: null }, new Date('2026-08-29'))
+
+    expect(result.accepted).toEqual([])
+    expect(result.rejected[0].errors).toContain('Lizenznachweis fehlt: nutrition')
+  })
+
   it('blockiert abgelaufene oder nicht bearbeitbare Rezepttexte', () => {
     const recipe = { ...base, rights: rights.map(right => right.assetKind === 'recipe_text' ? { ...right, modificationPermitted: false, validUntil: '2026-08-01' } : right) }
     const result = evaluateProviderPage({ recipes: [recipe], nextCursor: null }, new Date('2026-08-29T00:00:00Z'))
