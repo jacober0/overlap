@@ -43,6 +43,11 @@ describe('catalog publishing gate', () => {
     expect(validateCatalogRecipe(leapDay, new Date('2024-03-01T00:00:00Z'))).toEqual([])
   })
 
+  it('blockiert eine Freigabe, die in der Zukunft liegt', () => {
+    const futureReview = { ...valid, reviewedAt: '2026-08-30' }
+    expect(validateCatalogRecipe(futureReview, new Date('2026-08-29T12:00:00Z'))).toContain('Menschliche Freigabe liegt in der Zukunft')
+  })
+
   it('blockiert nicht-endliche und gebrochene Mengenangaben', () => {
     const broken = {
       ...valid,

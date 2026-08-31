@@ -63,6 +63,7 @@ export function validateCatalogRecipe(recipe: CatalogRecipeCandidate, today = ne
   if (!secureUrl(recipe.imageUrl) || !recipe.imageLicense.trim()) errors.push('Bildquelle oder Bildlizenz fehlt')
   if (!recipe.attributionText.trim()) errors.push('Attribution fehlt')
   if (!recipe.reviewedBy.trim() || !isoDate(recipe.reviewedAt)) errors.push('Menschliche Freigabe fehlt')
+  else if (new Date(`${recipe.reviewedAt}T00:00:00Z`).getTime() > today.getTime()) errors.push('Menschliche Freigabe liegt in der Zukunft')
   return errors
 }
 
