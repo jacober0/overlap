@@ -3,7 +3,7 @@ import { validateCatalog } from '../domain/catalog'
 import { editorialRecipes, publishableEditorialRecipes } from './editorialRecipes'
 
 describe('originaler redaktioneller Rezeptkatalog', () => {
-  it('liefert neununddreißig veröffentlichungsfähige Originalrezepte in zehn eigenständigen Batches', () => {
+  it('liefert zweiundvierzig veröffentlichungsfähige Originalrezepte in elf eigenständigen Batches', () => {
     expect(editorialRecipes.map(recipe => recipe.externalId)).toEqual([
       'overlap-013-rote-linsen-kokos-suppe',
       'overlap-014-pilz-graupen-risotto',
@@ -44,9 +44,12 @@ describe('originaler redaktioneller Rezeptkatalog', () => {
       'overlap-049-miso-kuerbis-udon-pak-choi',
       'overlap-050-lauch-birnen-quiche',
       'overlap-051-rind-rote-bete-borschtsch',
+      'overlap-052-sellerie-schnitzel-kartoffel-gurken-salat',
+      'overlap-053-haehnchen-apfel-curry-naturreis',
+      'overlap-054-bohnen-mais-enchiladas',
     ])
     expect(validateCatalog(editorialRecipes, new Date('2026-08-31T12:00:00Z'))).toEqual([])
-    expect(publishableEditorialRecipes).toHaveLength(39)
+    expect(publishableEditorialRecipes).toHaveLength(42)
   })
 
   it('enthält Kochanleitung, Preisgrundlage, Allergene, Provenienz und Bildprompt vollständig', () => {
