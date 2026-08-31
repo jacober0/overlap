@@ -3,12 +3,12 @@ import { recipes } from './recipes'
 
 describe('local recipe image manifest', () => {
   it('serves every publishable recipe from its deterministic local JPEG asset', () => {
-    expect(recipes).toHaveLength(24)
+    expect(recipes).toHaveLength(28)
     expect(recipes.slice(-4).map(recipe => recipe.id)).toEqual([
-      'buchweizen-rote-bete-salat',
-      'wirsing-kartoffel-bohnen-pfanne',
-      'kabeljau-tomaten-orzo',
-      'puten-hirse-baellchen',
+      'kuerbis-dinkel-pfanne',
+      'lachs-bohnen-kartoffel-salat',
+      'blumenkohl-erbsen-dal',
+      'rind-paprika-polenta',
     ])
     for (const recipe of recipes) {
       expect(recipe.image).toBe(`/recipes/${recipe.id}.jpg`)
