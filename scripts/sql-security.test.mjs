@@ -110,6 +110,16 @@ describe('SQL tenant boundaries', () => {
     expect(migrations).toMatch(/char_length\s*\(\s*btrim\s*\(\s*label\s*\)\s*\)\s+between\s+1\s+and\s+160/i)
   })
 
+  it('keeps browser-managed profile arrays flat and free of null elements', () => {
+    // PostgreSQL text[] accepts multidimensional arrays and null members even
+    // though the TypeScript contract models these preferences as string[].
+    for (const column of ['allergens', 'excluded_ingredients', 'favorite_cuisines']) {
+      expect(migrations).toMatch(new RegExp(`add\\s+constraint\\s+profiles_${column}_shape[\\s\\S]*?not\\s+valid`, 'i'))
+      expect(migrations).toMatch(new RegExp(`coalesce\\s*\\(\\s*array_ndims\\s*\\(\\s*${column}\\s*\\)\\s*,\\s*1\\s*\\)\\s*=\\s*1`, 'i'))
+      expect(migrations).toMatch(new RegExp(`array_position\\s*\\(\\s*${column}\\s*,\\s*null\\s*\\)\\s+is\\s+null`, 'i'))
+    }
+  })
+
   it('keeps server-managed profile columns immutable through the browser role', () => {
     const revokeAt = migrations.search(/revoke\s+update\s+on\s+table\s+public\.profiles\s+from\s+authenticated/i)
     const columnGrant = migrations.match(/grant\s+update\s*\(([^)]+)\)\s+on\s+table\s+public\.profiles\s+to\s+authenticated/i)
