@@ -64,6 +64,9 @@ export const recipeImageManifest = [
   { id: 'sellerie-schnitzel-kartoffel-gurken-salat', dish: 'A charcoal dinner plate with two broad golden-crisp breaded celeriac schnitzels showing a pale tender vegetable interior, beside a distinct German potato and cucumber salad with thin slices, yogurt-dill dressing and fresh dill; vegetarian, no meat and no fries.' },
   { id: 'haehnchen-apfel-curry-naturreis', dish: 'A deep charcoal bowl of mild golden chicken and apple curry with abundant fully cooked browned chicken breast strips, thin red-skinned apple wedges and dark-green spinach in a creamy sauce, beside a restrained mound of distinct brown rice; no bread and no noodles.' },
   { id: 'bohnen-mais-enchiladas', dish: 'A dark rectangular baking dish holding four distinct rolled corn tortillas filled with red and black beans, yellow corn and red pepper, covered in bright tomato sauce and a lightly browned plant-based cheese topping, with one enchilada cut open; entirely plant-based, no meat and no rice.' },
+  { id: 'kartoffel-lauch-linsen-pastete', dish: 'A dark oval baking dish of vegan shepherd-style pie with a deeply golden ridged mashed-potato crust, one generous spoonful removed to reveal distinct brown lentils, pale-green leek rings and orange carrot cubes; no meat and no cheese.' },
+  { id: 'kabeljau-kichererbsen-tagine', dish: 'A broad dark tagine-style serving bowl of rich red tomato stew with abundant whole chickpeas, red pepper strips and zucchini half-moons, topped by four generous flaky white cod pieces, lemon wedges and parsley; no couscous and no bread.' },
+  { id: 'brokkoli-kaese-hirse-taler', dish: 'A charcoal dinner plate with four round golden pan-fried millet patties showing vivid green broccoli pieces and melted cheese flecks, beside a juicy salad of halved red cherry tomatoes, red onion and parsley; vegetarian, no meat and no bread.' },
 ]
 
 const projectRoot = dirname(dirname(fileURLToPath(import.meta.url)))
