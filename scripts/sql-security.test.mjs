@@ -105,6 +105,15 @@ describe('SQL tenant boundaries', () => {
     expect(migrations).toMatch(/extract\s*\(\s*isodow\s+from\s+week_start\s*\)\s*=\s*1/i)
   })
 
+  it('keeps browser-managed dates within the supported product calendar', () => {
+    // PostgreSQL dates extend far beyond the product calendar and JavaScript's
+    // practical UI range. Bound new writes while leaving legacy rows unscanned.
+    expect(migrations).toMatch(/add\s+constraint\s+pantry_items_best_before_range[\s\S]*?not\s+valid/i)
+    expect(migrations).toMatch(/best_before\s+is\s+null\s+or\s+best_before\s+between\s+date\s+'2000-01-01'\s+and\s+date\s+'2100-12-31'/i)
+    expect(migrations).toMatch(/add\s+constraint\s+meal_plans_week_start_range[\s\S]*?not\s+valid/i)
+    expect(migrations).toMatch(/week_start\s+between\s+date\s+'2000-01-01'\s+and\s+date\s+'2100-12-31'/i)
+  })
+
   it('rejects NaN pantry amounts from authenticated browser writes', () => {
     // PostgreSQL numeric considers NaN greater than ordinary numbers, so the
     // original `amount >= 0` check does not reject this non-quantity value.
