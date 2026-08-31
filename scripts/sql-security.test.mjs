@@ -101,6 +101,15 @@ describe('SQL tenant boundaries', () => {
     expect(migrations).toMatch(/amount\s+is\s+null\s+or\s+amount\s*<>\s*'NaN'::numeric/i)
   })
 
+  it('rejects whitespace-only user labels at the database boundary', () => {
+    // PostgreSQL char_length counts spaces, so the original constraints accept
+    // values that render as empty names or shopping-list entries.
+    expect(migrations).toMatch(/add\s+constraint\s+profiles_display_name_not_blank[\s\S]*?not\s+valid/i)
+    expect(migrations).toMatch(/char_length\s*\(\s*btrim\s*\(\s*display_name\s*\)\s*\)\s+between\s+1\s+and\s+80/i)
+    expect(migrations).toMatch(/add\s+constraint\s+shopping_extras_label_not_blank[\s\S]*?not\s+valid/i)
+    expect(migrations).toMatch(/char_length\s*\(\s*btrim\s*\(\s*label\s*\)\s*\)\s+between\s+1\s+and\s+160/i)
+  })
+
   it('keeps server-managed profile columns immutable through the browser role', () => {
     const revokeAt = migrations.search(/revoke\s+update\s+on\s+table\s+public\.profiles\s+from\s+authenticated/i)
     const columnGrant = migrations.match(/grant\s+update\s*\(([^)]+)\)\s+on\s+table\s+public\.profiles\s+to\s+authenticated/i)
