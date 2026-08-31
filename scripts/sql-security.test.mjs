@@ -101,10 +101,11 @@ describe('SQL tenant boundaries', () => {
     expect(migrations).toMatch(/amount\s+is\s+null\s+or\s+amount\s*<>\s*'NaN'::numeric/i)
   })
 
-  it('rejects whitespace-only user labels at the database boundary', () => {
-    // PostgreSQL char_length counts spaces, so the original constraints accept
-    // values that render as empty names or shopping-list entries.
+  it('rejects missing or whitespace-only user labels at the database boundary', () => {
+    // PostgreSQL CHECK treats NULL as satisfied and char_length counts spaces, so
+    // both cases need explicit rejection for the required profile display name.
     expect(migrations).toMatch(/add\s+constraint\s+profiles_display_name_not_blank[\s\S]*?not\s+valid/i)
+    expect(migrations).toMatch(/add\s+constraint\s+profiles_display_name_required[\s\S]*?display_name\s+is\s+not\s+null[\s\S]*?not\s+valid/i)
     expect(migrations).toMatch(/char_length\s*\(\s*btrim\s*\(\s*display_name\s*\)\s*\)\s+between\s+1\s+and\s+80/i)
     expect(migrations).toMatch(/add\s+constraint\s+shopping_extras_label_not_blank[\s\S]*?not\s+valid/i)
     expect(migrations).toMatch(/char_length\s*\(\s*btrim\s*\(\s*label\s*\)\s*\)\s+between\s+1\s+and\s+160/i)
