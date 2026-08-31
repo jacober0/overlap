@@ -50,6 +50,10 @@ export const recipeImageManifest = [
   { id: 'haehnchen-spitzkohl-reis-pfanne', dish: 'A broad charcoal skillet of distinct brown rice grains, abundant pale-green seared pointed cabbage ribbons and orange carrot sticks, topped with clearly cooked golden bite-sized chicken breast pieces and fresh parsley; no cream sauce and no noodles.' },
   { id: 'rote-bete-kartoffel-gratin', dish: 'A dark rectangular baking dish with neat overlapping layers of ruby beetroot and golden potato slices in pale horseradish cream, topped with a deeply browned mountain-cheese crust and scattered toasted pumpkin seeds; vegetarian, no meat and no bread.' },
   { id: 'garnelen-erbsen-dinkel-orzotto', dish: 'A wide shallow charcoal bowl of creamy glossy whole spelt grains with bright green peas and browned zucchini pieces, topped by six unmistakable curled pink cooked shrimp, fresh dill and fine lemon zest; no rice, no pasta and no cream pool.' },
+  { id: 'weisse-bohnen-polenta-auflauf', dish: 'A dark oval baking dish with a visible golden polenta base beneath a rustic tomato and white bean layer, abundant dark-green chard ribbons and crisp herb breadcrumbs; entirely plant-based, no meat and no cheese.' },
+  { id: 'puten-kuerbis-bulgur-pfanne', dish: 'A broad charcoal skillet of fluffy golden bulgur with caramelized orange Hokkaido pumpkin cubes and wilted spinach, topped by abundant fully cooked browned turkey strips, red onion slivers, fresh mint and lemon zest; no rice and no sauce pool.' },
+  { id: 'linsen-wurzelgemuese-hirse-topf', dish: 'A deep charcoal bowl of thick rustic brown lentil and golden millet stew with abundant distinct cubes of pale-yellow swede, orange carrot and ivory celeriac, finished with lemon zest and restrained herbs; entirely plant-based, no meat and no bread.' },
+  { id: 'forelle-rote-bete-graupen-salat', dish: 'A wide charcoal bowl of glossy pearl barley salad with ruby beetroot wedges, cucumber half-moons and pink radish slices, topped by generous unmistakable flakes of smoked trout and fresh dill; no leafy greens, no bread and no cheese.' },
 ]
 
 const projectRoot = dirname(dirname(fileURLToPath(import.meta.url)))
