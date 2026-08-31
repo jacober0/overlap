@@ -2,16 +2,20 @@ import { describe, expect, it } from 'vitest'
 import { validateCatalog } from '../domain/catalog'
 import { editorialRecipes, publishableEditorialRecipes } from './editorialRecipes'
 
-describe('originaler redaktioneller Pilotbatch', () => {
-  it('liefert vier neue veröffentlichungsfähige Originalrezepte', () => {
+describe('originaler redaktioneller Rezeptkatalog', () => {
+  it('liefert acht veröffentlichungsfähige Originalrezepte in zwei eigenständigen Batches', () => {
     expect(editorialRecipes.map(recipe => recipe.externalId)).toEqual([
       'overlap-013-rote-linsen-kokos-suppe',
       'overlap-014-pilz-graupen-risotto',
       'overlap-015-zucchini-kartoffel-roesti',
       'overlap-016-paprika-bohnen-reis',
+      'overlap-017-fenchel-bohnen-schmortopf',
+      'overlap-018-suesskartoffel-kichererbsen-blech',
+      'overlap-019-spinat-kartoffel-frittata',
+      'overlap-020-haehnchen-linsen-pfanne',
     ])
     expect(validateCatalog(editorialRecipes, new Date('2026-08-31T12:00:00Z'))).toEqual([])
-    expect(publishableEditorialRecipes).toHaveLength(4)
+    expect(publishableEditorialRecipes).toHaveLength(8)
   })
 
   it('enthält Kochanleitung, Preisgrundlage, Allergene, Provenienz und Bildprompt vollständig', () => {
