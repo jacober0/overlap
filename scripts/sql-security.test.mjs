@@ -59,4 +59,24 @@ describe('SQL tenant boundaries', () => {
     expect(handler).toMatch(/left\s*\([\s\S]*,\s*80\s*\)/i)
     expect(handler).toMatch(/coalesce\s*\([\s\S]*'Overlap Nutzer'[\s\S]*\)/i)
   })
+
+  it('bounds authenticated user-controlled text and array payloads', () => {
+    // These columns are directly writable through PostgREST. Database limits
+    // prevent a valid account from storing arbitrarily large payloads.
+    for (const constraint of [
+      'profiles_allergens_size',
+      'profiles_excluded_ingredients_size',
+      'profiles_favorite_cuisines_size',
+      'pantry_items_unit_size',
+      'meal_plans_title_size',
+      'meal_plan_entries_note_size',
+    ]) {
+      expect(migrations).toMatch(new RegExp(`add\\s+constraint\\s+${constraint}[\\s\\S]*?not\\s+valid`, 'i'))
+    }
+    expect(migrations).toMatch(/cardinality\s*\(\s*allergens\s*\)\s*<=\s*50/i)
+    expect(migrations).toMatch(/char_length\s*\(\s*array_to_string\s*\(\s*excluded_ingredients[\s\S]*?\)\s*<=\s*4000/i)
+    expect(migrations).toMatch(/char_length\s*\(\s*btrim\s*\(\s*unit\s*\)\s*\)\s+between\s+1\s+and\s+32/i)
+    expect(migrations).toMatch(/title\s+is\s+null\s+or\s+char_length\s*\(\s*title\s*\)\s*<=\s*160/i)
+    expect(migrations).toMatch(/note\s+is\s+null\s+or\s+char_length\s*\(\s*note\s*\)\s*<=\s*500/i)
+  })
 })
