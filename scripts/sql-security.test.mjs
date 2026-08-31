@@ -98,6 +98,13 @@ describe('SQL tenant boundaries', () => {
     expect(migrations).toMatch(/isfinite\s*\(\s*week_start\s*\)/i)
   })
 
+  it('keeps meal-plan week keys on Monday', () => {
+    // A meal plan represents a Monday-based calendar week. Accepting arbitrary
+    // weekdays defeats the one-plan-per-week key and can create overlapping plans.
+    expect(migrations).toMatch(/add\s+constraint\s+meal_plans_week_start_monday[\s\S]*?not\s+valid/i)
+    expect(migrations).toMatch(/extract\s*\(\s*isodow\s+from\s+week_start\s*\)\s*=\s*1/i)
+  })
+
   it('rejects NaN pantry amounts from authenticated browser writes', () => {
     // PostgreSQL numeric considers NaN greater than ordinary numbers, so the
     // original `amount >= 0` check does not reject this non-quantity value.
