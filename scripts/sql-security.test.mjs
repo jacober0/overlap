@@ -80,6 +80,20 @@ describe('SQL tenant boundaries', () => {
     expect(migrations).toMatch(/note\s+is\s+null\s+or\s+char_length\s*\(\s*note\s*\)\s*<=\s*500/i)
   })
 
+  it('rejects non-finite dates from authenticated browser writes', () => {
+    // PostgreSQL accepts the special date values infinity and -infinity. They are
+    // not ISO calendar dates and can break week navigation or expiry handling in
+    // browser clients, so writable date columns must reject them at the boundary.
+    for (const constraint of [
+      'pantry_items_best_before_finite',
+      'meal_plans_week_start_finite',
+    ]) {
+      expect(migrations).toMatch(new RegExp(`add\\s+constraint\\s+${constraint}[\\s\\S]*?not\\s+valid`, 'i'))
+    }
+    expect(migrations).toMatch(/best_before\s+is\s+null\s+or\s+isfinite\s*\(\s*best_before\s*\)/i)
+    expect(migrations).toMatch(/isfinite\s*\(\s*week_start\s*\)/i)
+  })
+
   it('keeps server-managed profile columns immutable through the browser role', () => {
     const revokeAt = migrations.search(/revoke\s+update\s+on\s+table\s+public\.profiles\s+from\s+authenticated/i)
     const columnGrant = migrations.match(/grant\s+update\s*\(([^)]+)\)\s+on\s+table\s+public\.profiles\s+to\s+authenticated/i)
