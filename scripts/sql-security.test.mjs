@@ -79,4 +79,31 @@ describe('SQL tenant boundaries', () => {
     expect(migrations).toMatch(/title\s+is\s+null\s+or\s+char_length\s*\(\s*title\s*\)\s*<=\s*160/i)
     expect(migrations).toMatch(/note\s+is\s+null\s+or\s+char_length\s*\(\s*note\s*\)\s*<=\s*500/i)
   })
+
+  it('keeps server-managed profile columns immutable through the browser role', () => {
+    const revokeAt = migrations.search(/revoke\s+update\s+on\s+table\s+public\.profiles\s+from\s+authenticated/i)
+    const columnGrant = migrations.match(/grant\s+update\s*\(([^)]+)\)\s+on\s+table\s+public\.profiles\s+to\s+authenticated/i)
+
+    expect(revokeAt).toBeGreaterThan(-1)
+    expect(columnGrant).not.toBeNull()
+    expect(columnGrant?.index).toBeGreaterThan(revokeAt)
+
+    const writableColumns = columnGrant?.[1].split(',').map(column => column.trim()) ?? []
+    expect(writableColumns).toEqual([
+      'display_name',
+      'household_size',
+      'servings',
+      'diet',
+      'allergens',
+      'excluded_ingredients',
+      'favorite_cuisines',
+      'max_cook_minutes',
+      'weekly_budget_cents',
+      'budget_focus',
+      'target_meals',
+      'overlap_preference',
+      'cooking_confidence',
+      'onboarding_completed',
+    ])
+  })
 })
