@@ -48,6 +48,16 @@ describe('catalog provider boundary', () => {
     expect(result.rejected[0].errors).toContain('Rechtenachweis ist nicht eindeutig: image')
   })
 
+  it('quarantänisiert alle Datensätze mit kollidierender externer ID', () => {
+    const first = { ...base, rights }
+    const collision = { ...base, externalId: ' SOURCE-1 ', title: 'Eigenständiges zweites Gericht', rights }
+    const result = evaluateProviderPage({ recipes: [first, collision], nextCursor: null }, new Date('2026-08-29'))
+
+    expect(result.accepted).toEqual([])
+    expect(result.rejected).toHaveLength(2)
+    expect(result.rejected.every(item => item.errors.includes('externalId ist nicht eindeutig'))).toBe(true)
+  })
+
   it('blockiert abgelaufene oder nicht bearbeitbare Rezepttexte', () => {
     const recipe = { ...base, rights: rights.map(right => right.assetKind === 'recipe_text' ? { ...right, modificationPermitted: false, validUntil: '2026-08-01' } : right) }
     const result = evaluateProviderPage({ recipes: [recipe], nextCursor: null }, new Date('2026-08-29T00:00:00Z'))

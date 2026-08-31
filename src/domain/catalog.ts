@@ -69,16 +69,17 @@ export function validateCatalogRecipe(recipe: CatalogRecipeCandidate, today = ne
 }
 
 export function validateCatalog(recipes: CatalogRecipeCandidate[], today = new Date()) {
-  const ids = new Set<string>()
-  const titles = new Set<string>()
-  return recipes.flatMap(recipe => {
+  const normalizedIds = recipes.map(recipe => recipe.externalId.trim().toLocaleLowerCase('de-DE'))
+  const normalizedTitles = recipes.map(recipe => recipe.title.trim().toLocaleLowerCase('de-DE'))
+  const idCounts = new Map<string, number>()
+  const titleCounts = new Map<string, number>()
+  normalizedIds.forEach(value => idCounts.set(value, (idCounts.get(value) ?? 0) + 1))
+  normalizedTitles.forEach(value => titleCounts.set(value, (titleCounts.get(value) ?? 0) + 1))
+
+  return recipes.flatMap((recipe, index) => {
     const errors = validateCatalogRecipe(recipe, today)
-    const normalizedExternalId = recipe.externalId.trim().toLocaleLowerCase('de-DE')
-    const normalizedTitle = recipe.title.trim().toLocaleLowerCase('de-DE')
-    if (ids.has(normalizedExternalId)) errors.push('externalId ist nicht eindeutig')
-    if (titles.has(normalizedTitle)) errors.push('Titel ist nicht eindeutig')
-    ids.add(normalizedExternalId)
-    titles.add(normalizedTitle)
+    if ((idCounts.get(normalizedIds[index]) ?? 0) > 1) errors.push('externalId ist nicht eindeutig')
+    if ((titleCounts.get(normalizedTitles[index]) ?? 0) > 1) errors.push('Titel ist nicht eindeutig')
     return errors.map(message => ({ externalId: recipe.externalId, message }))
   })
 }
