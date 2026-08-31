@@ -106,4 +106,41 @@ describe('SQL tenant boundaries', () => {
       'onboarding_completed',
     ])
   })
+
+  it('keeps identity and audit columns immutable on browser-managed user data', () => {
+    const expectedGrants = {
+      favorites: {
+        insert: ['user_id', 'recipe_id'],
+      },
+      pantry_items: {
+        insert: ['user_id', 'ingredient_id', 'amount', 'unit', 'best_before'],
+        update: ['ingredient_id', 'amount', 'unit', 'best_before'],
+      },
+      meal_plans: {
+        insert: ['user_id', 'week_start', 'title', 'overlap_preference'],
+        update: ['week_start', 'title', 'overlap_preference'],
+      },
+      meal_plan_entries: {
+        insert: ['meal_plan_id', 'recipe_id', 'day_of_week', 'meal_type', 'servings', 'note'],
+        update: ['meal_plan_id', 'recipe_id', 'day_of_week', 'meal_type', 'servings', 'note'],
+      },
+      shopping_extras: {
+        insert: ['user_id', 'meal_plan_id', 'label', 'checked'],
+        update: ['meal_plan_id', 'label', 'checked'],
+      },
+    }
+
+    for (const [table, operations] of Object.entries(expectedGrants)) {
+      const revoke = new RegExp(`revoke\\s+insert\\s*,\\s*update\\s+on\\s+table\\s+public\\.${table}\\s+from\\s+authenticated`, 'i')
+      const revokeAt = migrations.search(revoke)
+      expect(revokeAt, `${table} must revoke broad writes`).toBeGreaterThan(-1)
+
+      for (const [operation, columns] of Object.entries(operations)) {
+        const grant = migrations.match(new RegExp(`grant\\s+${operation}\\s*\\(([^)]+)\\)\\s+on\\s+table\\s+public\\.${table}\\s+to\\s+authenticated`, 'i'))
+        expect(grant, `${table} needs a column-level ${operation} grant`).not.toBeNull()
+        expect(grant?.index, `${table} must grant only after revoking`).toBeGreaterThan(revokeAt)
+        expect(grant?.[1].split(',').map(column => column.trim())).toEqual(columns)
+      }
+    }
+  })
 })
