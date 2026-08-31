@@ -76,6 +76,10 @@ describe('SQL tenant boundaries', () => {
     expect(migrations).toMatch(/cardinality\s*\(\s*allergens\s*\)\s*<=\s*50/i)
     expect(migrations).toMatch(/char_length\s*\(\s*array_to_string\s*\(\s*excluded_ingredients[\s\S]*?\)\s*<=\s*4000/i)
     expect(migrations).toMatch(/char_length\s*\(\s*btrim\s*\(\s*unit\s*\)\s*\)\s+between\s+1\s+and\s+32/i)
+    // Trimming is only the non-blank check: total raw length must also be
+    // bounded so whitespace padding cannot bypass the payload limit.
+    expect(migrations).toMatch(/add\s+constraint\s+pantry_items_unit_raw_size[\s\S]*?not\s+valid/i)
+    expect(migrations).toMatch(/char_length\s*\(\s*unit\s*\)\s+between\s+1\s+and\s+32/i)
     expect(migrations).toMatch(/title\s+is\s+null\s+or\s+char_length\s*\(\s*title\s*\)\s*<=\s*160/i)
     expect(migrations).toMatch(/note\s+is\s+null\s+or\s+char_length\s*\(\s*note\s*\)\s*<=\s*500/i)
   })
