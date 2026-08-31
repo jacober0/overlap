@@ -62,6 +62,11 @@ export function evaluateProviderPage(page: CatalogPage, today = new Date()) {
         } else if (right.validUntil && new Date(`${right.validUntil}T23:59:59Z`).getTime() < today.getTime()) {
           rightsErrors.push(`Nutzungsrecht abgelaufen: ${kind}`)
         }
+        if (right.deletionDeadline && !isoDate(right.deletionDeadline)) {
+          rightsErrors.push(`Ungültige Löschfrist: ${kind}`)
+        } else if (right.deletionDeadline && new Date(`${right.deletionDeadline}T23:59:59Z`).getTime() < today.getTime()) {
+          rightsErrors.push(`Löschfrist verstrichen: ${kind}`)
+        }
       }
     }
     if (rightsErrors.length) byId.set(recipe.externalId, [...(byId.get(recipe.externalId) ?? []), ...rightsErrors])

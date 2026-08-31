@@ -59,6 +59,20 @@ describe('catalog provider boundary', () => {
     }
   })
 
+  it('blockiert ungültige oder bereits verstrichene Löschfristen', () => {
+    const cases = [
+      { deletionDeadline: '2026-02-30', error: 'Ungültige Löschfrist: image' },
+      { deletionDeadline: '2026-08-28', error: 'Löschfrist verstrichen: image' },
+    ]
+
+    for (const { deletionDeadline, error } of cases) {
+      const recipe = { ...base, rights: rights.map(right => right.assetKind === 'image' ? { ...right, deletionDeadline } : right) }
+      const result = evaluateProviderPage({ recipes: [recipe], nextCursor: null }, new Date('2026-08-29T00:00:00Z'))
+      expect(result.accepted, deletionDeadline).toEqual([])
+      expect(result.rejected[0].errors, deletionDeadline).toContain(error)
+    }
+  })
+
   it('ist über Wiederholung und Seiten hinweg idempotent und quarantänisiert Duplikate', () => {
     const ledger: ImportLedger = { byExternalKey: new Map(), byFingerprint: new Map() }
     const recipe = { ...base, rights }
