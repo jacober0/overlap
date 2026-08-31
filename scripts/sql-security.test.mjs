@@ -48,4 +48,15 @@ describe('SQL tenant boundaries', () => {
   it('exposes meal-plan entries only for published catalog recipes', () => {
     expectPublishedRecipeBoundary('meal_plan_entries_own_all')
   })
+
+  it('normalizes untrusted signup metadata before creating a profile', () => {
+    const definitions = [...migrations.matchAll(/create\s+or\s+replace\s+function\s+public\.handle_new_user\(\)[\s\S]*?\$\$;/gi)]
+    const handler = definitions.at(-1)?.[0] ?? ''
+
+    // Auth metadata is client-controlled. Blank or oversized display names must
+    // not violate the profile constraint and roll back an otherwise valid signup.
+    expect(handler).toMatch(/nullif\s*\(\s*btrim\s*\(\s*new\.raw_user_meta_data\s*->>\s*'display_name'\s*\)\s*,\s*''\s*\)/i)
+    expect(handler).toMatch(/left\s*\([\s\S]*,\s*80\s*\)/i)
+    expect(handler).toMatch(/coalesce\s*\([\s\S]*'Overlap Nutzer'[\s\S]*\)/i)
+  })
 })
