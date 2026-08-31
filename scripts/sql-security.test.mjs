@@ -110,6 +110,15 @@ describe('SQL tenant boundaries', () => {
     expect(migrations).toMatch(/char_length\s*\(\s*btrim\s*\(\s*label\s*\)\s*\)\s+between\s+1\s+and\s+160/i)
   })
 
+  it('rejects whitespace-only optional meal-plan text', () => {
+    // Optional values should be NULL when absent. Accepting whitespace-only
+    // titles or notes creates visually empty records and inconsistent state.
+    expect(migrations).toMatch(/add\s+constraint\s+meal_plans_title_not_blank[\s\S]*?not\s+valid/i)
+    expect(migrations).toMatch(/title\s+is\s+null\s+or\s+char_length\s*\(\s*btrim\s*\(\s*title\s*\)\s*\)\s+between\s+1\s+and\s+160/i)
+    expect(migrations).toMatch(/add\s+constraint\s+meal_plan_entries_note_not_blank[\s\S]*?not\s+valid/i)
+    expect(migrations).toMatch(/note\s+is\s+null\s+or\s+char_length\s*\(\s*btrim\s*\(\s*note\s*\)\s*\)\s+between\s+1\s+and\s+500/i)
+  })
+
   it('keeps browser-managed profile arrays flat and free of null elements', () => {
     // PostgreSQL text[] accepts multidimensional arrays and null members even
     // though the TypeScript contract models these preferences as string[].
