@@ -43,6 +43,19 @@ describe('catalog publishing gate', () => {
     expect(validateCatalogRecipe(leapDay, new Date('2024-03-01T00:00:00Z'))).toEqual([])
   })
 
+  it('blockiert nicht-endliche und gebrochene Mengenangaben', () => {
+    const broken = {
+      ...valid,
+      servings: Number.NaN,
+      totalMinutes: Number.POSITIVE_INFINITY,
+      activeMinutes: 12.5,
+      ingredients: valid.ingredients.map((item, index) => index === 0 ? { ...item, amount: Number.NaN } : item),
+    }
+    expect(validateCatalogRecipe(broken, new Date('2026-08-29T00:00:00Z'))).toEqual(expect.arrayContaining([
+      'Portionszahl ist ungültig', 'Zeitangaben sind inkonsistent', 'Zutat ist unvollständig',
+    ]))
+  })
+
   it('blockiert doppelte Katalog-IDs und Titel', () => {
     expect(validateCatalog([valid, { ...valid }], new Date('2026-08-29T00:00:00Z'))).toEqual(expect.arrayContaining([
       { externalId: 'editorial-001', message: 'externalId ist nicht eindeutig' },

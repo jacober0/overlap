@@ -32,6 +32,7 @@ export type CatalogRecipeCandidate = {
 const secureUrl = (value: string) => {
   try { return new URL(value).protocol === 'https:' } catch { return false }
 }
+const integerInRange = (value: number, min: number, max: number) => Number.isInteger(value) && value >= min && value <= max
 const isoDate = (value: string) => {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return false
   const parsed = new Date(`${value}T00:00:00Z`)
@@ -43,11 +44,11 @@ export function validateCatalogRecipe(recipe: CatalogRecipeCandidate, today = ne
   if (!recipe.externalId.trim()) errors.push('externalId fehlt')
   if (recipe.title.trim().length < 3) errors.push('Titel ist zu kurz')
   if (recipe.description.trim().length < 30) errors.push('Beschreibung ist zu kurz')
-  if (recipe.servings < 1 || recipe.servings > 50) errors.push('Portionszahl ist ungültig')
-  if (recipe.activeMinutes < 1 || recipe.totalMinutes < recipe.activeMinutes) errors.push('Zeitangaben sind inkonsistent')
+  if (!integerInRange(recipe.servings, 1, 50)) errors.push('Portionszahl ist ungültig')
+  if (!integerInRange(recipe.activeMinutes, 1, 1440) || !integerInRange(recipe.totalMinutes, 1, 1440) || recipe.totalMinutes < recipe.activeMinutes) errors.push('Zeitangaben sind inkonsistent')
   if (recipe.ingredients.length < 4) errors.push('Mindestens vier Zutaten erforderlich')
   if (new Set(recipe.ingredients.map(item => item.canonicalId)).size !== recipe.ingredients.length) errors.push('Doppelte kanonische Zutaten-ID')
-  if (recipe.ingredients.some(item => !item.canonicalId || !item.name || item.amount <= 0 || !item.unit)) errors.push('Zutat ist unvollständig')
+  if (recipe.ingredients.some(item => !item.canonicalId || !item.name || !Number.isFinite(item.amount) || item.amount <= 0 || !item.unit)) errors.push('Zutat ist unvollständig')
   if (recipe.steps.length < 3 || recipe.steps.some(step => step.trim().length < 12)) errors.push('Kochschritte sind unvollständig')
   if (Object.values(recipe.nutrition).some(value => !Number.isFinite(value) || value < 0)) errors.push('Nährwerte sind unvollständig')
   if (!Number.isInteger(recipe.estimatedPriceCents) || recipe.estimatedPriceCents <= 0) errors.push('Preisschätzung fehlt')
