@@ -40,6 +40,17 @@ describe('catalog provider boundary', () => {
     ]))
   })
 
+  it('blockiert ungültige Ablaufdaten statt die Rechteprüfung zu umgehen', () => {
+    const invalidDates = ['nicht-datiert', '2026-02-30', '2026-8-1']
+
+    for (const validUntil of invalidDates) {
+      const recipe = { ...base, rights: rights.map(right => right.assetKind === 'image' ? { ...right, validUntil } : right) }
+      const result = evaluateProviderPage({ recipes: [recipe], nextCursor: null }, new Date('2026-08-29T00:00:00Z'))
+      expect(result.accepted, validUntil).toEqual([])
+      expect(result.rejected[0].errors, validUntil).toContain('Ungültiges Ablaufdatum: image')
+    }
+  })
+
   it('ist über Wiederholung und Seiten hinweg idempotent und quarantänisiert Duplikate', () => {
     const ledger: ImportLedger = { byExternalKey: new Map(), byFingerprint: new Map() }
     const recipe = { ...base, rights }

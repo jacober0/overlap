@@ -29,6 +29,11 @@ export type ImportLedger = {
 }
 
 const normalize = (value: string) => value.trim().toLocaleLowerCase('de-DE').replace(/[^a-z0-9äöüß]+/g, ' ').trim()
+const isoDate = (value: string) => {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return false
+  const parsed = new Date(`${value}T00:00:00Z`)
+  return Number.isFinite(parsed.getTime()) && parsed.toISOString().slice(0, 10) === value
+}
 
 export function catalogFingerprint(recipe: ProviderRecipe) {
   const ingredients = recipe.ingredients.map(item => normalize(item.canonicalId)).sort().join('|')
@@ -51,7 +56,9 @@ export function evaluateProviderPage(page: CatalogPage, today = new Date()) {
       else {
         if (!right.storagePermitted) rightsErrors.push(`Lokale Speicherung unzulässig: ${kind}`)
         if (kind === 'recipe_text' && !right.modificationPermitted) rightsErrors.push(`Bearbeitung unzulässig: ${kind}`)
-        if (right.validUntil && new Date(`${right.validUntil}T23:59:59Z`).getTime() < today.getTime()) {
+        if (right.validUntil && !isoDate(right.validUntil)) {
+          rightsErrors.push(`Ungültiges Ablaufdatum: ${kind}`)
+        } else if (right.validUntil && new Date(`${right.validUntil}T23:59:59Z`).getTime() < today.getTime()) {
           rightsErrors.push(`Nutzungsrecht abgelaufen: ${kind}`)
         }
       }
