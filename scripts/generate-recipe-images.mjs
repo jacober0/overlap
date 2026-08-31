@@ -58,6 +58,9 @@ export const recipeImageManifest = [
   { id: 'pilz-lauch-spaetzle-walnuss', dish: 'A broad charcoal skillet filled with unmistakable irregular golden German egg spaetzle noodles, many deeply browned quartered mushrooms and pale-green leek rings in a light creamy glaze, topped with toasted walnut pieces and fresh parsley; no meat.' },
   { id: 'ofenlachs-linsen-fenchel', dish: 'A wide charcoal plate with one generous moist oven-roasted salmon fillet resting on glossy dark mountain lentils, surrounded by caramelized fennel wedges and orange carrot slices, finished with fresh dill and a restrained mustard-lemon sheen; no potatoes and no rice.' },
   { id: 'tofu-rotkohl-soba-pfanne', dish: 'A wide charcoal bowl of dark buckwheat soba noodles tangled with glossy ruby-purple red cabbage, topped with abundant crisp golden tofu cubes, bright orange fillets, green spring-onion rings and sesame seeds; entirely plant-based, no meat and no egg.' },
+  { id: 'miso-kuerbis-udon-pak-choi', dish: 'A wide charcoal bowl of thick glossy white udon noodles in a light amber miso glaze with caramelized orange Hokkaido pumpkin cubes, vivid green pak choi quarters and abundant crisp golden tofu cubes, finished with sesame seeds; entirely plant-based, no meat and no egg.' },
+  { id: 'lauch-birnen-quiche', dish: 'A round golden baked quiche in a dark fluted tart pan with one wedge removed, clearly showing pale-green leek rings and thin pear slices in a set egg filling beneath browned mountain cheese and toasted walnut pieces; vegetarian, no meat and no salad.' },
+  { id: 'rind-rote-bete-borschtsch', dish: 'A deep charcoal bowl of vivid ruby-red borscht with abundant distinct tender beef cubes, beetroot cubes, pale cabbage ribbons, golden potato and orange carrot pieces, topped with one restrained spoonful of sour cream and fresh dill; no bread and no noodles.' },
 ]
 
 const projectRoot = dirname(dirname(fileURLToPath(import.meta.url)))
