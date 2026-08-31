@@ -1,4 +1,5 @@
 import type { Allergen, Category, Diet, Ingredient, Recipe } from './domain/types'
+import { editorialAppRecipes } from './data/editorialRecipes'
 
 const img = (id: string) => `/recipes/${id}.jpg`
 const ingredientAllergens: Partial<Record<string, Allergen[]>> = {
@@ -21,4 +22,5 @@ export const recipes: Recipe[] = [
   r('kartoffelsuppe','Kartoffel-Lauch-Suppe','Cremig, unkompliziert und ideal zum Vorkochen.',img('kartoffelsuppe'),35,1.9,'vegan',['deutsch','meal-prep'],{kcal:430,protein:12,carbs:70,fat:12,fiber:11},[i('kartoffel','Kartoffeln',600,'g','Gemüse',1.2),i('lauch','Lauch',250,'g','Gemüse',1.1),i('hafercuisine','Hafercuisine',150,'ml','Trockenwaren',0.9),i('brot','Brot',200,'g','Backwaren',1.0)],['Gemüse anschwitzen.','Mit Brühe weich kochen.','Teilweise pürieren und abschmecken.']),
   r('couscous','Couscous mit Ofenkarotten','Zitronig, kräutrig und schnell vorbereitet.',img('couscous'),27,2.6,'vegan',['mediterran','bowl'],{kcal:520,protein:17,carbs:81,fat:14,fiber:12},[i('couscous','Couscous',180,'g','Trockenwaren',0.7),i('karotte','Karotten',350,'g','Gemüse',0.9),i('kichererbse','Kichererbsen',240,'g','Trockenwaren',0.8),i('spinat','Spinat',100,'g','Gemüse',0.8)],['Karotten rösten.','Couscous quellen lassen.','Mit Kichererbsen und Grün vermengen.']),
   r('salat','Crunchy Nudel-Salat','Frisch, sättigend und ideal für unterwegs.',img('salat'),18,2.8,'vegan',['asiatisch','schnell'],{kcal:510,protein:16,carbs:72,fat:18,fiber:9},[i('nudeln','Reisnudeln',180,'g','Trockenwaren',1.2),i('gurke','Gurke',220,'g','Gemüse',0.9),i('karotte','Karotten',160,'g','Gemüse',0.4),i('erdnuss','Erdnüsse',60,'g','Trockenwaren',0.8)],['Nudeln garen und abschrecken.','Gemüse fein schneiden.','Mit Limetten-Dressing vermengen.']),
+  ...editorialAppRecipes,
 ]
