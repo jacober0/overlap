@@ -3,7 +3,7 @@ import { validateCatalog } from '../domain/catalog'
 import { editorialAppRecipes, editorialRecipes, publishableEditorialRecipes } from './editorialRecipes'
 
 describe('originaler redaktioneller Rezeptkatalog', () => {
-  it('liefert einhundertsiebzehn inhaltlich veröffentlichungsfähige Originalrezepte in sechsunddreißig eigenständigen Batches', () => {
+  it('liefert einhundertzwanzig inhaltlich veröffentlichungsfähige Originalrezepte in siebenunddreißig eigenständigen Batches', () => {
     expect(editorialRecipes.map(recipe => recipe.externalId)).toEqual([
       'overlap-013-rote-linsen-kokos-suppe',
       'overlap-014-pilz-graupen-risotto',
@@ -122,9 +122,12 @@ describe('originaler redaktioneller Rezeptkatalog', () => {
       'overlap-127-dinkel-maultaschen-kuerbis-linsen',
       'overlap-128-muschel-paprika-fregola',
       'overlap-129-brokkoli-kichererbsen-pakora-tomatenchutney',
+      'overlap-130-rosenkohl-tempeh-bulgur-pilaw',
+      'overlap-131-mangold-kartoffel-souffle',
+      'overlap-132-puten-kohlrabi-rouladen-hirse',
     ])
     expect(validateCatalog(editorialRecipes, new Date('2026-08-31T12:00:00Z'))).toEqual([])
-    expect(publishableEditorialRecipes).toHaveLength(117)
+    expect(publishableEditorialRecipes).toHaveLength(120)
   })
 
   it('enthält Kochanleitung, Preisgrundlage, Allergene, Provenienz und Bildprompt vollständig', () => {
@@ -202,5 +205,8 @@ describe('originaler redaktioneller Rezeptkatalog', () => {
     expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('dinkel-maultaschen-kuerbis-linsen')
     expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('muschel-paprika-fregola')
     expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('brokkoli-kichererbsen-pakora-tomatenchutney')
+    expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('rosenkohl-tempeh-bulgur-pilaw')
+    expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('mangold-kartoffel-souffle')
+    expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('puten-kohlrabi-rouladen-hirse')
   })
 })
