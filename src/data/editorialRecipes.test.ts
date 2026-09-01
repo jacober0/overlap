@@ -3,7 +3,7 @@ import { validateCatalog } from '../domain/catalog'
 import { editorialAppRecipes, editorialRecipes, publishableEditorialRecipes } from './editorialRecipes'
 
 describe('originaler redaktioneller Rezeptkatalog', () => {
-  it('liefert dreiundneunzig inhaltlich veröffentlichungsfähige Originalrezepte in achtundzwanzig eigenständigen Batches', () => {
+  it('liefert sechsundneunzig inhaltlich veröffentlichungsfähige Originalrezepte in neunundzwanzig eigenständigen Batches', () => {
     expect(editorialRecipes.map(recipe => recipe.externalId)).toEqual([
       'overlap-013-rote-linsen-kokos-suppe',
       'overlap-014-pilz-graupen-risotto',
@@ -98,9 +98,12 @@ describe('originaler redaktioneller Rezeptkatalog', () => {
       'overlap-103-seitan-pilz-wurzelgemuese-pie',
       'overlap-104-zander-senfkohl-hirse-paeckchen',
       'overlap-105-linsen-mangold-moussaka',
+      'overlap-106-kuerbis-walnuss-lobio',
+      'overlap-107-haehnchen-blumenkohl-buchweizen-blech',
+      'overlap-108-spinat-paneer-kofta-curry',
     ])
     expect(validateCatalog(editorialRecipes, new Date('2026-08-31T12:00:00Z'))).toEqual([])
-    expect(publishableEditorialRecipes).toHaveLength(93)
+    expect(publishableEditorialRecipes).toHaveLength(96)
   })
 
   it('enthält Kochanleitung, Preisgrundlage, Allergene, Provenienz und Bildprompt vollständig', () => {
@@ -154,5 +157,8 @@ describe('originaler redaktioneller Rezeptkatalog', () => {
     expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('seitan-pilz-wurzelgemuese-pie')
     expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('zander-senfkohl-hirse-paeckchen')
     expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('linsen-mangold-moussaka')
+    expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('kuerbis-walnuss-lobio')
+    expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('haehnchen-blumenkohl-buchweizen-blech')
+    expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('spinat-paneer-kofta-curry')
   })
 })
