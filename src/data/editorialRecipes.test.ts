@@ -3,7 +3,7 @@ import { validateCatalog } from '../domain/catalog'
 import { editorialAppRecipes, editorialRecipes, publishableEditorialRecipes } from './editorialRecipes'
 
 describe('originaler redaktioneller Rezeptkatalog', () => {
-  it('liefert einhundertzweiundsechzig inhaltlich veröffentlichungsfähige Originalrezepte in einundfünfzig eigenständigen Batches', () => {
+  it('liefert einhundertfünfundsechzig inhaltlich veröffentlichungsfähige Originalrezepte in zweiundfünfzig eigenständigen Batches', () => {
     expect(editorialRecipes.map(recipe => recipe.externalId)).toEqual([
       'overlap-013-rote-linsen-kokos-suppe',
       'overlap-014-pilz-graupen-risotto',
@@ -167,9 +167,12 @@ describe('originaler redaktioneller Rezeptkatalog', () => {
       'overlap-172-kichererbsen-fenchel-panisse-ratatouille',
       'overlap-173-kalb-lauch-dinkel-frikassee-erbsen',
       'overlap-174-pflaumen-quark-buchweizen-auflauf-mandeln',
+      'overlap-175-kartoffel-linsen-bao-rotkohl',
+      'overlap-176-muschel-bohnen-safranreis-fenchel',
+      'overlap-177-mais-quark-nocken-pilzragout',
     ])
     expect(validateCatalog(editorialRecipes, new Date('2026-08-31T12:00:00Z'))).toEqual([])
-    expect(publishableEditorialRecipes).toHaveLength(162)
+    expect(publishableEditorialRecipes).toHaveLength(165)
   })
 
   it('enthält Kochanleitung, Preisgrundlage, Allergene, Provenienz und Bildprompt vollständig', () => {
@@ -185,7 +188,7 @@ describe('originaler redaktioneller Rezeptkatalog', () => {
     }
   })
 
-  it('leitet die Preisgrundlage des einundfünfzigsten Batches ohne handgepflegte Abweichung aus den Zutaten ab', () => {
+  it('leitet die Preisgrundlage des zweiundfünfzigsten Batches ohne handgepflegte Abweichung aus den Zutaten ab', () => {
     for (const recipe of editorialRecipes.slice(-3)) {
       expect(recipe.estimatedPriceCents, recipe.externalId).toBe(
         recipe.ingredients.reduce((total, ingredient) => total + ingredient.estimatedCostCents, 0),
@@ -300,5 +303,8 @@ describe('originaler redaktioneller Rezeptkatalog', () => {
     expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('kichererbsen-fenchel-panisse-ratatouille')
     expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('kalb-lauch-dinkel-frikassee-erbsen')
     expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('pflaumen-quark-buchweizen-auflauf-mandeln')
+    expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('kartoffel-linsen-bao-rotkohl')
+    expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('muschel-bohnen-safranreis-fenchel')
+    expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('mais-quark-nocken-pilzragout')
   })
 })
