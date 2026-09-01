@@ -3,7 +3,7 @@ import { validateCatalog } from '../domain/catalog'
 import { editorialAppRecipes, editorialRecipes, publishableEditorialRecipes } from './editorialRecipes'
 
 describe('originaler redaktioneller Rezeptkatalog', () => {
-  it('liefert einhundertundacht inhaltlich veröffentlichungsfähige Originalrezepte in dreiunddreißig eigenständigen Batches', () => {
+  it('liefert einhundertundelf inhaltlich veröffentlichungsfähige Originalrezepte in vierunddreißig eigenständigen Batches', () => {
     expect(editorialRecipes.map(recipe => recipe.externalId)).toEqual([
       'overlap-013-rote-linsen-kokos-suppe',
       'overlap-014-pilz-graupen-risotto',
@@ -113,9 +113,12 @@ describe('originaler redaktioneller Rezeptkatalog', () => {
       'overlap-118-aloo-tikki-linsen-raita',
       'overlap-119-garnelen-kuerbis-gnocchi-salbei',
       'overlap-120-puten-sellerie-paprikasch-dinkelspaetzle',
+      'overlap-121-kimchi-tofu-kartoffel-eintopf',
+      'overlap-122-seelachs-linsen-frikadellen-fenchelsalat',
+      'overlap-123-mais-spinat-quinoa-puffer-bohnen-salsa',
     ])
     expect(validateCatalog(editorialRecipes, new Date('2026-08-31T12:00:00Z'))).toEqual([])
-    expect(publishableEditorialRecipes).toHaveLength(108)
+    expect(publishableEditorialRecipes).toHaveLength(111)
   })
 
   it('enthält Kochanleitung, Preisgrundlage, Allergene, Provenienz und Bildprompt vollständig', () => {
@@ -184,5 +187,8 @@ describe('originaler redaktioneller Rezeptkatalog', () => {
     expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('aloo-tikki-linsen-raita')
     expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('garnelen-kuerbis-gnocchi-salbei')
     expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('puten-sellerie-paprikasch-dinkelspaetzle')
+    expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('kimchi-tofu-kartoffel-eintopf')
+    expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('seelachs-linsen-frikadellen-fenchelsalat')
+    expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('mais-spinat-quinoa-puffer-bohnen-salsa')
   })
 })
