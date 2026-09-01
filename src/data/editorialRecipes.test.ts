@@ -3,7 +3,7 @@ import { validateCatalog } from '../domain/catalog'
 import { editorialAppRecipes, editorialRecipes, publishableEditorialRecipes } from './editorialRecipes'
 
 describe('originaler redaktioneller Rezeptkatalog', () => {
-  it('liefert einhundertundzwei inhaltlich veröffentlichungsfähige Originalrezepte in einunddreißig eigenständigen Batches', () => {
+  it('liefert einhundertundfünf inhaltlich veröffentlichungsfähige Originalrezepte in zweiunddreißig eigenständigen Batches', () => {
     expect(editorialRecipes.map(recipe => recipe.externalId)).toEqual([
       'overlap-013-rote-linsen-kokos-suppe',
       'overlap-014-pilz-graupen-risotto',
@@ -107,9 +107,12 @@ describe('originaler redaktioneller Rezeptkatalog', () => {
       'overlap-112-kartoffel-erbsen-samosa-blech',
       'overlap-113-rind-brokkoli-udon-pfanne',
       'overlap-114-kichererbsen-mangold-farinata',
+      'overlap-115-linsen-bulgur-koefte-schmorgemuese',
+      'overlap-116-schweinehack-zitronengras-reisnudel-bowl',
+      'overlap-117-lauch-linsen-buchweizen-galette',
     ])
     expect(validateCatalog(editorialRecipes, new Date('2026-08-31T12:00:00Z'))).toEqual([])
-    expect(publishableEditorialRecipes).toHaveLength(102)
+    expect(publishableEditorialRecipes).toHaveLength(105)
   })
 
   it('enthält Kochanleitung, Preisgrundlage, Allergene, Provenienz und Bildprompt vollständig', () => {
@@ -172,5 +175,8 @@ describe('originaler redaktioneller Rezeptkatalog', () => {
     expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('kartoffel-erbsen-samosa-blech')
     expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('rind-brokkoli-udon-pfanne')
     expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('kichererbsen-mangold-farinata')
+    expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('linsen-bulgur-koefte-schmorgemuese')
+    expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('schweinehack-zitronengras-reisnudel-bowl')
+    expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('lauch-linsen-buchweizen-galette')
   })
 })
