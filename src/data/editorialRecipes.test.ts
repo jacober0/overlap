@@ -3,7 +3,7 @@ import { validateCatalog } from '../domain/catalog'
 import { editorialAppRecipes, editorialRecipes, publishableEditorialRecipes } from './editorialRecipes'
 
 describe('originaler redaktioneller Rezeptkatalog', () => {
-  it('liefert einhundertundvierzehn inhaltlich veröffentlichungsfähige Originalrezepte in fünfunddreißig eigenständigen Batches', () => {
+  it('liefert einhundertsiebzehn inhaltlich veröffentlichungsfähige Originalrezepte in sechsunddreißig eigenständigen Batches', () => {
     expect(editorialRecipes.map(recipe => recipe.externalId)).toEqual([
       'overlap-013-rote-linsen-kokos-suppe',
       'overlap-014-pilz-graupen-risotto',
@@ -119,9 +119,12 @@ describe('originaler redaktioneller Rezeptkatalog', () => {
       'overlap-124-weisse-bohnen-kuerbis-cassoulet',
       'overlap-125-saibling-mais-kartoffel-chowder',
       'overlap-126-rind-wirsing-pflaumen-schmortopf',
+      'overlap-127-dinkel-maultaschen-kuerbis-linsen',
+      'overlap-128-muschel-paprika-fregola',
+      'overlap-129-brokkoli-kichererbsen-pakora-tomatenchutney',
     ])
     expect(validateCatalog(editorialRecipes, new Date('2026-08-31T12:00:00Z'))).toEqual([])
-    expect(publishableEditorialRecipes).toHaveLength(114)
+    expect(publishableEditorialRecipes).toHaveLength(117)
   })
 
   it('enthält Kochanleitung, Preisgrundlage, Allergene, Provenienz und Bildprompt vollständig', () => {
@@ -196,5 +199,8 @@ describe('originaler redaktioneller Rezeptkatalog', () => {
     expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('weisse-bohnen-kuerbis-cassoulet')
     expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('saibling-mais-kartoffel-chowder')
     expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('rind-wirsing-pflaumen-schmortopf')
+    expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('dinkel-maultaschen-kuerbis-linsen')
+    expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('muschel-paprika-fregola')
+    expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('brokkoli-kichererbsen-pakora-tomatenchutney')
   })
 })
