@@ -106,6 +106,9 @@ export const recipeImageManifest = [
   { id: 'lupinen-kartoffel-gulasch', dish: 'A deep charcoal bowl of thick ruby-red vegan goulash filled with abundant ivory lupin beans, golden potato cubes and glossy red pointed-pepper pieces, finished with restrained parsley; no meat, no sausage, no noodles and no cream.' },
   { id: 'ziegenkaese-polenta-pfirsich', dish: 'A charcoal plate with four crisp rectangular golden polenta slices, caramelized skin-on peach wedges, coarse white goat-cheese crumbles, a restrained tuft of arugula and toasted almond flakes; vegetarian summer dish, no meat and no bread.' },
   { id: 'huehnchen-bohnen-jambalaya', dish: 'A broad charcoal bowl of brick-red whole-grain rice jambalaya with abundant fully cooked browned chicken thigh pieces, red kidney beans, red pepper and pale-green celery slices, all ingredients distinct; no sausage, no shrimp, no seafood and no raw meat.' },
+  { id: 'rote-bete-bohnen-knoedel-wirsing', dish: 'A charcoal plate with four round deep-magenta beetroot and white-bean dumplings showing a coarse bean interior, resting on abundant pale-green creamy savoy cabbage ribbons and topped with fine fresh horseradish; entirely plant-based, no meat, no potatoes and no bread.' },
+  { id: 'sardinen-tomaten-vollkorn-couscous', dish: 'A broad charcoal plate of fluffy tan whole-wheat couscous with intact chickpeas, browned zucchini pieces and burst red cherry tomatoes, topped by several unmistakable silver-skinned cooked sardine fillets, lemon zest and parsley; no tuna, no salmon, no rice and no bread.' },
+  { id: 'polenta-bohnen-tamale-auflauf', dish: 'A dark oval baking dish with a thick golden baked polenta crust and browned cheddar top, one generous spoonful removed to reveal a vivid filling of intact black beans, yellow corn, red pepper pieces and chunky tomato; vegetarian casserole, no meat, no tortillas and no rice.' },
 ]
 
 const projectRoot = dirname(dirname(fileURLToPath(import.meta.url)))

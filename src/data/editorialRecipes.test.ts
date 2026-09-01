@@ -3,7 +3,7 @@ import { validateCatalog } from '../domain/catalog'
 import { editorialAppRecipes, editorialRecipes, publishableEditorialRecipes } from './editorialRecipes'
 
 describe('originaler redaktioneller Rezeptkatalog', () => {
-  it('liefert vierundachtzig inhaltlich veröffentlichungsfähige Originalrezepte in fünfundzwanzig eigenständigen Batches', () => {
+  it('liefert siebenundachtzig inhaltlich veröffentlichungsfähige Originalrezepte in sechsundzwanzig eigenständigen Batches', () => {
     expect(editorialRecipes.map(recipe => recipe.externalId)).toEqual([
       'overlap-013-rote-linsen-kokos-suppe',
       'overlap-014-pilz-graupen-risotto',
@@ -89,9 +89,12 @@ describe('originaler redaktioneller Rezeptkatalog', () => {
       'overlap-094-lupinen-kartoffel-gulasch',
       'overlap-095-ziegenkaese-polenta-pfirsich',
       'overlap-096-huehnchen-bohnen-jambalaya',
+      'overlap-097-rote-bete-bohnen-knoedel-wirsing',
+      'overlap-098-sardinen-tomaten-vollkorn-couscous',
+      'overlap-099-polenta-bohnen-tamale-auflauf',
     ])
     expect(validateCatalog(editorialRecipes, new Date('2026-08-31T12:00:00Z'))).toEqual([])
-    expect(publishableEditorialRecipes).toHaveLength(84)
+    expect(publishableEditorialRecipes).toHaveLength(87)
   })
 
   it('enthält Kochanleitung, Preisgrundlage, Allergene, Provenienz und Bildprompt vollständig', () => {
@@ -136,5 +139,8 @@ describe('originaler redaktioneller Rezeptkatalog', () => {
     expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('lupinen-kartoffel-gulasch')
     expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('ziegenkaese-polenta-pfirsich')
     expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('huehnchen-bohnen-jambalaya')
+    expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('rote-bete-bohnen-knoedel-wirsing')
+    expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('sardinen-tomaten-vollkorn-couscous')
+    expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('polenta-bohnen-tamale-auflauf')
   })
 })
