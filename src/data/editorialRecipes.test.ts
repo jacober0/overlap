@@ -3,7 +3,7 @@ import { validateCatalog } from '../domain/catalog'
 import { editorialAppRecipes, editorialRecipes, publishableEditorialRecipes } from './editorialRecipes'
 
 describe('originaler redaktioneller Rezeptkatalog', () => {
-  it('liefert neunzig inhaltlich veröffentlichungsfähige Originalrezepte in siebenundzwanzig eigenständigen Batches', () => {
+  it('liefert dreiundneunzig inhaltlich veröffentlichungsfähige Originalrezepte in achtundzwanzig eigenständigen Batches', () => {
     expect(editorialRecipes.map(recipe => recipe.externalId)).toEqual([
       'overlap-013-rote-linsen-kokos-suppe',
       'overlap-014-pilz-graupen-risotto',
@@ -95,9 +95,12 @@ describe('originaler redaktioneller Rezeptkatalog', () => {
       'overlap-100-gruenkern-zucchini-laibchen-tomatenbohnen',
       'overlap-101-schweinefilet-linsen-aprikosen-tagine',
       'overlap-102-tofu-mais-okonomiyaki',
+      'overlap-103-seitan-pilz-wurzelgemuese-pie',
+      'overlap-104-zander-senfkohl-hirse-paeckchen',
+      'overlap-105-linsen-mangold-moussaka',
     ])
     expect(validateCatalog(editorialRecipes, new Date('2026-08-31T12:00:00Z'))).toEqual([])
-    expect(publishableEditorialRecipes).toHaveLength(90)
+    expect(publishableEditorialRecipes).toHaveLength(93)
   })
 
   it('enthält Kochanleitung, Preisgrundlage, Allergene, Provenienz und Bildprompt vollständig', () => {
@@ -148,5 +151,8 @@ describe('originaler redaktioneller Rezeptkatalog', () => {
     expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('gruenkern-zucchini-laibchen-tomatenbohnen')
     expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('schweinefilet-linsen-aprikosen-tagine')
     expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('tofu-mais-okonomiyaki')
+    expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('seitan-pilz-wurzelgemuese-pie')
+    expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('zander-senfkohl-hirse-paeckchen')
+    expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('linsen-mangold-moussaka')
   })
 })
