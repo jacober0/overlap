@@ -3,7 +3,7 @@ import { validateCatalog } from '../domain/catalog'
 import { editorialAppRecipes, editorialRecipes, publishableEditorialRecipes } from './editorialRecipes'
 
 describe('originaler redaktioneller Rezeptkatalog', () => {
-  it('liefert fünfundsiebzig inhaltlich veröffentlichungsfähige Originalrezepte in zweiundzwanzig eigenständigen Batches', () => {
+  it('liefert achtundsiebzig inhaltlich veröffentlichungsfähige Originalrezepte in dreiundzwanzig eigenständigen Batches', () => {
     expect(editorialRecipes.map(recipe => recipe.externalId)).toEqual([
       'overlap-013-rote-linsen-kokos-suppe',
       'overlap-014-pilz-graupen-risotto',
@@ -80,9 +80,12 @@ describe('originaler redaktioneller Rezeptkatalog', () => {
       'overlap-085-miso-auberginen-edamame-reis',
       'overlap-086-ricotta-spinat-knoedel-tomatenragout',
       'overlap-087-haehnchen-aprikosen-gersten-pilaw',
+      'overlap-088-tempeh-sauerkraut-kartoffel-pfanne',
+      'overlap-089-buchweizen-pilz-blini-rote-bete-quark',
+      'overlap-090-dorade-fenchel-bohnen-blech',
     ])
     expect(validateCatalog(editorialRecipes, new Date('2026-08-31T12:00:00Z'))).toEqual([])
-    expect(publishableEditorialRecipes).toHaveLength(75)
+    expect(publishableEditorialRecipes).toHaveLength(78)
   })
 
   it('enthält Kochanleitung, Preisgrundlage, Allergene, Provenienz und Bildprompt vollständig', () => {
@@ -103,6 +106,9 @@ describe('originaler redaktioneller Rezeptkatalog', () => {
     expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('miso-auberginen-edamame-reis')
     expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('ricotta-spinat-knoedel-tomatenragout')
     expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('haehnchen-aprikosen-gersten-pilaw')
+    expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('tempeh-sauerkraut-kartoffel-pfanne')
+    expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('buchweizen-pilz-blini-rote-bete-quark')
+    expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('dorade-fenchel-bohnen-blech')
     expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('eier-senfsauce-spinatkartoffeln')
     expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('maronen-rosenkohl-graupenpfanne')
     expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('schweinegeschnetzeltes-kohlrabi-vollkornreis')
