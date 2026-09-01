@@ -3,7 +3,7 @@ import { validateCatalog } from '../domain/catalog'
 import { editorialAppRecipes, editorialRecipes, publishableEditorialRecipes } from './editorialRecipes'
 
 describe('originaler redaktioneller Rezeptkatalog', () => {
-  it('liefert einhundertzwanzig inhaltlich veröffentlichungsfähige Originalrezepte in siebenunddreißig eigenständigen Batches', () => {
+  it('liefert einhundertdreiundzwanzig inhaltlich veröffentlichungsfähige Originalrezepte in achtunddreißig eigenständigen Batches', () => {
     expect(editorialRecipes.map(recipe => recipe.externalId)).toEqual([
       'overlap-013-rote-linsen-kokos-suppe',
       'overlap-014-pilz-graupen-risotto',
@@ -125,9 +125,12 @@ describe('originaler redaktioneller Rezeptkatalog', () => {
       'overlap-130-rosenkohl-tempeh-bulgur-pilaw',
       'overlap-131-mangold-kartoffel-souffle',
       'overlap-132-puten-kohlrabi-rouladen-hirse',
+      'overlap-133-erdnuss-auberginen-kochbananen-topf',
+      'overlap-134-gochujang-lachs-gerste-pak-choi',
+      'overlap-135-gefuellte-paprika-gruenkern-linsen',
     ])
     expect(validateCatalog(editorialRecipes, new Date('2026-08-31T12:00:00Z'))).toEqual([])
-    expect(publishableEditorialRecipes).toHaveLength(120)
+    expect(publishableEditorialRecipes).toHaveLength(123)
   })
 
   it('enthält Kochanleitung, Preisgrundlage, Allergene, Provenienz und Bildprompt vollständig', () => {
@@ -208,5 +211,8 @@ describe('originaler redaktioneller Rezeptkatalog', () => {
     expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('rosenkohl-tempeh-bulgur-pilaw')
     expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('mangold-kartoffel-souffle')
     expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('puten-kohlrabi-rouladen-hirse')
+    expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('erdnuss-auberginen-kochbananen-topf')
+    expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('gochujang-lachs-gerste-pak-choi')
+    expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('gefuellte-paprika-gruenkern-linsen')
   })
 })
