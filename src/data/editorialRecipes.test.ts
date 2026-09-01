@@ -3,7 +3,7 @@ import { validateCatalog } from '../domain/catalog'
 import { editorialAppRecipes, editorialRecipes, publishableEditorialRecipes } from './editorialRecipes'
 
 describe('originaler redaktioneller Rezeptkatalog', () => {
-  it('liefert zweiundsiebzig inhaltlich veröffentlichungsfähige Originalrezepte in einundzwanzig eigenständigen Batches', () => {
+  it('liefert fünfundsiebzig inhaltlich veröffentlichungsfähige Originalrezepte in zweiundzwanzig eigenständigen Batches', () => {
     expect(editorialRecipes.map(recipe => recipe.externalId)).toEqual([
       'overlap-013-rote-linsen-kokos-suppe',
       'overlap-014-pilz-graupen-risotto',
@@ -77,9 +77,12 @@ describe('originaler redaktioneller Rezeptkatalog', () => {
       'overlap-082-herings-kartoffel-rote-bete-salat',
       'overlap-083-okra-linsen-hirse-eintopf',
       'overlap-084-spargel-dinkel-crepes-kraeuterquark',
+      'overlap-085-miso-auberginen-edamame-reis',
+      'overlap-086-ricotta-spinat-knoedel-tomatenragout',
+      'overlap-087-haehnchen-aprikosen-gersten-pilaw',
     ])
     expect(validateCatalog(editorialRecipes, new Date('2026-08-31T12:00:00Z'))).toEqual([])
-    expect(publishableEditorialRecipes).toHaveLength(72)
+    expect(publishableEditorialRecipes).toHaveLength(75)
   })
 
   it('enthält Kochanleitung, Preisgrundlage, Allergene, Provenienz und Bildprompt vollständig', () => {
@@ -97,6 +100,9 @@ describe('originaler redaktioneller Rezeptkatalog', () => {
 
   it('hält inhaltlich geprüfte Rezepte ohne bestandenes Bild aus dem App-Katalog zurück', () => {
     expect(editorialAppRecipes).toHaveLength(57)
+    expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('miso-auberginen-edamame-reis')
+    expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('ricotta-spinat-knoedel-tomatenragout')
+    expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('haehnchen-aprikosen-gersten-pilaw')
     expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('eier-senfsauce-spinatkartoffeln')
     expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('maronen-rosenkohl-graupenpfanne')
     expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('schweinegeschnetzeltes-kohlrabi-vollkornreis')
