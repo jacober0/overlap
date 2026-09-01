@@ -3,7 +3,7 @@ import { validateCatalog } from '../domain/catalog'
 import { editorialAppRecipes, editorialRecipes, publishableEditorialRecipes } from './editorialRecipes'
 
 describe('originaler redaktioneller Rezeptkatalog', () => {
-  it('liefert einhundertfünfunddreißig inhaltlich veröffentlichungsfähige Originalrezepte in zweiundvierzig eigenständigen Batches', () => {
+  it('liefert einhundertachtunddreißig inhaltlich veröffentlichungsfähige Originalrezepte in dreiundvierzig eigenständigen Batches', () => {
     expect(editorialRecipes.map(recipe => recipe.externalId)).toEqual([
       'overlap-013-rote-linsen-kokos-suppe',
       'overlap-014-pilz-graupen-risotto',
@@ -140,9 +140,12 @@ describe('originaler redaktioneller Rezeptkatalog', () => {
       'overlap-145-bohnen-rote-bete-falafel-hirse-taboule',
       'overlap-146-zander-sauerkraut-kartoffel-groestl',
       'overlap-147-puten-auberginen-bulgur-koefte-auflauf',
+      'overlap-148-kartoffel-bohnen-pupusas-rotkohlsalat',
+      'overlap-149-lachs-spinat-hirse-terrine-fenchelsalat',
+      'overlap-150-rind-lauch-graupen-kroketten-rote-bete-joghurt',
     ])
     expect(validateCatalog(editorialRecipes, new Date('2026-08-31T12:00:00Z'))).toEqual([])
-    expect(publishableEditorialRecipes).toHaveLength(135)
+    expect(publishableEditorialRecipes).toHaveLength(138)
   })
 
   it('enthält Kochanleitung, Preisgrundlage, Allergene, Provenienz und Bildprompt vollständig', () => {
@@ -238,5 +241,8 @@ describe('originaler redaktioneller Rezeptkatalog', () => {
     expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('bohnen-rote-bete-falafel-hirse-taboule')
     expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('zander-sauerkraut-kartoffel-groestl')
     expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('puten-auberginen-bulgur-koefte-auflauf')
+    expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('kartoffel-bohnen-pupusas-rotkohlsalat')
+    expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('lachs-spinat-hirse-terrine-fenchelsalat')
+    expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('rind-lauch-graupen-kroketten-rote-bete-joghurt')
   })
 })
