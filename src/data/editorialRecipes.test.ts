@@ -3,7 +3,7 @@ import { validateCatalog } from '../domain/catalog'
 import { editorialAppRecipes, editorialRecipes, publishableEditorialRecipes } from './editorialRecipes'
 
 describe('originaler redaktioneller Rezeptkatalog', () => {
-  it('liefert einhundertundfünf inhaltlich veröffentlichungsfähige Originalrezepte in zweiunddreißig eigenständigen Batches', () => {
+  it('liefert einhundertundacht inhaltlich veröffentlichungsfähige Originalrezepte in dreiunddreißig eigenständigen Batches', () => {
     expect(editorialRecipes.map(recipe => recipe.externalId)).toEqual([
       'overlap-013-rote-linsen-kokos-suppe',
       'overlap-014-pilz-graupen-risotto',
@@ -110,9 +110,12 @@ describe('originaler redaktioneller Rezeptkatalog', () => {
       'overlap-115-linsen-bulgur-koefte-schmorgemuese',
       'overlap-116-schweinehack-zitronengras-reisnudel-bowl',
       'overlap-117-lauch-linsen-buchweizen-galette',
+      'overlap-118-aloo-tikki-linsen-raita',
+      'overlap-119-garnelen-kuerbis-gnocchi-salbei',
+      'overlap-120-puten-sellerie-paprikasch-dinkelspaetzle',
     ])
     expect(validateCatalog(editorialRecipes, new Date('2026-08-31T12:00:00Z'))).toEqual([])
-    expect(publishableEditorialRecipes).toHaveLength(105)
+    expect(publishableEditorialRecipes).toHaveLength(108)
   })
 
   it('enthält Kochanleitung, Preisgrundlage, Allergene, Provenienz und Bildprompt vollständig', () => {
@@ -178,5 +181,8 @@ describe('originaler redaktioneller Rezeptkatalog', () => {
     expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('linsen-bulgur-koefte-schmorgemuese')
     expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('schweinehack-zitronengras-reisnudel-bowl')
     expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('lauch-linsen-buchweizen-galette')
+    expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('aloo-tikki-linsen-raita')
+    expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('garnelen-kuerbis-gnocchi-salbei')
+    expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('puten-sellerie-paprikasch-dinkelspaetzle')
   })
 })
