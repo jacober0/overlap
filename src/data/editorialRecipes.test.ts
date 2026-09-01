@@ -3,7 +3,7 @@ import { validateCatalog } from '../domain/catalog'
 import { editorialAppRecipes, editorialRecipes, publishableEditorialRecipes } from './editorialRecipes'
 
 describe('originaler redaktioneller Rezeptkatalog', () => {
-  it('liefert neunundsechzig inhaltlich veröffentlichungsfähige Originalrezepte in zwanzig eigenständigen Batches', () => {
+  it('liefert zweiundsiebzig inhaltlich veröffentlichungsfähige Originalrezepte in einundzwanzig eigenständigen Batches', () => {
     expect(editorialRecipes.map(recipe => recipe.externalId)).toEqual([
       'overlap-013-rote-linsen-kokos-suppe',
       'overlap-014-pilz-graupen-risotto',
@@ -74,9 +74,12 @@ describe('originaler redaktioneller Rezeptkatalog', () => {
       'overlap-079-hirse-pilz-kohlrouladen',
       'overlap-080-puten-zucchini-mais-laibchen',
       'overlap-081-birnen-bohnen-kartoffel-eintopf',
+      'overlap-082-herings-kartoffel-rote-bete-salat',
+      'overlap-083-okra-linsen-hirse-eintopf',
+      'overlap-084-spargel-dinkel-crepes-kraeuterquark',
     ])
     expect(validateCatalog(editorialRecipes, new Date('2026-08-31T12:00:00Z'))).toEqual([])
-    expect(publishableEditorialRecipes).toHaveLength(69)
+    expect(publishableEditorialRecipes).toHaveLength(72)
   })
 
   it('enthält Kochanleitung, Preisgrundlage, Allergene, Provenienz und Bildprompt vollständig', () => {
@@ -106,5 +109,8 @@ describe('originaler redaktioneller Rezeptkatalog', () => {
     expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('hirse-pilz-kohlrouladen')
     expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('puten-zucchini-mais-laibchen')
     expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('birnen-bohnen-kartoffel-eintopf')
+    expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('herings-kartoffel-rote-bete-salat')
+    expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('okra-linsen-hirse-eintopf')
+    expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('spargel-dinkel-crepes-kraeuterquark')
   })
 })
