@@ -3,7 +3,7 @@ import { validateCatalog } from '../domain/catalog'
 import { editorialAppRecipes, editorialRecipes, publishableEditorialRecipes } from './editorialRecipes'
 
 describe('originaler redaktioneller Rezeptkatalog', () => {
-  it('liefert siebenundachtzig inhaltlich veröffentlichungsfähige Originalrezepte in sechsundzwanzig eigenständigen Batches', () => {
+  it('liefert neunzig inhaltlich veröffentlichungsfähige Originalrezepte in siebenundzwanzig eigenständigen Batches', () => {
     expect(editorialRecipes.map(recipe => recipe.externalId)).toEqual([
       'overlap-013-rote-linsen-kokos-suppe',
       'overlap-014-pilz-graupen-risotto',
@@ -92,9 +92,12 @@ describe('originaler redaktioneller Rezeptkatalog', () => {
       'overlap-097-rote-bete-bohnen-knoedel-wirsing',
       'overlap-098-sardinen-tomaten-vollkorn-couscous',
       'overlap-099-polenta-bohnen-tamale-auflauf',
+      'overlap-100-gruenkern-zucchini-laibchen-tomatenbohnen',
+      'overlap-101-schweinefilet-linsen-aprikosen-tagine',
+      'overlap-102-tofu-mais-okonomiyaki',
     ])
     expect(validateCatalog(editorialRecipes, new Date('2026-08-31T12:00:00Z'))).toEqual([])
-    expect(publishableEditorialRecipes).toHaveLength(87)
+    expect(publishableEditorialRecipes).toHaveLength(90)
   })
 
   it('enthält Kochanleitung, Preisgrundlage, Allergene, Provenienz und Bildprompt vollständig', () => {
@@ -142,5 +145,8 @@ describe('originaler redaktioneller Rezeptkatalog', () => {
     expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('rote-bete-bohnen-knoedel-wirsing')
     expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('sardinen-tomaten-vollkorn-couscous')
     expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('polenta-bohnen-tamale-auflauf')
+    expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('gruenkern-zucchini-laibchen-tomatenbohnen')
+    expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('schweinefilet-linsen-aprikosen-tagine')
+    expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('tofu-mais-okonomiyaki')
   })
 })
