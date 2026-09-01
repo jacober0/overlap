@@ -76,6 +76,9 @@ export const recipeImageManifest = [
   { id: 'schwarzwurzel-linsen-haselnuss-pfanne', dish: 'A broad charcoal skillet of ivory salsify batons with lightly caramelized edges, distinct dark mountain lentils and thin red-skinned apple wedges in a light grainy mustard glaze, topped with toasted chopped hazelnuts; entirely plant-based, no meat and no pasta.' },
   { id: 'heilbutt-spinat-kartoffel-paeckchen', dish: 'An opened parchment parcel on a charcoal plate revealing one thick opaque-white baked halibut fillet over abundant wilted dark-green spinach and pale leek rings, with small golden dill potatoes and lemon beside it; fish fully cooked, no salmon and no bread.' },
   { id: 'reh-wurzelgemuese-dinkel-topf', dish: 'A deep charcoal bowl of rich dark-red venison stew with abundant distinct lean browned venison cubes, glossy whole spelt grains, ivory parsnip, orange carrot and pale celeriac cubes, finished with fresh parsley; no noodles, no potatoes and no cream.' },
+  { id: 'artischocken-erbsen-risotto', dish: 'A wide shallow charcoal bowl of creamy pale risotto with distinct glossy short rice grains and bright green peas, topped with several golden-seared halved artichoke hearts, fine lemon zest and restrained parsley; entirely plant-based, no cheese and no meat.' },
+  { id: 'lamm-kofta-kichererbsen-blech', dish: 'A broad charcoal serving plate with four distinct browned oblong lamb kofta, roasted chickpeas, deeply caramelized aubergine cubes, blistered red cherry tomatoes and red onion wedges, beside a small bowl of lemon yogurt; meat fully cooked, no bread and no rice.' },
+  { id: 'quark-mohn-schmarrn-zwetschgen', dish: 'A charcoal plate piled with irregular fluffy golden torn quark schmarrn pieces visibly speckled with blue poppy seeds, beside glossy warm purple plum quarters in a small pool of fruit juice; sweet skillet dish, no whole pancake and no ice cream.' },
 ]
 
 const projectRoot = dirname(dirname(fileURLToPath(import.meta.url)))
