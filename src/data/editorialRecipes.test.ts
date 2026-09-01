@@ -3,7 +3,7 @@ import { validateCatalog } from '../domain/catalog'
 import { editorialAppRecipes, editorialRecipes, publishableEditorialRecipes } from './editorialRecipes'
 
 describe('originaler redaktioneller Rezeptkatalog', () => {
-  it('liefert neunundneunzig inhaltlich veröffentlichungsfähige Originalrezepte in dreißig eigenständigen Batches', () => {
+  it('liefert einhundertundzwei inhaltlich veröffentlichungsfähige Originalrezepte in einunddreißig eigenständigen Batches', () => {
     expect(editorialRecipes.map(recipe => recipe.externalId)).toEqual([
       'overlap-013-rote-linsen-kokos-suppe',
       'overlap-014-pilz-graupen-risotto',
@@ -104,9 +104,12 @@ describe('originaler redaktioneller Rezeptkatalog', () => {
       'overlap-109-gochujang-tempeh-glasnudelsalat',
       'overlap-110-ofenmakrele-rote-bete-meerrettich-hirse',
       'overlap-111-fenchel-linsen-lasagne-ziegenkaese',
+      'overlap-112-kartoffel-erbsen-samosa-blech',
+      'overlap-113-rind-brokkoli-udon-pfanne',
+      'overlap-114-kichererbsen-mangold-farinata',
     ])
     expect(validateCatalog(editorialRecipes, new Date('2026-08-31T12:00:00Z'))).toEqual([])
-    expect(publishableEditorialRecipes).toHaveLength(99)
+    expect(publishableEditorialRecipes).toHaveLength(102)
   })
 
   it('enthält Kochanleitung, Preisgrundlage, Allergene, Provenienz und Bildprompt vollständig', () => {
@@ -166,5 +169,8 @@ describe('originaler redaktioneller Rezeptkatalog', () => {
     expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('gochujang-tempeh-glasnudelsalat')
     expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('ofenmakrele-rote-bete-meerrettich-hirse')
     expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('fenchel-linsen-lasagne-ziegenkaese')
+    expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('kartoffel-erbsen-samosa-blech')
+    expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('rind-brokkoli-udon-pfanne')
+    expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('kichererbsen-mangold-farinata')
   })
 })
