@@ -3,7 +3,7 @@ import { validateCatalog } from '../domain/catalog'
 import { editorialAppRecipes, editorialRecipes, publishableEditorialRecipes } from './editorialRecipes'
 
 describe('originaler redaktioneller Rezeptkatalog', () => {
-  it('liefert einhundertundelf inhaltlich veröffentlichungsfähige Originalrezepte in vierunddreißig eigenständigen Batches', () => {
+  it('liefert einhundertundvierzehn inhaltlich veröffentlichungsfähige Originalrezepte in fünfunddreißig eigenständigen Batches', () => {
     expect(editorialRecipes.map(recipe => recipe.externalId)).toEqual([
       'overlap-013-rote-linsen-kokos-suppe',
       'overlap-014-pilz-graupen-risotto',
@@ -116,9 +116,12 @@ describe('originaler redaktioneller Rezeptkatalog', () => {
       'overlap-121-kimchi-tofu-kartoffel-eintopf',
       'overlap-122-seelachs-linsen-frikadellen-fenchelsalat',
       'overlap-123-mais-spinat-quinoa-puffer-bohnen-salsa',
+      'overlap-124-weisse-bohnen-kuerbis-cassoulet',
+      'overlap-125-saibling-mais-kartoffel-chowder',
+      'overlap-126-rind-wirsing-pflaumen-schmortopf',
     ])
     expect(validateCatalog(editorialRecipes, new Date('2026-08-31T12:00:00Z'))).toEqual([])
-    expect(publishableEditorialRecipes).toHaveLength(111)
+    expect(publishableEditorialRecipes).toHaveLength(114)
   })
 
   it('enthält Kochanleitung, Preisgrundlage, Allergene, Provenienz und Bildprompt vollständig', () => {
@@ -190,5 +193,8 @@ describe('originaler redaktioneller Rezeptkatalog', () => {
     expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('kimchi-tofu-kartoffel-eintopf')
     expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('seelachs-linsen-frikadellen-fenchelsalat')
     expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('mais-spinat-quinoa-puffer-bohnen-salsa')
+    expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('weisse-bohnen-kuerbis-cassoulet')
+    expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('saibling-mais-kartoffel-chowder')
+    expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('rind-wirsing-pflaumen-schmortopf')
   })
 })
