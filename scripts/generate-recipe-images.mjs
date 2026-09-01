@@ -85,6 +85,9 @@ export const recipeImageManifest = [
   { id: 'raeuchertofu-steckrueben-gulasch', dish: 'A deep charcoal bowl of thick ruby-red paprika goulash with abundant browned smoked-tofu cubes, pale-golden swede cubes, small potatoes and red pepper strips, finished with restrained parsley; entirely plant-based, no meat, no noodles and no cream.' },
   { id: 'makrelen-linsen-apfel-salat', dish: 'A wide charcoal bowl of warm dark mountain-lentil salad with generous moist flakes of smoked mackerel, thin ivory fennel strips, crisp red-skinned apple wedges and fresh baby spinach, finished with dill; no bread, no potatoes and no canned fish.' },
   { id: 'kuerbis-spinat-polenta-schnitten', dish: 'A charcoal plate with three thick rectangular golden baked polenta slices topped with caramelized orange Hokkaido pumpkin cubes, dark-green wilted spinach, coarse white feta crumbles and toasted pumpkin seeds; vegetarian, no meat, no bread and no pasta.' },
+  { id: 'linsen-pilz-walnuss-braten', dish: 'A charcoal serving plate with four thick slices of a dark golden vegan lentil mushroom walnut loaf showing a coarse moist interior, beside caramelized ivory parsley-root batons and a restrained thyme garnish; no meat, no gravy and no bread.' },
+  { id: 'saibling-kohlrabi-dinkel-risotto', dish: 'A wide shallow charcoal bowl of creamy glossy whole spelt risotto with pale-green kohlrabi cubes and bright peas, topped by one crisp skin-on pan-fried arctic char fillet, lemon zest and fresh dill; no rice, no pasta and no salmon.' },
+  { id: 'rind-bohnen-kuerbis-pfanne', dish: 'A broad charcoal skillet with abundant browned lean beef strips, caramelized orange Hokkaido pumpkin cubes, vivid green bean pieces and distinct toasted triangular buckwheat groats in a light mustard glaze; beef fully cooked, no rice, no noodles and no potatoes.' },
 ]
 
 const projectRoot = dirname(dirname(fileURLToPath(import.meta.url)))
