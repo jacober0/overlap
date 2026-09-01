@@ -3,7 +3,7 @@ import { validateCatalog } from '../domain/catalog'
 import { editorialAppRecipes, editorialRecipes, publishableEditorialRecipes } from './editorialRecipes'
 
 describe('originaler redaktioneller Rezeptkatalog', () => {
-  it('liefert achtundsiebzig inhaltlich veröffentlichungsfähige Originalrezepte in dreiundzwanzig eigenständigen Batches', () => {
+  it('liefert einundachtzig inhaltlich veröffentlichungsfähige Originalrezepte in vierundzwanzig eigenständigen Batches', () => {
     expect(editorialRecipes.map(recipe => recipe.externalId)).toEqual([
       'overlap-013-rote-linsen-kokos-suppe',
       'overlap-014-pilz-graupen-risotto',
@@ -83,9 +83,12 @@ describe('originaler redaktioneller Rezeptkatalog', () => {
       'overlap-088-tempeh-sauerkraut-kartoffel-pfanne',
       'overlap-089-buchweizen-pilz-blini-rote-bete-quark',
       'overlap-090-dorade-fenchel-bohnen-blech',
+      'overlap-091-lauch-tofu-wan-tan-suppe',
+      'overlap-092-forellen-wirsing-kartoffel-auflauf',
+      'overlap-093-rinderhack-paprika-buchweizen-pfanne',
     ])
     expect(validateCatalog(editorialRecipes, new Date('2026-08-31T12:00:00Z'))).toEqual([])
-    expect(publishableEditorialRecipes).toHaveLength(78)
+    expect(publishableEditorialRecipes).toHaveLength(81)
   })
 
   it('enthält Kochanleitung, Preisgrundlage, Allergene, Provenienz und Bildprompt vollständig', () => {
@@ -109,6 +112,9 @@ describe('originaler redaktioneller Rezeptkatalog', () => {
     expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('tempeh-sauerkraut-kartoffel-pfanne')
     expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('buchweizen-pilz-blini-rote-bete-quark')
     expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('dorade-fenchel-bohnen-blech')
+    expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('lauch-tofu-wan-tan-suppe')
+    expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('forellen-wirsing-kartoffel-auflauf')
+    expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('rinderhack-paprika-buchweizen-pfanne')
     expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('eier-senfsauce-spinatkartoffeln')
     expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('maronen-rosenkohl-graupenpfanne')
     expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('schweinegeschnetzeltes-kohlrabi-vollkornreis')

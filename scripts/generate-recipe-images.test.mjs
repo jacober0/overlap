@@ -22,7 +22,7 @@ const response = (contentType, bytes, ok = true, status = 200) => ({
 
 describe('recipe image manifest and prompt contract', () => {
   it('defines exactly one dish-specific prompt for every local publishable recipe', () => {
-    expect(recipeImageManifest).toHaveLength(90)
+    expect(recipeImageManifest).toHaveLength(93)
     expect(recipeImageManifest.map(({ id }) => id)).toEqual([
       'tomatenpasta', 'kichererbsencurry', 'ofengemuese', 'linsenbolognese',
       'tacos', 'reisbowl', 'shakshuka', 'gnocchi', 'haehnchenblech',
@@ -76,8 +76,11 @@ describe('recipe image manifest and prompt contract', () => {
       'tempeh-sauerkraut-kartoffel-pfanne',
       'buchweizen-pilz-blini-rote-bete-quark',
       'dorade-fenchel-bohnen-blech',
+      'lauch-tofu-wan-tan-suppe',
+      'forellen-wirsing-kartoffel-auflauf',
+      'rinderhack-paprika-buchweizen-pfanne',
     ])
-    expect(new Set(recipeImageManifest.map(({ dish }) => dish)).size).toBe(90)
+    expect(new Set(recipeImageManifest.map(({ dish }) => dish)).size).toBe(93)
     expect(recipeImageManifest.every(({ dish }) => dish.length >= 80)).toBe(true)
   })
 
