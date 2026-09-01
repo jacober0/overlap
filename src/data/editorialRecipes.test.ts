@@ -3,7 +3,7 @@ import { validateCatalog } from '../domain/catalog'
 import { editorialAppRecipes, editorialRecipes, publishableEditorialRecipes } from './editorialRecipes'
 
 describe('originaler redaktioneller Rezeptkatalog', () => {
-  it('liefert sechsundsechzig inhaltlich veröffentlichungsfähige Originalrezepte in neunzehn eigenständigen Batches', () => {
+  it('liefert neunundsechzig inhaltlich veröffentlichungsfähige Originalrezepte in zwanzig eigenständigen Batches', () => {
     expect(editorialRecipes.map(recipe => recipe.externalId)).toEqual([
       'overlap-013-rote-linsen-kokos-suppe',
       'overlap-014-pilz-graupen-risotto',
@@ -71,9 +71,12 @@ describe('originaler redaktioneller Rezeptkatalog', () => {
       'overlap-076-linsen-pilz-walnuss-braten',
       'overlap-077-saibling-kohlrabi-dinkel-risotto',
       'overlap-078-rind-bohnen-kuerbis-pfanne',
+      'overlap-079-hirse-pilz-kohlrouladen',
+      'overlap-080-puten-zucchini-mais-laibchen',
+      'overlap-081-birnen-bohnen-kartoffel-eintopf',
     ])
     expect(validateCatalog(editorialRecipes, new Date('2026-08-31T12:00:00Z'))).toEqual([])
-    expect(publishableEditorialRecipes).toHaveLength(66)
+    expect(publishableEditorialRecipes).toHaveLength(69)
   })
 
   it('enthält Kochanleitung, Preisgrundlage, Allergene, Provenienz und Bildprompt vollständig', () => {
@@ -100,5 +103,8 @@ describe('originaler redaktioneller Rezeptkatalog', () => {
     expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('linsen-pilz-walnuss-braten')
     expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('saibling-kohlrabi-dinkel-risotto')
     expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('rind-bohnen-kuerbis-pfanne')
+    expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('hirse-pilz-kohlrouladen')
+    expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('puten-zucchini-mais-laibchen')
+    expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('birnen-bohnen-kartoffel-eintopf')
   })
 })

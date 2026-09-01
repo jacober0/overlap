@@ -88,6 +88,9 @@ export const recipeImageManifest = [
   { id: 'linsen-pilz-walnuss-braten', dish: 'A charcoal serving plate with four thick slices of a dark golden vegan lentil mushroom walnut loaf showing a coarse moist interior, beside caramelized ivory parsley-root batons and a restrained thyme garnish; no meat, no gravy and no bread.' },
   { id: 'saibling-kohlrabi-dinkel-risotto', dish: 'A wide shallow charcoal bowl of creamy glossy whole spelt risotto with pale-green kohlrabi cubes and bright peas, topped by one crisp skin-on pan-fried arctic char fillet, lemon zest and fresh dill; no rice, no pasta and no salmon.' },
   { id: 'rind-bohnen-kuerbis-pfanne', dish: 'A broad charcoal skillet with abundant browned lean beef strips, caramelized orange Hokkaido pumpkin cubes, vivid green bean pieces and distinct toasted triangular buckwheat groats in a light mustard glaze; beef fully cooked, no rice, no noodles and no potatoes.' },
+  { id: 'hirse-pilz-kohlrouladen', dish: 'A dark oval baking dish with four distinct pale-green savoy cabbage rolls lightly browned at the seams in a vivid smooth red pepper sauce, one roll cut open to show golden millet grains, dark mushroom pieces and chopped walnuts; entirely plant-based, no meat and no rice.' },
+  { id: 'puten-zucchini-mais-laibchen', dish: 'A charcoal dinner plate with four flat golden-brown turkey patties visibly flecked with green zucchini shreds and yellow corn kernels, beside distinct brown rice in a chunky red tomato sauce; patties fully cooked, no beef, no potatoes and no bread.' },
+  { id: 'birnen-bohnen-kartoffel-eintopf', dish: 'A deep charcoal bowl of clear golden rustic stew with distinct yellow potato chunks, abundant vivid green bean pieces, skin-on pale pear wedges and crisp dark-brown smoked-tofu cubes, finished with restrained savory leaves; entirely plant-based, no meat, no cream and no bread.' },
 ]
 
 const projectRoot = dirname(dirname(fileURLToPath(import.meta.url)))
