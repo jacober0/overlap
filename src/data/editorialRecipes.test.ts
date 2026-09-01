@@ -3,7 +3,7 @@ import { validateCatalog } from '../domain/catalog'
 import { editorialAppRecipes, editorialRecipes, publishableEditorialRecipes } from './editorialRecipes'
 
 describe('originaler redaktioneller Rezeptkatalog', () => {
-  it('liefert einhundertsechsundzwanzig inhaltlich veröffentlichungsfähige Originalrezepte in neununddreißig eigenständigen Batches', () => {
+  it('liefert einhundertneunundzwanzig inhaltlich veröffentlichungsfähige Originalrezepte in vierzig eigenständigen Batches', () => {
     expect(editorialRecipes.map(recipe => recipe.externalId)).toEqual([
       'overlap-013-rote-linsen-kokos-suppe',
       'overlap-014-pilz-graupen-risotto',
@@ -131,9 +131,12 @@ describe('originaler redaktioneller Rezeptkatalog', () => {
       'overlap-136-spargel-linsen-erdbeer-salat',
       'overlap-137-forellen-hirse-kuechle-gurkensalat',
       'overlap-138-haehnchen-rhabarber-kichererbsen-tagine',
+      'overlap-139-tofu-ananas-naturreis-pfanne',
+      'overlap-140-tintenfisch-bohnen-polenta',
+      'overlap-141-sellerie-linsen-strudel-apfelkraut',
     ])
     expect(validateCatalog(editorialRecipes, new Date('2026-08-31T12:00:00Z'))).toEqual([])
-    expect(publishableEditorialRecipes).toHaveLength(126)
+    expect(publishableEditorialRecipes).toHaveLength(129)
   })
 
   it('enthält Kochanleitung, Preisgrundlage, Allergene, Provenienz und Bildprompt vollständig', () => {
@@ -220,5 +223,8 @@ describe('originaler redaktioneller Rezeptkatalog', () => {
     expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('spargel-linsen-erdbeer-salat')
     expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('forellen-hirse-kuechle-gurkensalat')
     expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('haehnchen-rhabarber-kichererbsen-tagine')
+    expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('tofu-ananas-naturreis-pfanne')
+    expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('tintenfisch-bohnen-polenta')
+    expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('sellerie-linsen-strudel-apfelkraut')
   })
 })
