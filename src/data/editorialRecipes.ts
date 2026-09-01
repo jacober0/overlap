@@ -1839,12 +1839,110 @@ export const editorialRecipes: EditorialRecipe[] = [
     priceBasis: 'Summierte Zutatenkosten für zwei Portionen anhand eines DE-BW-Mischkorbs vom 31.08.2026; Zimt und Salz als Vorrat nicht eingepreist.',
     imagePrompt: 'A charcoal plate piled with irregular fluffy golden torn quark schmarrn pieces visibly speckled with blue poppy seeds, beside glossy warm purple plum quarters in a small pool of fruit juice; sweet skillet dish, no whole pancake and no ice cream.',
   },
+  {
+    ...common('eier-senfsauce-spinatkartoffeln'),
+    externalId: 'overlap-070-eier-senfsauce-spinatkartoffeln',
+    title: 'Eier in Senfsauce mit Spinatkartoffeln',
+    description: 'Wachsweiche Eier liegen in einer milden körnigen Senfsauce, begleitet von gestampften Kartoffeln mit frischem Blattspinat.',
+    totalMinutes: 36, activeMinutes: 25, diet: 'vegetarisch', tags: ['deutsch', 'klassiker', 'fruehling'],
+    ingredients: [
+      { canonicalId: 'ei', name: 'Eier', amount: 4, unit: 'Stück', category: 'Kühlregal', estimatedCostCents: 140, allergens: ['ei'] },
+      { canonicalId: 'mehligkochende-kartoffel', name: 'Mehligkochende Kartoffeln', amount: 600, unit: 'g', category: 'Gemüse', estimatedCostCents: 95 },
+      { canonicalId: 'blattspinat', name: 'Frischer Blattspinat', amount: 250, unit: 'g', category: 'Gemüse', estimatedCostCents: 125 },
+      { canonicalId: 'milch', name: 'Milch', amount: 350, unit: 'ml', category: 'Kühlregal', estimatedCostCents: 45, allergens: ['milch'] },
+      { canonicalId: 'koerniger-senf', name: 'Körniger Senf', amount: 35, unit: 'g', category: 'Kühlregal', estimatedCostCents: 22, allergens: ['senf'] },
+      { canonicalId: 'butter', name: 'Butter', amount: 35, unit: 'g', category: 'Kühlregal', estimatedCostCents: 35, allergens: ['milch'] },
+      { canonicalId: 'weizenmehl', name: 'Weizenmehl Type 405', amount: 25, unit: 'g', category: 'Trockenwaren', estimatedCostCents: 3, allergens: ['gluten'] },
+      { canonicalId: 'schnittlauch', name: 'Schnittlauch', amount: 15, unit: 'g', category: 'Gemüse', estimatedCostCents: 45 },
+    ],
+    allergens: ['ei', 'milch', 'senf', 'gluten'],
+    steps: [
+      'Kartoffeln schälen, in gleich große Stücke schneiden und in leicht gesalzenem Wasser 18 Minuten weich kochen.',
+      'Eier in einem zweiten Topf acht Minuten kochen, kalt abschrecken und nach kurzem Abkühlen vorsichtig pellen.',
+      'Spinat gründlich waschen, trocken schleudern und in zehn Gramm Butter zwei Minuten zusammenfallen lassen.',
+      'Für die Sauce 20 Gramm Butter schmelzen, Mehl einrühren und unter Rühren eine Minute hell anschwitzen.',
+      '250 Milliliter Milch schrittweise einrühren, die Sauce fünf Minuten leise köcheln und anschließend den Senf unterziehen.',
+      'Kartoffeln abgießen, kurz ausdampfen lassen und mit übriger Milch, Butter und Spinat grob zerstampfen.',
+      'Eier halbieren, in der heißen Senfsauce zwei Minuten erwärmen und mit Spinatkartoffeln sowie Schnittlauch anrichten.',
+    ],
+    nutrition: { kcal: 621, protein: 30, carbs: 70, fat: 25, fiber: 10 }, estimatedPriceCents: 510,
+    priceBasis: 'Summierte Zutatenkosten für zwei Portionen anhand eines DE-BW-Mischkorbs vom 31.08.2026; Salz, Pfeffer und Muskat als Vorrat nicht eingepreist.',
+    imagePrompt: 'A charcoal dinner plate with four clearly halved soft-boiled eggs in a pale creamy grainy-mustard sauce, beside a rustic mound of crushed potatoes marbled with abundant dark-green wilted spinach, finished with chopped chives; vegetarian, no meat and no bread.',
+  },
+  {
+    ...common('maronen-rosenkohl-graupenpfanne'),
+    externalId: 'overlap-071-maronen-rosenkohl-graupenpfanne',
+    title: 'Maronen-Rosenkohl-Graupenpfanne',
+    description: 'Gerösteter Rosenkohl, süßliche Maronen und kernige Graupen verbinden sich mit Apfel und einer leichten Senfglasur.',
+    totalMinutes: 44, activeMinutes: 24, diet: 'vegan', tags: ['pfannengericht', 'vegan', 'winter'],
+    ingredients: [
+      { canonicalId: 'perlgraupen', name: 'Perlgraupen', amount: 180, unit: 'g', category: 'Trockenwaren', estimatedCostCents: 55, allergens: ['gluten'] },
+      { canonicalId: 'rosenkohl', name: 'Rosenkohl', amount: 450, unit: 'g', category: 'Gemüse', estimatedCostCents: 150 },
+      { canonicalId: 'vorgegarte-marone', name: 'Vorgegarte Maronen', amount: 200, unit: 'g', category: 'Trockenwaren', estimatedCostCents: 250 },
+      { canonicalId: 'apfel', name: 'Säuerlicher Apfel', amount: 180, unit: 'g', category: 'Obst', estimatedCostCents: 45 },
+      { canonicalId: 'gemuesebruehe', name: 'Gemüsebrühe', amount: 600, unit: 'ml', category: 'Trockenwaren', estimatedCostCents: 25, allergens: ['sellerie'] },
+      { canonicalId: 'koerniger-senf', name: 'Körniger Senf', amount: 25, unit: 'g', category: 'Kühlregal', estimatedCostCents: 15, allergens: ['senf'] },
+      { canonicalId: 'rapsoel', name: 'Rapsöl', amount: 25, unit: 'ml', category: 'Trockenwaren', estimatedCostCents: 13 },
+      { canonicalId: 'petersilie', name: 'Glatte Petersilie', amount: 20, unit: 'g', category: 'Gemüse', estimatedCostCents: 55 },
+    ],
+    allergens: ['gluten', 'sellerie', 'senf'],
+    steps: [
+      'Perlgraupen in einem Sieb abspülen, mit der Gemüsebrühe aufkochen und zugedeckt 25 Minuten bissfest garen.',
+      'Rosenkohl putzen, welke Außenblätter entfernen und die Röschen abhängig von ihrer Größe halbieren oder vierteln.',
+      'Rapsöl in einer großen Pfanne erhitzen und den Rosenkohl mit den Schnittflächen nach unten sechs Minuten kräftig braten.',
+      'Vier Esslöffel Wasser angießen und den Rosenkohl zugedeckt weitere sechs Minuten garen, bis er knapp weich ist.',
+      'Maronen grob zerbrechen, zum Rosenkohl geben und alles vier Minuten offen rösten, bis die Kanten gebräunt sind.',
+      'Apfel entkernen, in dünne Spalten schneiden und zusammen mit abgetropften Graupen zwei Minuten in der Pfanne schwenken.',
+      'Senf mit drei Esslöffeln Garbrühe verrühren, unter die Pfanne ziehen und das Gericht mit Petersilie bestreut servieren.',
+    ],
+    nutrition: { kcal: 653, protein: 17, carbs: 119, fat: 14, fiber: 20 }, estimatedPriceCents: 608,
+    priceBasis: 'Summierte Zutatenkosten für zwei Portionen anhand eines DE-BW-Mischkorbs vom 31.08.2026; Wasser, Salz und Pfeffer als Vorrat nicht eingepreist.',
+    imagePrompt: 'A broad charcoal skillet of glossy pearl barley grains with abundant deeply browned halved Brussels sprouts, chunky golden chestnut pieces and thin red-skinned apple wedges in a light grainy-mustard glaze, finished with parsley; entirely plant-based, no meat and no cheese.',
+  },
+  {
+    ...common('schweinegeschnetzeltes-kohlrabi-vollkornreis'),
+    externalId: 'overlap-072-schweinegeschnetzeltes-kohlrabi-vollkornreis',
+    title: 'Schweinegeschnetzeltes mit Kohlrabi und Vollkornreis',
+    description: 'Zarte Schweinefiletstreifen und Kohlrabi garen in einer leichten Zitronen-Dill-Sauce, dazu gibt es nussigen Vollkornreis.',
+    totalMinutes: 41, activeMinutes: 24, diet: 'omnivor', tags: ['pfannengericht', 'proteinreich', 'fruehling'],
+    ingredients: [
+      { canonicalId: 'schweinefilet', name: 'Schweinefilet', amount: 350, unit: 'g', category: 'Fleisch', estimatedCostCents: 525 },
+      { canonicalId: 'vollkornreis', name: 'Vollkornreis', amount: 180, unit: 'g', category: 'Trockenwaren', estimatedCostCents: 55 },
+      { canonicalId: 'kohlrabi', name: 'Kohlrabi', amount: 500, unit: 'g', category: 'Gemüse', estimatedCostCents: 130 },
+      { canonicalId: 'naturjoghurt', name: 'Naturjoghurt', amount: 200, unit: 'g', category: 'Kühlregal', estimatedCostCents: 60, allergens: ['milch'] },
+      { canonicalId: 'gemuesebruehe', name: 'Gemüsebrühe', amount: 250, unit: 'ml', category: 'Trockenwaren', estimatedCostCents: 15, allergens: ['sellerie'] },
+      { canonicalId: 'zitrone', name: 'Bio-Zitrone', amount: 1, unit: 'Stück', category: 'Obst', estimatedCostCents: 55 },
+      { canonicalId: 'dill', name: 'Frischer Dill', amount: 20, unit: 'g', category: 'Gemüse', estimatedCostCents: 55 },
+      { canonicalId: 'rapsoel', name: 'Rapsöl', amount: 20, unit: 'ml', category: 'Trockenwaren', estimatedCostCents: 10 },
+    ],
+    allergens: ['milch', 'sellerie'],
+    steps: [
+      'Vollkornreis gründlich waschen und nach Packungsangabe in leicht gesalzenem Wasser etwa 30 Minuten bissfest garen.',
+      'Kohlrabi schälen, holzige Stellen entfernen und die Knollen in dünne, ungefähr vier Zentimeter lange Stifte schneiden.',
+      'Schweinefilet trocken tupfen, quer zur Faser in schmale Streifen schneiden und leicht mit Salz und Pfeffer würzen.',
+      'Die Hälfte des Rapsöls in einer großen Pfanne stark erhitzen und das Fleisch in zwei Portionen je zwei Minuten bräunen.',
+      'Fleisch herausnehmen, übriges Öl und Kohlrabi in die Pfanne geben und fünf Minuten unter Wenden kräftig anbraten.',
+      'Gemüsebrühe angießen und Kohlrabi zugedeckt sieben Minuten garen, bis die Stifte weich sind und noch leichten Biss haben.',
+      'Pfanne vom Herd ziehen, Joghurt, Zitronenabrieb und Dill einrühren, Fleisch kurz darin erwärmen und mit Reis servieren.',
+    ],
+    nutrition: { kcal: 670, protein: 53, carbs: 80, fat: 16, fiber: 9 }, estimatedPriceCents: 905,
+    priceBasis: 'Summierte Zutatenkosten für zwei Portionen anhand eines DE-BW-Mischkorbs vom 31.08.2026; Wasser, Salz und Pfeffer als Vorrat nicht eingepreist.',
+    imagePrompt: 'A broad charcoal bowl with distinct brown whole-grain rice beside abundant browned lean pork tenderloin strips and pale-green kohlrabi batons in a light creamy lemon-dill sauce, finished with fresh dill; pork fully cooked, no noodles and no potatoes.',
+  },
 ]
 
 const evaluated = evaluateProviderPage({ recipes: editorialRecipes, nextCursor: null }, new Date('2026-08-31T12:00:00Z'))
 export const publishableEditorialRecipes = evaluated.accepted as EditorialRecipe[]
 
-export const editorialAppRecipes: Recipe[] = publishableEditorialRecipes.map(recipe => ({
+const pendingImageIds = new Set([
+  'eier-senfsauce-spinatkartoffeln',
+  'maronen-rosenkohl-graupenpfanne',
+  'schweinegeschnetzeltes-kohlrabi-vollkornreis',
+])
+
+export const editorialAppRecipes: Recipe[] = publishableEditorialRecipes
+  .filter(recipe => !pendingImageIds.has(recipe.appId))
+  .map(recipe => ({
   id: recipe.appId,
   title: recipe.title,
   description: recipe.description,

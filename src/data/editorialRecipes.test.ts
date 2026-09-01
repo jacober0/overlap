@@ -1,9 +1,9 @@
 import { describe, expect, it } from 'vitest'
 import { validateCatalog } from '../domain/catalog'
-import { editorialRecipes, publishableEditorialRecipes } from './editorialRecipes'
+import { editorialAppRecipes, editorialRecipes, publishableEditorialRecipes } from './editorialRecipes'
 
 describe('originaler redaktioneller Rezeptkatalog', () => {
-  it('liefert siebenundfünfzig veröffentlichungsfähige Originalrezepte in sechzehn eigenständigen Batches', () => {
+  it('liefert sechzig veröffentlichungsfähige Originalrezepte in siebzehn eigenständigen Batches', () => {
     expect(editorialRecipes.map(recipe => recipe.externalId)).toEqual([
       'overlap-013-rote-linsen-kokos-suppe',
       'overlap-014-pilz-graupen-risotto',
@@ -62,9 +62,12 @@ describe('originaler redaktioneller Rezeptkatalog', () => {
       'overlap-067-artischocken-erbsen-risotto',
       'overlap-068-lamm-kofta-kichererbsen-blech',
       'overlap-069-quark-mohn-schmarrn-zwetschgen',
+      'overlap-070-eier-senfsauce-spinatkartoffeln',
+      'overlap-071-maronen-rosenkohl-graupenpfanne',
+      'overlap-072-schweinegeschnetzeltes-kohlrabi-vollkornreis',
     ])
     expect(validateCatalog(editorialRecipes, new Date('2026-08-31T12:00:00Z'))).toEqual([])
-    expect(publishableEditorialRecipes).toHaveLength(57)
+    expect(publishableEditorialRecipes).toHaveLength(60)
   })
 
   it('enthält Kochanleitung, Preisgrundlage, Allergene, Provenienz und Bildprompt vollständig', () => {
@@ -78,5 +81,12 @@ describe('originaler redaktioneller Rezeptkatalog', () => {
       expect(recipe.allergens).toEqual([...new Set(recipe.ingredients.flatMap(ingredient => ingredient.allergens ?? []))])
       expect(recipe.rights.map(right => right.assetKind).sort()).toEqual(['image', 'nutrition', 'recipe_text'])
     }
+  })
+
+  it('hält inhaltlich geprüfte Rezepte ohne bestandenes Bild aus dem App-Katalog zurück', () => {
+    expect(editorialAppRecipes).toHaveLength(57)
+    expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('eier-senfsauce-spinatkartoffeln')
+    expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('maronen-rosenkohl-graupenpfanne')
+    expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('schweinegeschnetzeltes-kohlrabi-vollkornreis')
   })
 })
