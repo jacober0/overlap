@@ -103,6 +103,9 @@ export const recipeImageManifest = [
   { id: 'lauch-tofu-wan-tan-suppe', dish: 'A deep charcoal bowl of clear amber broth holding six distinct folded triangular wontons, pale-green leek rings, quartered vivid pak choi and fine orange carrot sticks, finished with a restrained sesame sheen; entirely plant-based, no meat, no egg, no noodles and no chopsticks in the bowl.' },
   { id: 'forellen-wirsing-kartoffel-auflauf', dish: 'A dark oval baking dish with neat golden potato slices and crinkled pale-green savoy cabbage in a light creamy dill sauce, containing abundant unmistakable flaky pink-white trout pieces and browned edges; fish fully cooked, no salmon, no bread and no pasta.' },
   { id: 'rinderhack-paprika-buchweizen-pfanne', dish: 'A broad charcoal skillet of distinct toasted triangular buckwheat groats with abundant fully browned crumbly lean beef, glossy red and yellow pepper pieces and a rich tomato-paprika coating, finished with parsley; no rice, no noodles, no cheese and no raw meat.' },
+  { id: 'lupinen-kartoffel-gulasch', dish: 'A deep charcoal bowl of thick ruby-red vegan goulash filled with abundant ivory lupin beans, golden potato cubes and glossy red pointed-pepper pieces, finished with restrained parsley; no meat, no sausage, no noodles and no cream.' },
+  { id: 'ziegenkaese-polenta-pfirsich', dish: 'A charcoal plate with four crisp rectangular golden polenta slices, caramelized skin-on peach wedges, coarse white goat-cheese crumbles, a restrained tuft of arugula and toasted almond flakes; vegetarian summer dish, no meat and no bread.' },
+  { id: 'huehnchen-bohnen-jambalaya', dish: 'A broad charcoal bowl of brick-red whole-grain rice jambalaya with abundant fully cooked browned chicken thigh pieces, red kidney beans, red pepper and pale-green celery slices, all ingredients distinct; no sausage, no shrimp, no seafood and no raw meat.' },
 ]
 
 const projectRoot = dirname(dirname(fileURLToPath(import.meta.url)))
