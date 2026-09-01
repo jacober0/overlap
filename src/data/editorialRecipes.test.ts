@@ -3,7 +3,7 @@ import { validateCatalog } from '../domain/catalog'
 import { editorialAppRecipes, editorialRecipes, publishableEditorialRecipes } from './editorialRecipes'
 
 describe('originaler redaktioneller Rezeptkatalog', () => {
-  it('liefert einhundertsechsundfünfzig inhaltlich veröffentlichungsfähige Originalrezepte in neunundvierzig eigenständigen Batches', () => {
+  it('liefert einhundertneunundfünfzig inhaltlich veröffentlichungsfähige Originalrezepte in fünfzig eigenständigen Batches', () => {
     expect(editorialRecipes.map(recipe => recipe.externalId)).toEqual([
       'overlap-013-rote-linsen-kokos-suppe',
       'overlap-014-pilz-graupen-risotto',
@@ -161,9 +161,12 @@ describe('originaler redaktioneller Rezeptkatalog', () => {
       'overlap-166-blumenkohl-linsen-socca-tomatenrelish',
       'overlap-167-rotbarsch-bohnen-rote-bete-paeckchen-dillkartoffeln',
       'overlap-168-puten-mangold-linsen-crepes-paprikasauce',
+      'overlap-169-steckrueben-kichererbsen-roesti-apfelkraut',
+      'overlap-170-forellen-linsen-wan-tan-pak-choi-bruehe',
+      'overlap-171-kuerbis-bohnen-dinkel-calzone-mangold',
     ])
     expect(validateCatalog(editorialRecipes, new Date('2026-08-31T12:00:00Z'))).toEqual([])
-    expect(publishableEditorialRecipes).toHaveLength(156)
+    expect(publishableEditorialRecipes).toHaveLength(159)
   })
 
   it('enthält Kochanleitung, Preisgrundlage, Allergene, Provenienz und Bildprompt vollständig', () => {
@@ -179,7 +182,7 @@ describe('originaler redaktioneller Rezeptkatalog', () => {
     }
   })
 
-  it('leitet die Preisgrundlage des neunundvierzigsten Batches ohne handgepflegte Abweichung aus den Zutaten ab', () => {
+  it('leitet die Preisgrundlage des fünfzigsten Batches ohne handgepflegte Abweichung aus den Zutaten ab', () => {
     for (const recipe of editorialRecipes.slice(-3)) {
       expect(recipe.estimatedPriceCents, recipe.externalId).toBe(
         recipe.ingredients.reduce((total, ingredient) => total + ingredient.estimatedCostCents, 0),
@@ -288,5 +291,8 @@ describe('originaler redaktioneller Rezeptkatalog', () => {
     expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('blumenkohl-linsen-socca-tomatenrelish')
     expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('rotbarsch-bohnen-rote-bete-paeckchen-dillkartoffeln')
     expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('puten-mangold-linsen-crepes-paprikasauce')
+    expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('steckrueben-kichererbsen-roesti-apfelkraut')
+    expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('forellen-linsen-wan-tan-pak-choi-bruehe')
+    expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('kuerbis-bohnen-dinkel-calzone-mangold')
   })
 })
