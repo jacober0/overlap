@@ -3,7 +3,7 @@ import { validateCatalog } from '../domain/catalog'
 import { editorialAppRecipes, editorialRecipes, publishableEditorialRecipes } from './editorialRecipes'
 
 describe('originaler redaktioneller Rezeptkatalog', () => {
-  it('liefert einhundertneunundfünfzig inhaltlich veröffentlichungsfähige Originalrezepte in fünfzig eigenständigen Batches', () => {
+  it('liefert einhundertzweiundsechzig inhaltlich veröffentlichungsfähige Originalrezepte in einundfünfzig eigenständigen Batches', () => {
     expect(editorialRecipes.map(recipe => recipe.externalId)).toEqual([
       'overlap-013-rote-linsen-kokos-suppe',
       'overlap-014-pilz-graupen-risotto',
@@ -164,9 +164,12 @@ describe('originaler redaktioneller Rezeptkatalog', () => {
       'overlap-169-steckrueben-kichererbsen-roesti-apfelkraut',
       'overlap-170-forellen-linsen-wan-tan-pak-choi-bruehe',
       'overlap-171-kuerbis-bohnen-dinkel-calzone-mangold',
+      'overlap-172-kichererbsen-fenchel-panisse-ratatouille',
+      'overlap-173-kalb-lauch-dinkel-frikassee-erbsen',
+      'overlap-174-pflaumen-quark-buchweizen-auflauf-mandeln',
     ])
     expect(validateCatalog(editorialRecipes, new Date('2026-08-31T12:00:00Z'))).toEqual([])
-    expect(publishableEditorialRecipes).toHaveLength(159)
+    expect(publishableEditorialRecipes).toHaveLength(162)
   })
 
   it('enthält Kochanleitung, Preisgrundlage, Allergene, Provenienz und Bildprompt vollständig', () => {
@@ -182,7 +185,7 @@ describe('originaler redaktioneller Rezeptkatalog', () => {
     }
   })
 
-  it('leitet die Preisgrundlage des fünfzigsten Batches ohne handgepflegte Abweichung aus den Zutaten ab', () => {
+  it('leitet die Preisgrundlage des einundfünfzigsten Batches ohne handgepflegte Abweichung aus den Zutaten ab', () => {
     for (const recipe of editorialRecipes.slice(-3)) {
       expect(recipe.estimatedPriceCents, recipe.externalId).toBe(
         recipe.ingredients.reduce((total, ingredient) => total + ingredient.estimatedCostCents, 0),
@@ -294,5 +297,8 @@ describe('originaler redaktioneller Rezeptkatalog', () => {
     expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('steckrueben-kichererbsen-roesti-apfelkraut')
     expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('forellen-linsen-wan-tan-pak-choi-bruehe')
     expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('kuerbis-bohnen-dinkel-calzone-mangold')
+    expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('kichererbsen-fenchel-panisse-ratatouille')
+    expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('kalb-lauch-dinkel-frikassee-erbsen')
+    expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('pflaumen-quark-buchweizen-auflauf-mandeln')
   })
 })
