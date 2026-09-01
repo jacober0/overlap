@@ -3,7 +3,7 @@ import { validateCatalog } from '../domain/catalog'
 import { editorialAppRecipes, editorialRecipes, publishableEditorialRecipes } from './editorialRecipes'
 
 describe('originaler redaktioneller Rezeptkatalog', () => {
-  it('liefert einhundertzweiunddreißig inhaltlich veröffentlichungsfähige Originalrezepte in einundvierzig eigenständigen Batches', () => {
+  it('liefert einhundertfünfunddreißig inhaltlich veröffentlichungsfähige Originalrezepte in zweiundvierzig eigenständigen Batches', () => {
     expect(editorialRecipes.map(recipe => recipe.externalId)).toEqual([
       'overlap-013-rote-linsen-kokos-suppe',
       'overlap-014-pilz-graupen-risotto',
@@ -137,9 +137,12 @@ describe('originaler redaktioneller Rezeptkatalog', () => {
       'overlap-142-raeuchertofu-brokkoli-dinkel-blech',
       'overlap-143-kabeljau-linsen-kokos-paeckchen',
       'overlap-144-pastinaken-buchweizen-gnocchi',
+      'overlap-145-bohnen-rote-bete-falafel-hirse-taboule',
+      'overlap-146-zander-sauerkraut-kartoffel-groestl',
+      'overlap-147-puten-auberginen-bulgur-koefte-auflauf',
     ])
     expect(validateCatalog(editorialRecipes, new Date('2026-08-31T12:00:00Z'))).toEqual([])
-    expect(publishableEditorialRecipes).toHaveLength(132)
+    expect(publishableEditorialRecipes).toHaveLength(135)
   })
 
   it('enthält Kochanleitung, Preisgrundlage, Allergene, Provenienz und Bildprompt vollständig', () => {
@@ -232,5 +235,8 @@ describe('originaler redaktioneller Rezeptkatalog', () => {
     expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('raeuchertofu-brokkoli-dinkel-blech')
     expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('kabeljau-linsen-kokos-paeckchen')
     expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('pastinaken-buchweizen-gnocchi')
+    expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('bohnen-rote-bete-falafel-hirse-taboule')
+    expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('zander-sauerkraut-kartoffel-groestl')
+    expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('puten-auberginen-bulgur-koefte-auflauf')
   })
 })
