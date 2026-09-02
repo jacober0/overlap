@@ -3,7 +3,7 @@ import { validateCatalog } from '../domain/catalog'
 import { editorialAppRecipes, editorialRecipes, publishableEditorialRecipes } from './editorialRecipes'
 
 describe('originaler redaktioneller Rezeptkatalog', () => {
-  it('liefert zweihundertsiebenunddreißig inhaltlich veröffentlichungsfähige Originalrezepte in siebzig eigenständigen Batches', () => {
+  it('liefert zweihundertneunundvierzig inhaltlich veröffentlichungsfähige Originalrezepte in einundsiebzig eigenständigen Batches', () => {
     expect(editorialRecipes.map(recipe => recipe.externalId)).toEqual([
       'overlap-013-rote-linsen-kokos-suppe',
       'overlap-014-pilz-graupen-risotto',
@@ -242,9 +242,21 @@ describe('originaler redaktioneller Rezeptkatalog', () => {
       'overlap-247-rote-bete-linsen-hirsewaffeln-meerrettichbohnen',
       'overlap-248-forellen-blumenkohl-dinkel-pilaw-kraeuterpesto',
       'overlap-249-kuerbis-schwarze-bohnen-enchilada-auflauf',
+      'overlap-250-steckrueben-kichererbsen-haselnuss-braten-wirsing',
+      'overlap-251-lachs-lauch-dinkel-pastete-erbsen',
+      'overlap-252-tofu-kuerbis-soba-baellchen-mangoldbruehe',
+      'overlap-253-kalb-pastinaken-linsen-frikassee',
+      'overlap-254-blumenkohl-bohnen-teff-taler-paprikacreme',
+      'overlap-255-sardinen-fenchel-tomaten-polenta',
+      'overlap-256-pilz-rote-bete-hirse-piroggen-sauerkraut',
+      'overlap-257-puten-brokkoli-reisnudel-auflauf-sesam',
+      'overlap-258-kuerbis-lupinen-dinkel-knoedel-salbeikraut',
+      'overlap-259-seelachs-mais-kartoffel-chowder',
+      'overlap-260-auberginen-linsen-reis-timbale-tomatensugo',
+      'overlap-261-rind-wirsing-buchweizen-rouladen-pilzsauce',
     ])
-    expect(validateCatalog(editorialRecipes, new Date('2026-08-31T12:00:00Z'))).toEqual([])
-    expect(publishableEditorialRecipes).toHaveLength(237)
+    expect(validateCatalog(editorialRecipes, new Date('2026-09-02T12:00:00Z'))).toEqual([])
+    expect(publishableEditorialRecipes).toHaveLength(249)
   })
 
   it('enthält Kochanleitung, Preisgrundlage, Allergene, Provenienz und Bildprompt vollständig', () => {
@@ -260,7 +272,7 @@ describe('originaler redaktioneller Rezeptkatalog', () => {
     }
   })
 
-  it('leitet die Preisgrundlage des siebzigsten Batches ohne handgepflegte Abweichung aus den Zutaten ab', () => {
+  it('leitet die Preisgrundlage des einundsiebzigsten Batches ohne handgepflegte Abweichung aus den Zutaten ab', () => {
     for (const recipe of editorialRecipes.slice(-12)) {
       expect(recipe.estimatedPriceCents, recipe.externalId).toBe(
         recipe.ingredients.reduce((total, ingredient) => total + ingredient.estimatedCostCents, 0),
