@@ -3,7 +3,7 @@ import { validateCatalog } from '../domain/catalog'
 import { editorialAppRecipes, editorialRecipes, publishableEditorialRecipes } from './editorialRecipes'
 
 describe('originaler redaktioneller Rezeptkatalog', () => {
-  it('liefert 381 inhaltlich veröffentlichungsfähige Originalrezepte in 83 eigenständigen Batches', () => {
+  it('liefert 401 inhaltlich veröffentlichungsfähige Originalrezepte in 84 eigenständigen Batches', () => {
     expect(editorialRecipes.map(recipe => recipe.externalId)).toEqual([
       'overlap-013-rote-linsen-kokos-suppe',
       'overlap-014-pilz-graupen-risotto',
@@ -386,9 +386,29 @@ describe('originaler redaktioneller Rezeptkatalog', () => {
       'overlap-391-auberginen-tofu-hirse-moussaka',
       'overlap-392-saibling-pastinaken-linsen-kroketten',
       'overlap-393-ziegenkaese-kuerbis-buchweizen-galette',
+      'overlap-394-lupinen-kuerbis-arancini',
+      'overlap-395-seelachs-rote-bete-hirse-fishcakes',
+      'overlap-396-ente-wirsing-buchweizen-pfanne',
+      'overlap-397-pastinaken-linsen-dinkel-empanadas',
+      'overlap-398-garnelen-polenta-paprika-spiesse',
+      'overlap-399-kalb-spinat-graupen-baellchen',
+      'overlap-400-kuerbis-adzuki-reisbaellchen',
+      'overlap-401-zander-blumenkohl-dinkel-gratin',
+      'overlap-402-schwarzwurzel-tofu-buchweizen-tarte',
+      'overlap-403-huhn-fenchel-linsen-pastete',
+      'overlap-404-rote-bete-quark-hirse-nocken',
+      'overlap-405-makrele-bohnen-dinkel-pide',
+      'overlap-406-tempeh-kohlrabi-reis-katsu',
+      'overlap-407-rind-pilz-polenta-involtini',
+      'overlap-408-kichererbsen-lauch-buchweizen-pie',
+      'overlap-409-forelle-kuerbis-hafer-kloesse',
+      'overlap-410-seitan-wirsing-hirse-paprikasch',
+      'overlap-411-schwein-mangold-kartoffel-dumplings',
+      'overlap-412-linsen-sellerie-teff-taler',
+      'overlap-413-saibling-erbsen-dinkel-timbale',
     ])
     expect(validateCatalog(editorialRecipes, new Date('2026-09-02T12:00:00Z'))).toEqual([])
-    expect(publishableEditorialRecipes).toHaveLength(381)
+    expect(publishableEditorialRecipes).toHaveLength(401)
   })
 
   it('enthält Kochanleitung, Preisgrundlage, Allergene, Provenienz und Bildprompt vollständig', () => {
@@ -404,8 +424,8 @@ describe('originaler redaktioneller Rezeptkatalog', () => {
     }
   })
 
-  it('leitet die Preisgrundlage des dreiundachtzigsten Batches ohne handgepflegte Abweichung aus den Zutaten ab', () => {
-    for (const recipe of editorialRecipes.slice(-12)) {
+  it('leitet die Preisgrundlage des vierundachtzigsten Batches ohne handgepflegte Abweichung aus den Zutaten ab', () => {
+    for (const recipe of editorialRecipes.slice(-20)) {
       expect(recipe.estimatedPriceCents, recipe.externalId).toBe(
         recipe.ingredients.reduce((total, ingredient) => total + ingredient.estimatedCostCents, 0),
       )
@@ -413,7 +433,7 @@ describe('originaler redaktioneller Rezeptkatalog', () => {
   })
 
   it('hält inhaltlich geprüfte Rezepte ohne bestandenes Bild aus dem App-Katalog zurück', () => {
-    expect(editorialAppRecipes).toHaveLength(57)
+    expect(editorialAppRecipes).toHaveLength(68)
     expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('erbsen-tofu-dinkel-siu-mai-pak-choi')
     expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('lachs-rote-bete-kartoffel-galette-bohnensalat')
     expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('rind-sellerie-hirse-manti-paprikajoghurt')
@@ -429,21 +449,10 @@ describe('originaler redaktioneller Rezeptkatalog', () => {
     expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('lauch-tofu-wan-tan-suppe')
     expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('forellen-wirsing-kartoffel-auflauf')
     expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('rinderhack-paprika-buchweizen-pfanne')
-    expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('eier-senfsauce-spinatkartoffeln')
     expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('maronen-rosenkohl-graupenpfanne')
     expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('schweinegeschnetzeltes-kohlrabi-vollkornreis')
-    expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('raeuchertofu-steckrueben-gulasch')
-    expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('makrelen-linsen-apfel-salat')
-    expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('kuerbis-spinat-polenta-schnitten')
-    expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('linsen-pilz-walnuss-braten')
-    expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('saibling-kohlrabi-dinkel-risotto')
-    expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('rind-bohnen-kuerbis-pfanne')
-    expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('hirse-pilz-kohlrouladen')
-    expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('puten-zucchini-mais-laibchen')
     expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('birnen-bohnen-kartoffel-eintopf')
-    expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('herings-kartoffel-rote-bete-salat')
     expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('okra-linsen-hirse-eintopf')
-    expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('spargel-dinkel-crepes-kraeuterquark')
     expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('lupinen-kartoffel-gulasch')
     expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('ziegenkaese-polenta-pfirsich')
     expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('huehnchen-bohnen-jambalaya')

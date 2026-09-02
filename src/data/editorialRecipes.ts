@@ -15,6 +15,7 @@ import { editorialRecipesBatch80 } from './editorialRecipesBatch80'
 import { editorialRecipesBatch81 } from './editorialRecipesBatch81'
 import { editorialRecipesBatch82 } from './editorialRecipesBatch82'
 import { editorialRecipesBatch83 } from './editorialRecipesBatch83'
+import { editorialRecipesBatch84 } from './editorialRecipesBatch84'
 
 export type EditorialIngredient = ProviderRecipe['ingredients'][number] & {
   category: Category
@@ -6529,12 +6530,14 @@ export const editorialRecipes: EditorialRecipe[] = [
   ...editorialRecipesBatch81,
   ...editorialRecipesBatch82,
   ...editorialRecipesBatch83,
+  ...editorialRecipesBatch84,
 ]
 
 const evaluated = evaluateProviderPage({ recipes: editorialRecipes, nextCursor: null }, new Date('2026-09-02T12:00:00Z'))
 export const publishableEditorialRecipes = evaluated.accepted as EditorialRecipe[]
 
 const pendingImageIds = new Set([
+  ...editorialRecipesBatch84.map(recipe => recipe.appId),
   ...editorialRecipesBatch83.map(recipe => recipe.appId),
   ...editorialRecipesBatch82.map(recipe => recipe.appId),
   ...editorialRecipesBatch81.map(recipe => recipe.appId),
@@ -6700,21 +6703,10 @@ const pendingImageIds = new Set([
   'miso-auberginen-edamame-reis',
   'ricotta-spinat-knoedel-tomatenragout',
   'haehnchen-aprikosen-gersten-pilaw',
-  'eier-senfsauce-spinatkartoffeln',
   'maronen-rosenkohl-graupenpfanne',
   'schweinegeschnetzeltes-kohlrabi-vollkornreis',
-  'raeuchertofu-steckrueben-gulasch',
-  'makrelen-linsen-apfel-salat',
-  'kuerbis-spinat-polenta-schnitten',
-  'linsen-pilz-walnuss-braten',
-  'saibling-kohlrabi-dinkel-risotto',
-  'rind-bohnen-kuerbis-pfanne',
-  'hirse-pilz-kohlrouladen',
-  'puten-zucchini-mais-laibchen',
   'birnen-bohnen-kartoffel-eintopf',
-  'herings-kartoffel-rote-bete-salat',
   'okra-linsen-hirse-eintopf',
-  'spargel-dinkel-crepes-kraeuterquark',
 ])
 
 export const editorialAppRecipes: Recipe[] = publishableEditorialRecipes
