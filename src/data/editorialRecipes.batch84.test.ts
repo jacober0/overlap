@@ -32,8 +32,8 @@ describe('redaktioneller Rezeptbatch 84', () => {
       return number >= 394 && number <= 413
     })
     expect(actual.map(recipe => [recipe.externalId, recipe.title])).toEqual(expected)
-    expect(editorialRecipes).toHaveLength(421)
-    expect(publishableEditorialRecipes).toHaveLength(421)
+    expect(editorialRecipes).toHaveLength(441)
+    expect(publishableEditorialRecipes).toHaveLength(441)
     expect(validateCatalog(editorialRecipes, new Date('2026-09-02T23:59:00Z'))).toEqual([])
   })
 })
