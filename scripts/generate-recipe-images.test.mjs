@@ -21,16 +21,16 @@ const response = (contentType, bytes, ok = true, status = 200) => ({
 })
 
 describe('recipe image manifest and prompt contract', () => {
-  it('includes the sixty-second recipe batch in the image manifest', () => {
+  it('includes the sixty-third recipe batch in the image manifest', () => {
     expect(recipeImageManifest.slice(-3).map(({ id }) => id)).toEqual([
-      'lupinen-spinat-dinkel-pelmeni-paprikabruehe',
-      'haehnchen-pastinaken-haferkuechle-lauchgemuese',
-      'bohnen-kuerbis-teff-injera-mangold',
+      'linsen-walnuss-cevapcici-ajvar-hirse',
+      'forellen-mais-buchweizen-tacos-krautsalat',
+      'zucchini-ricotta-dinkel-ravioli-tomatensauce',
     ])
   })
 
   it('defines exactly one dish-specific prompt for every local publishable recipe', () => {
-    expect(recipeImageManifest).toHaveLength(207)
+    expect(recipeImageManifest).toHaveLength(210)
     expect(recipeImageManifest.map(({ id }) => id)).toEqual([
       'tomatenpasta', 'kichererbsencurry', 'ofengemuese', 'linsenbolognese',
       'tacos', 'reisbowl', 'shakshuka', 'gnocchi', 'haehnchenblech',
@@ -201,8 +201,11 @@ describe('recipe image manifest and prompt contract', () => {
       'lupinen-spinat-dinkel-pelmeni-paprikabruehe',
       'haehnchen-pastinaken-haferkuechle-lauchgemuese',
       'bohnen-kuerbis-teff-injera-mangold',
+      'linsen-walnuss-cevapcici-ajvar-hirse',
+      'forellen-mais-buchweizen-tacos-krautsalat',
+      'zucchini-ricotta-dinkel-ravioli-tomatensauce',
     ])
-    expect(new Set(recipeImageManifest.map(({ dish }) => dish)).size).toBe(207)
+    expect(new Set(recipeImageManifest.map(({ dish }) => dish)).size).toBe(210)
     expect(recipeImageManifest.every(({ dish }) => dish.length >= 80)).toBe(true)
   })
 
