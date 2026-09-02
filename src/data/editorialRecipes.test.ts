@@ -3,7 +3,7 @@ import { validateCatalog } from '../domain/catalog'
 import { editorialAppRecipes, editorialRecipes, publishableEditorialRecipes } from './editorialRecipes'
 
 describe('originaler redaktioneller Rezeptkatalog', () => {
-  it('liefert einhundertachtundsechzig inhaltlich veröffentlichungsfähige Originalrezepte in dreiundfünfzig eigenständigen Batches', () => {
+  it('liefert einhunderteinundsiebzig inhaltlich veröffentlichungsfähige Originalrezepte in vierundfünfzig eigenständigen Batches', () => {
     expect(editorialRecipes.map(recipe => recipe.externalId)).toEqual([
       'overlap-013-rote-linsen-kokos-suppe',
       'overlap-014-pilz-graupen-risotto',
@@ -173,9 +173,12 @@ describe('originaler redaktioneller Rezeptkatalog', () => {
       'overlap-178-haehnchen-mais-dinkel-tamales-bohnen-salsa',
       'overlap-179-seehecht-kartoffel-mais-empanadas-bohnensalat',
       'overlap-180-lauch-kichererbsen-hafer-kloesse-paprikakraut',
+      'overlap-181-miso-steckrueben-soba-edamame',
+      'overlap-182-garnelen-linsen-polenta-baellchen-fenchel',
+      'overlap-183-schweinefilet-kuerbis-dinkelknoedel-wirsing',
     ])
     expect(validateCatalog(editorialRecipes, new Date('2026-08-31T12:00:00Z'))).toEqual([])
-    expect(publishableEditorialRecipes).toHaveLength(168)
+    expect(publishableEditorialRecipes).toHaveLength(171)
   })
 
   it('enthält Kochanleitung, Preisgrundlage, Allergene, Provenienz und Bildprompt vollständig', () => {
@@ -191,7 +194,7 @@ describe('originaler redaktioneller Rezeptkatalog', () => {
     }
   })
 
-  it('leitet die Preisgrundlage des dreiundfünfzigsten Batches ohne handgepflegte Abweichung aus den Zutaten ab', () => {
+  it('leitet die Preisgrundlage des vierundfünfzigsten Batches ohne handgepflegte Abweichung aus den Zutaten ab', () => {
     for (const recipe of editorialRecipes.slice(-3)) {
       expect(recipe.estimatedPriceCents, recipe.externalId).toBe(
         recipe.ingredients.reduce((total, ingredient) => total + ingredient.estimatedCostCents, 0),
@@ -312,5 +315,8 @@ describe('originaler redaktioneller Rezeptkatalog', () => {
     expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('haehnchen-mais-dinkel-tamales-bohnen-salsa')
     expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('seehecht-kartoffel-mais-empanadas-bohnensalat')
     expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('lauch-kichererbsen-hafer-kloesse-paprikakraut')
+    expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('miso-steckrueben-soba-edamame')
+    expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('garnelen-linsen-polenta-baellchen-fenchel')
+    expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('schweinefilet-kuerbis-dinkelknoedel-wirsing')
   })
 })
