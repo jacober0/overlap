@@ -3,7 +3,7 @@ import { validateCatalog } from '../domain/catalog'
 import { editorialAppRecipes, editorialRecipes, publishableEditorialRecipes } from './editorialRecipes'
 
 describe('originaler redaktioneller Rezeptkatalog', () => {
-  it('liefert zweihundertdreizehn inhaltlich veröffentlichungsfähige Originalrezepte in achtundsechzig eigenständigen Batches', () => {
+  it('liefert zweihundertfünfundzwanzig inhaltlich veröffentlichungsfähige Originalrezepte in neunundsechzig eigenständigen Batches', () => {
     expect(editorialRecipes.map(recipe => recipe.externalId)).toEqual([
       'overlap-013-rote-linsen-kokos-suppe',
       'overlap-014-pilz-graupen-risotto',
@@ -218,9 +218,21 @@ describe('originaler redaktioneller Rezeptkatalog', () => {
       'overlap-223-weisse-bohnen-spargel-dinkel-taboule-erdbeeren',
       'overlap-224-haehnchen-zucchini-hirse-souvlaki-bohnencreme',
       'overlap-225-raeucherforelle-kohlrabi-buchweizen-auflauf',
+      'overlap-226-linsen-polenta-schnitten-pilzragout',
+      'overlap-227-puten-fenchel-dinkelbaellchen-tomatensauce',
+      'overlap-228-kichererbsen-spinat-reisbaellchen-mango-chutney',
+      'overlap-229-zander-kartoffel-lauch-puffer-gurkensalat',
+      'overlap-230-auberginen-bohnen-hirse-musaka',
+      'overlap-231-rind-karotten-buchweizen-gulasch',
+      'overlap-232-tofu-brokkoli-dinkel-frikadellen-rettichsalat',
+      'overlap-233-muscheln-tomaten-gerste-paprika',
+      'overlap-234-kuerbis-linsen-mais-pastete',
+      'overlap-235-haehnchen-rote-bete-haferklopse-meerrettichsauce',
+      'overlap-236-weisse-bohnen-zucchini-quinoa-gratin',
+      'overlap-237-saibling-wirsing-kartoffel-roulade-senfsauce',
     ])
     expect(validateCatalog(editorialRecipes, new Date('2026-08-31T12:00:00Z'))).toEqual([])
-    expect(publishableEditorialRecipes).toHaveLength(213)
+    expect(publishableEditorialRecipes).toHaveLength(225)
   })
 
   it('enthält Kochanleitung, Preisgrundlage, Allergene, Provenienz und Bildprompt vollständig', () => {
@@ -236,8 +248,8 @@ describe('originaler redaktioneller Rezeptkatalog', () => {
     }
   })
 
-  it('leitet die Preisgrundlage des achtundsechzigsten Batches ohne handgepflegte Abweichung aus den Zutaten ab', () => {
-    for (const recipe of editorialRecipes.slice(-3)) {
+  it('leitet die Preisgrundlage des neunundsechzigsten Batches ohne handgepflegte Abweichung aus den Zutaten ab', () => {
+    for (const recipe of editorialRecipes.slice(-12)) {
       expect(recipe.estimatedPriceCents, recipe.externalId).toBe(
         recipe.ingredients.reduce((total, ingredient) => total + ingredient.estimatedCostCents, 0),
       )

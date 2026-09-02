@@ -1,5 +1,6 @@
 import { evaluateProviderPage, type ProviderRecipe, type RecipeRights } from './catalogProvider'
 import type { Allergen, Category, Recipe } from '../domain/types'
+import { editorialRecipesBatch69 } from './editorialRecipesBatch69'
 
 export type EditorialIngredient = ProviderRecipe['ingredients'][number] & {
   category: Category
@@ -6499,12 +6500,14 @@ export const editorialRecipes: EditorialRecipe[] = [
     priceBasis: 'Summierte Zutatenkosten für zwei Portionen anhand eines DE-BW-Mischkorbs vom 31.08.2026; Wasser, Salz, Pfeffer und Muskat als Vorrat nicht eingepreist.',
     imagePrompt: 'A small matte charcoal baking dish with a deeply golden set egg surface, one generous square removed to reveal abundant distinct pink-white smoked-trout flakes, pale-green kohlrabi cubes, dark triangular buckwheat groats and wilted green spinach in pale dill custard; fully cooked, no salmon, no potatoes, no pastry, no hands and no text.',
   },
+  ...editorialRecipesBatch69,
 ]
 
 const evaluated = evaluateProviderPage({ recipes: editorialRecipes, nextCursor: null }, new Date('2026-08-31T12:00:00Z'))
 export const publishableEditorialRecipes = evaluated.accepted as EditorialRecipe[]
 
 const pendingImageIds = new Set([
+  ...editorialRecipesBatch69.map(recipe => recipe.appId),
   'weisse-bohnen-spargel-dinkel-taboule-erdbeeren',
   'haehnchen-zucchini-hirse-souvlaki-bohnencreme',
   'raeucherforelle-kohlrabi-buchweizen-auflauf',
