@@ -13,6 +13,20 @@ const permissivePreferences: Preferences = {
 }
 
 describe('beta catalog visibility and image fallback', () => {
+  it('uses newly reviewed catalog images only after individual visual approval', () => {
+    const approvedIds = [
+      'linsen-walnuss-cevapcici-ajvar-hirse',
+      'forellen-mais-buchweizen-tacos-krautsalat',
+      'kartoffel-linsen-dinkelwaffeln-pilzragout',
+    ]
+
+    expect(recipes.filter(recipe => approvedIds.includes(recipe.id)).map(recipe => recipe.imageStatus)).toEqual([
+      'individual-visual-pass',
+      'individual-visual-pass',
+      'individual-visual-pass',
+    ])
+  })
+
   it('makes every accepted original plus all twelve legacy seeds available without broken image requests', () => {
     expect(editorialRecipes).toHaveLength(500)
     expect(publishableEditorialRecipes).toHaveLength(500)
