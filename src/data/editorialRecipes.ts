@@ -5910,6 +5910,9 @@ const evaluated = evaluateProviderPage({ recipes: editorialRecipes, nextCursor: 
 export const publishableEditorialRecipes = evaluated.accepted as EditorialRecipe[]
 
 const pendingImageIds = new Set([
+  'erbsen-tofu-dinkel-siu-mai-pak-choi',
+  'lachs-rote-bete-kartoffel-galette-bohnensalat',
+  'rind-sellerie-hirse-manti-paprikajoghurt',
   'kartoffel-linsen-dinkelwaffeln-pilzragout',
   'garnelen-kuerbis-naturreis-congee-pak-choi',
   'puten-wirsing-hirse-kibbeh-rote-bete-joghurt',

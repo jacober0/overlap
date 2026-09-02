@@ -224,12 +224,10 @@ describe('originaler redaktioneller Rezeptkatalog', () => {
   })
 
   it('hält inhaltlich geprüfte Rezepte ohne bestandenes Bild aus dem App-Katalog zurück', () => {
-    expect(editorialAppRecipes).toHaveLength(60)
-    expect(editorialAppRecipes.slice(-3).map(recipe => recipe.id)).toEqual([
-      'erbsen-tofu-dinkel-siu-mai-pak-choi',
-      'lachs-rote-bete-kartoffel-galette-bohnensalat',
-      'rind-sellerie-hirse-manti-paprikajoghurt',
-    ])
+    expect(editorialAppRecipes).toHaveLength(57)
+    expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('erbsen-tofu-dinkel-siu-mai-pak-choi')
+    expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('lachs-rote-bete-kartoffel-galette-bohnensalat')
+    expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('rind-sellerie-hirse-manti-paprikajoghurt')
     expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('kartoffel-linsen-dinkelwaffeln-pilzragout')
     expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('garnelen-kuerbis-naturreis-congee-pak-choi')
     expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('puten-wirsing-hirse-kibbeh-rote-bete-joghurt')
