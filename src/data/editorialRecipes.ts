@@ -6614,7 +6614,6 @@ const pendingImageIds = new Set([
   'auberginen-hirse-involtini-bohnencreme',
   'kichererbsen-spinat-msemen-karotten-linsen-salat',
   'makrelen-kartoffel-kedgeree-erbsen',
-  'blumenkohl-kaese-graupen-kroketten-lauchcreme',
   'miso-steckrueben-soba-edamame',
   'garnelen-linsen-polenta-baellchen-fenchel',
   'schweinefilet-kuerbis-dinkelknoedel-wirsing',
