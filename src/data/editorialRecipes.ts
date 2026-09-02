@@ -5,6 +5,7 @@ import { editorialRecipesBatch70 } from './editorialRecipesBatch70'
 import { editorialRecipesBatch71 } from './editorialRecipesBatch71'
 import { editorialRecipesBatch72 } from './editorialRecipesBatch72'
 import { editorialRecipesBatch73 } from './editorialRecipesBatch73'
+import { editorialRecipesBatch74 } from './editorialRecipesBatch74'
 
 export type EditorialIngredient = ProviderRecipe['ingredients'][number] & {
   category: Category
@@ -6509,12 +6510,14 @@ export const editorialRecipes: EditorialRecipe[] = [
   ...editorialRecipesBatch71,
   ...editorialRecipesBatch72,
   ...editorialRecipesBatch73,
+  ...editorialRecipesBatch74,
 ]
 
 const evaluated = evaluateProviderPage({ recipes: editorialRecipes, nextCursor: null }, new Date('2026-09-02T12:00:00Z'))
 export const publishableEditorialRecipes = evaluated.accepted as EditorialRecipe[]
 
 const pendingImageIds = new Set([
+  ...editorialRecipesBatch74.map(recipe => recipe.appId),
   'spitzkohl-linsen-kartoffel-pithivier',
   'seelachs-rote-bete-buchweizen-gratin',
   'lupinen-karotten-hirse-kofta-spinat',

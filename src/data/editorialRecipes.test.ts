@@ -3,7 +3,7 @@ import { validateCatalog } from '../domain/catalog'
 import { editorialAppRecipes, editorialRecipes, publishableEditorialRecipes } from './editorialRecipes'
 
 describe('originaler redaktioneller Rezeptkatalog', () => {
-  it('liefert zweihundertneunundsechzig inhaltlich veröffentlichungsfähige Originalrezepte in dreiundsiebzig eigenständigen Batches', () => {
+  it('liefert zweihundertneunundsiebzig inhaltlich veröffentlichungsfähige Originalrezepte in vierundsiebzig eigenständigen Batches', () => {
     expect(editorialRecipes.map(recipe => recipe.externalId)).toEqual([
       'overlap-013-rote-linsen-kokos-suppe',
       'overlap-014-pilz-graupen-risotto',
@@ -274,9 +274,19 @@ describe('originaler redaktioneller Rezeptkatalog', () => {
       'overlap-279-pilz-sellerie-hafer-schnitzel-bohnensalat',
       'overlap-280-garnelen-kohlrabi-reisnudel-nester',
       'overlap-281-tempeh-rote-bete-hirse-terrine-apfelkraut',
+      'overlap-282-kichererbsen-artischocken-dinkel-paella',
+      'overlap-283-pute-pastinake-buchweizen-rouladen',
+      'overlap-284-forelle-erbsen-kartoffel-souffle',
+      'overlap-285-schwarze-bohnen-kuerbis-empanadas',
+      'overlap-286-kalb-mangold-hirse-frikassee',
+      'overlap-287-tofu-fenchel-soba-taschen',
+      'overlap-288-ei-rote-bete-linsen-tortilla',
+      'overlap-289-kaninchen-wirsing-polenta-schmortopf',
+      'overlap-290-blumenkohl-weisse-bohnen-dinkel-gnudi',
+      'overlap-291-muschel-lauch-graupen-chowder',
     ])
     expect(validateCatalog(editorialRecipes, new Date('2026-09-02T12:00:00Z'))).toEqual([])
-    expect(publishableEditorialRecipes).toHaveLength(269)
+    expect(publishableEditorialRecipes).toHaveLength(279)
   })
 
   it('enthält Kochanleitung, Preisgrundlage, Allergene, Provenienz und Bildprompt vollständig', () => {
@@ -292,7 +302,7 @@ describe('originaler redaktioneller Rezeptkatalog', () => {
     }
   })
 
-  it('leitet die Preisgrundlage des dreiundsiebzigsten Batches ohne handgepflegte Abweichung aus den Zutaten ab', () => {
+  it('leitet die Preisgrundlage des vierundsiebzigsten Batches ohne handgepflegte Abweichung aus den Zutaten ab', () => {
     for (const recipe of editorialRecipes.slice(-10)) {
       expect(recipe.estimatedPriceCents, recipe.externalId).toBe(
         recipe.ingredients.reduce((total, ingredient) => total + ingredient.estimatedCostCents, 0),

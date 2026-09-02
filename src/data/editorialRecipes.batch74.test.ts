@@ -2,25 +2,25 @@ import { describe, expect, it } from 'vitest'
 import { validateCatalog } from '../domain/catalog'
 import { editorialRecipes, publishableEditorialRecipes } from './editorialRecipes'
 
-const batch73Ids = [
-  'overlap-272-spitzkohl-linsen-kartoffel-pithivier',
-  'overlap-273-seelachs-rote-bete-buchweizen-gratin',
-  'overlap-274-lupinen-karotten-hirse-kofta-spinat',
-  'overlap-275-rind-kuerbis-graupen-krapfen-wirsing',
-  'overlap-276-auberginen-bohnen-polenta-roulade',
-  'overlap-277-saibling-lauch-dinkel-kloesse-fenchel',
-  'overlap-278-haehnchen-rote-linsen-mais-pastilla',
-  'overlap-279-pilz-sellerie-hafer-schnitzel-bohnensalat',
-  'overlap-280-garnelen-kohlrabi-reisnudel-nester',
-  'overlap-281-tempeh-rote-bete-hirse-terrine-apfelkraut',
+const batch74Ids = [
+  'overlap-282-kichererbsen-artischocken-dinkel-paella',
+  'overlap-283-pute-pastinake-buchweizen-rouladen',
+  'overlap-284-forelle-erbsen-kartoffel-souffle',
+  'overlap-285-schwarze-bohnen-kuerbis-empanadas',
+  'overlap-286-kalb-mangold-hirse-frikassee',
+  'overlap-287-tofu-fenchel-soba-taschen',
+  'overlap-288-ei-rote-bete-linsen-tortilla',
+  'overlap-289-kaninchen-wirsing-polenta-schmortopf',
+  'overlap-290-blumenkohl-weisse-bohnen-dinkel-gnudi',
+  'overlap-291-muschel-lauch-graupen-chowder',
 ]
 
-describe('redaktioneller Rezeptbatch 73', () => {
+describe('redaktioneller Rezeptbatch 74', () => {
   it('ergänzt zehn eigenständige und inhaltlich veröffentlichungsfähige Originalrezepte', () => {
-    expect(editorialRecipes.slice(-20, -10).map(recipe => recipe.externalId)).toEqual(batch73Ids)
+    expect(editorialRecipes.slice(-10).map(recipe => recipe.externalId)).toEqual(batch74Ids)
     expect(editorialRecipes).toHaveLength(279)
     expect(publishableEditorialRecipes).toHaveLength(279)
-    expect(validateCatalog(editorialRecipes, new Date('2026-09-02T12:00:00Z'))).toEqual([])
+    expect(validateCatalog(editorialRecipes, new Date('2026-09-02T18:00:00Z'))).toEqual([])
   })
 
   it('enthält vollständige, kalkulierte und bildspezifische redaktionelle Daten', () => {
