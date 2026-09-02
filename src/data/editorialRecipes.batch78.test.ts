@@ -37,8 +37,8 @@ describe('redaktioneller Rezeptbatch 78', () => {
   it('ergänzt zwölf eigenständige und inhaltlich veröffentlichungsfähige Originalrezepte', () => {
     expect(editorialRecipesBatch78.map(recipe => recipe.externalId)).toEqual(batch78Ids)
     expect(editorialRecipesBatch78.map(recipe => recipe.title)).toEqual(batch78Titles)
-    expect(editorialRecipes).toHaveLength(345)
-    expect(publishableEditorialRecipes).toHaveLength(345)
+    expect(editorialRecipes).toHaveLength(357)
+    expect(publishableEditorialRecipes).toHaveLength(357)
     expect(validateCatalog(editorialRecipes, new Date('2026-09-02T23:00:00Z'))).toEqual([])
     for (const recipe of editorialRecipesBatch78) {
       expect(editorialAppRecipes.map(item => item.id)).not.toContain(recipe.appId)

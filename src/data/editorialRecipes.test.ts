@@ -3,7 +3,7 @@ import { validateCatalog } from '../domain/catalog'
 import { editorialAppRecipes, editorialRecipes, publishableEditorialRecipes } from './editorialRecipes'
 
 describe('originaler redaktioneller Rezeptkatalog', () => {
-  it('liefert dreihundertfünfundvierzig inhaltlich veröffentlichungsfähige Originalrezepte in achtzig eigenständigen Batches', () => {
+  it('liefert dreihundertsiebenundfünfzig inhaltlich veröffentlichungsfähige Originalrezepte in einundachtzig eigenständigen Batches', () => {
     expect(editorialRecipes.map(recipe => recipe.externalId)).toEqual([
       'overlap-013-rote-linsen-kokos-suppe',
       'overlap-014-pilz-graupen-risotto',
@@ -350,9 +350,21 @@ describe('originaler redaktioneller Rezeptkatalog', () => {
       'overlap-355-pilz-linsen-buchweizen-sarma',
       'overlap-356-puten-spinat-mais-arepas',
       'overlap-357-schwarzwurzel-bohnen-hafer-pie',
+      'overlap-358-kohlrabi-erbsen-dinkel-knoedel-pilzbruehe',
+      'overlap-359-dorade-bohnen-fenchel-papillote',
+      'overlap-360-reh-rote-bete-buchweizen-rouladen',
+      'overlap-361-tofu-mangold-hirse-siu-mai',
+      'overlap-362-kabeljau-kuerbis-graupen-chowder',
+      'overlap-363-linsen-pastinaken-teff-enchiladas',
+      'overlap-364-haehnchen-rosenkohl-polenta-saltimbocca',
+      'overlap-365-auberginen-bohnen-dinkel-moussaka',
+      'overlap-366-forelle-spitzkohl-quinoa-kroketten',
+      'overlap-367-kuerbis-linsen-buchweizen-chebureki',
+      'overlap-368-rind-brokkoli-hirse-dumplings',
+      'overlap-369-weisse-bohnen-rote-bete-hafer-wellington',
     ])
     expect(validateCatalog(editorialRecipes, new Date('2026-09-02T12:00:00Z'))).toEqual([])
-    expect(publishableEditorialRecipes).toHaveLength(345)
+    expect(publishableEditorialRecipes).toHaveLength(357)
   })
 
   it('enthält Kochanleitung, Preisgrundlage, Allergene, Provenienz und Bildprompt vollständig', () => {
