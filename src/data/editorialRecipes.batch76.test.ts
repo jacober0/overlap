@@ -2,25 +2,25 @@ import { describe, expect, it } from 'vitest'
 import { validateCatalog } from '../domain/catalog'
 import { editorialRecipes, publishableEditorialRecipes } from './editorialRecipes'
 
-const batch73Ids = [
-  'overlap-272-spitzkohl-linsen-kartoffel-pithivier',
-  'overlap-273-seelachs-rote-bete-buchweizen-gratin',
-  'overlap-274-lupinen-karotten-hirse-kofta-spinat',
-  'overlap-275-rind-kuerbis-graupen-krapfen-wirsing',
-  'overlap-276-auberginen-bohnen-polenta-roulade',
-  'overlap-277-saibling-lauch-dinkel-kloesse-fenchel',
-  'overlap-278-haehnchen-rote-linsen-mais-pastilla',
-  'overlap-279-pilz-sellerie-hafer-schnitzel-bohnensalat',
-  'overlap-280-garnelen-kohlrabi-reisnudel-nester',
-  'overlap-281-tempeh-rote-bete-hirse-terrine-apfelkraut',
+const batch76Ids = [
+  'overlap-302-steckrueben-weisse-bohnen-roesti',
+  'overlap-303-saibling-rote-linsen-lauch-paeckchen',
+  'overlap-304-haehnchen-polenta-mangold-roulade',
+  'overlap-305-blumenkohl-tempeh-buchweizen-bowl',
+  'overlap-306-kalbs-hirse-paprika-frikassee',
+  'overlap-307-artischocken-erbsen-gersten-paella',
+  'overlap-308-ziegenkaese-birnen-gruenkern-tarte',
+  'overlap-309-garnelen-wirsing-reisnudel-pfanne',
+  'overlap-310-sellerie-kichererbsen-dinkel-klopse',
+  'overlap-311-entenbrust-rote-bete-graupen-salat',
 ]
 
-describe('redaktioneller Rezeptbatch 73', () => {
+describe('redaktioneller Rezeptbatch 76', () => {
   it('ergänzt zehn eigenständige und inhaltlich veröffentlichungsfähige Originalrezepte', () => {
-    expect(editorialRecipes.slice(-40, -30).map(recipe => recipe.externalId)).toEqual(batch73Ids)
+    expect(editorialRecipes.slice(-10).map(recipe => recipe.externalId)).toEqual(batch76Ids)
     expect(editorialRecipes).toHaveLength(299)
     expect(publishableEditorialRecipes).toHaveLength(299)
-    expect(validateCatalog(editorialRecipes, new Date('2026-09-02T12:00:00Z'))).toEqual([])
+    expect(validateCatalog(editorialRecipes, new Date('2026-09-02T21:00:00Z'))).toEqual([])
   })
 
   it('enthält vollständige, kalkulierte und bildspezifische redaktionelle Daten', () => {
