@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { validateCatalog } from '../domain/catalog'
 import { editorialRecipes, publishableEditorialRecipes } from './editorialRecipes'
+import { editorialRecipesBatch77 } from './editorialRecipesBatch77'
 
 const batch77Ids = [
   'overlap-312-kuerbis-lupinen-dinkel-strudel',
@@ -17,14 +18,14 @@ const batch77Ids = [
 
 describe('redaktioneller Rezeptbatch 77', () => {
   it('ergänzt zehn eigenständige und inhaltlich veröffentlichungsfähige Originalrezepte', () => {
-    expect(editorialRecipes.slice(-10).map(recipe => recipe.externalId)).toEqual(batch77Ids)
-    expect(editorialRecipes).toHaveLength(309)
-    expect(publishableEditorialRecipes).toHaveLength(309)
+    expect(editorialRecipesBatch77.map(recipe => recipe.externalId)).toEqual(batch77Ids)
+    expect(editorialRecipes).toHaveLength(321)
+    expect(publishableEditorialRecipes).toHaveLength(321)
     expect(validateCatalog(editorialRecipes, new Date('2026-09-02T22:00:00Z'))).toEqual([])
   })
 
   it('enthält vollständige, kalkulierte und bildspezifische redaktionelle Daten', () => {
-    for (const recipe of editorialRecipes.slice(-10)) {
+    for (const recipe of editorialRecipesBatch77) {
       expect(recipe.ingredients.length, recipe.externalId).toBeGreaterThanOrEqual(8)
       expect(recipe.steps.length, recipe.externalId).toBeGreaterThanOrEqual(5)
       expect(recipe.steps.every(step => step.length >= 12), recipe.externalId).toBe(true)

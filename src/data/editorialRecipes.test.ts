@@ -3,7 +3,7 @@ import { validateCatalog } from '../domain/catalog'
 import { editorialAppRecipes, editorialRecipes, publishableEditorialRecipes } from './editorialRecipes'
 
 describe('originaler redaktioneller Rezeptkatalog', () => {
-  it('liefert dreihundertneun inhaltlich veröffentlichungsfähige Originalrezepte in siebenundsiebzig eigenständigen Batches', () => {
+  it('liefert dreihunderteinundzwanzig inhaltlich veröffentlichungsfähige Originalrezepte in achtundsiebzig eigenständigen Batches', () => {
     expect(editorialRecipes.map(recipe => recipe.externalId)).toEqual([
       'overlap-013-rote-linsen-kokos-suppe',
       'overlap-014-pilz-graupen-risotto',
@@ -314,9 +314,21 @@ describe('originaler redaktioneller Rezeptkatalog', () => {
       'overlap-319-lamm-kohlrabi-kichererbsen-eintopf',
       'overlap-320-apfel-quark-hafer-auflauf',
       'overlap-321-rote-linsen-fenchel-dinkel-pide',
+      'overlap-322-wirsing-weisse-bohnen-dinkel-lasagne',
+      'overlap-323-seelachs-kuerbis-graupen-risotto',
+      'overlap-324-haehnchen-pastinaken-linsen-blech',
+      'overlap-325-rote-bete-kichererbsen-knoedel',
+      'overlap-326-schweinefilet-apfel-polenta-pfanne',
+      'overlap-327-blumenkohl-erbsen-hafer-korma',
+      'overlap-328-forellen-kartoffel-spinat-roesti',
+      'overlap-329-lupinen-paprika-buchweizen-gulasch',
+      'overlap-330-rind-wurzelgemuese-hirse-pastete',
+      'overlap-331-birnen-quark-dinkel-schmarrn',
+      'overlap-332-tofu-rosenkohl-reisnudel-salat',
+      'overlap-333-kabeljau-bohnen-fenchel-auflauf',
     ])
     expect(validateCatalog(editorialRecipes, new Date('2026-09-02T12:00:00Z'))).toEqual([])
-    expect(publishableEditorialRecipes).toHaveLength(309)
+    expect(publishableEditorialRecipes).toHaveLength(321)
   })
 
   it('enthält Kochanleitung, Preisgrundlage, Allergene, Provenienz und Bildprompt vollständig', () => {
@@ -332,8 +344,8 @@ describe('originaler redaktioneller Rezeptkatalog', () => {
     }
   })
 
-  it('leitet die Preisgrundlage des siebenundsiebzigsten Batches ohne handgepflegte Abweichung aus den Zutaten ab', () => {
-    for (const recipe of editorialRecipes.slice(-10)) {
+  it('leitet die Preisgrundlage des achtundsiebzigsten Batches ohne handgepflegte Abweichung aus den Zutaten ab', () => {
+    for (const recipe of editorialRecipes.slice(-12)) {
       expect(recipe.estimatedPriceCents, recipe.externalId).toBe(
         recipe.ingredients.reduce((total, ingredient) => total + ingredient.estimatedCostCents, 0),
       )
