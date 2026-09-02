@@ -19,8 +19,8 @@ const batch73Ids = [
 describe('redaktioneller Rezeptbatch 73', () => {
   it('ergänzt zehn eigenständige und inhaltlich veröffentlichungsfähige Originalrezepte', () => {
     expect(editorialRecipesBatch73.map(recipe => recipe.externalId)).toEqual(batch73Ids)
-    expect(editorialRecipes).toHaveLength(369)
-    expect(publishableEditorialRecipes).toHaveLength(369)
+    expect(editorialRecipes).toHaveLength(381)
+    expect(publishableEditorialRecipes).toHaveLength(381)
     expect(validateCatalog(editorialRecipes, new Date('2026-09-02T12:00:00Z'))).toEqual([])
   })
 

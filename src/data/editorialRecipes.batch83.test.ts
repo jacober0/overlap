@@ -1,34 +1,34 @@
 import { describe, expect, it } from 'vitest'
 import { validateCatalog } from '../domain/catalog'
 import { editorialAppRecipes, editorialRecipes, publishableEditorialRecipes } from './editorialRecipes'
-import { editorialRecipesBatch81 } from './editorialRecipesBatch81'
+import { editorialRecipesBatch83 } from './editorialRecipesBatch83'
 
 const expected = [
-  ['overlap-358-kohlrabi-erbsen-dinkel-knoedel-pilzbruehe', 'Kohlrabi-Erbsen-Dinkel-Knödel in Pilzbrühe'],
-  ['overlap-359-dorade-bohnen-fenchel-papillote', 'Doraden-Bohnen-Fenchel-Papillote'],
-  ['overlap-360-reh-rote-bete-buchweizen-rouladen', 'Reh-Rote-Bete-Buchweizen-Rouladen'],
-  ['overlap-361-tofu-mangold-hirse-siu-mai', 'Tofu-Mangold-Hirse-Siu-Mai'],
-  ['overlap-362-kabeljau-kuerbis-graupen-chowder', 'Kabeljau-Kürbis-Graupen-Chowder'],
-  ['overlap-363-linsen-pastinaken-teff-enchiladas', 'Linsen-Pastinaken-Teff-Enchiladas'],
-  ['overlap-364-haehnchen-rosenkohl-polenta-saltimbocca', 'Hähnchen-Rosenkohl-Polenta-Saltimbocca'],
-  ['overlap-365-auberginen-bohnen-dinkel-moussaka', 'Auberginen-Bohnen-Dinkel-Moussaka'],
-  ['overlap-366-forelle-spitzkohl-quinoa-kroketten', 'Forellen-Spitzkohl-Quinoa-Kroketten'],
-  ['overlap-367-kuerbis-linsen-buchweizen-chebureki', 'Kürbis-Linsen-Buchweizen-Chebureki'],
-  ['overlap-368-rind-brokkoli-hirse-dumplings', 'Rind-Brokkoli-Hirse-Dumplings'],
-  ['overlap-369-weisse-bohnen-rote-bete-hafer-wellington', 'Weiße-Bohnen-Rote-Bete-Hafer-Wellington'],
+  ['overlap-382-steckrueben-kichererbsen-kulcha', 'Steckrüben-Kichererbsen-Kulcha mit Spinat-Dal'],
+  ['overlap-383-forelle-lauch-buchweizen-kulebjaka', 'Forellen-Lauch-Buchweizen-Kulebjaka'],
+  ['overlap-384-rind-wirsing-reis-lemper', 'Rind-Wirsing-Reis-Lemper mit Gurkensalat'],
+  ['overlap-385-blumenkohl-lupinen-polenta-sformato', 'Blumenkohl-Lupinen-Polenta-Sformato'],
+  ['overlap-386-kabeljau-kuerbis-hirse-brandade', 'Kabeljau-Kürbis-Hirse-Brandade mit Bohnen'],
+  ['overlap-387-seitan-rote-bete-dinkel-piroggen', 'Seitan-Rote-Bete-Dinkel-Piroggen mit Sauerkraut'],
+  ['overlap-388-pute-mangold-hafer-roulade', 'Puten-Mangold-Hafer-Roulade mit Pilzrahm'],
+  ['overlap-389-kohlrabi-erbsen-reis-idli', 'Kohlrabi-Erbsen-Reis-Idli mit Tomaten-Sambar'],
+  ['overlap-390-schwein-apfel-graupen-cassoulet', 'Schweine-Apfel-Graupen-Cassoulet'],
+  ['overlap-391-auberginen-tofu-hirse-moussaka', 'Auberginen-Tofu-Hirse-Moussaka'],
+  ['overlap-392-saibling-pastinaken-linsen-kroketten', 'Saibling-Pastinaken-Linsen-Kroketten mit Feldsalat'],
+  ['overlap-393-ziegenkaese-kuerbis-buchweizen-galette', 'Ziegenkäse-Kürbis-Buchweizen-Galette'],
 ] as const
 
-describe('redaktioneller Rezeptbatch 81', () => {
+describe('redaktioneller Rezeptbatch 83', () => {
   it('ergänzt zwölf eigenständige und inhaltlich veröffentlichungsfähige Originalrezepte', () => {
-    expect(editorialRecipesBatch81.map(recipe => [recipe.externalId, recipe.title])).toEqual(expected)
+    expect(editorialRecipesBatch83.map(recipe => [recipe.externalId, recipe.title])).toEqual(expected)
     expect(editorialRecipes).toHaveLength(381)
     expect(publishableEditorialRecipes).toHaveLength(381)
     expect(validateCatalog(editorialRecipes, new Date('2026-09-02T23:59:00Z'))).toEqual([])
-    for (const recipe of editorialRecipesBatch81) expect(editorialAppRecipes.map(item => item.id)).not.toContain(recipe.appId)
+    for (const recipe of editorialRecipesBatch83) expect(editorialAppRecipes.map(item => item.id)).not.toContain(recipe.appId)
   })
 
   it('enthält vollständige, kalkulierte und bildspezifische redaktionelle Daten', () => {
-    for (const recipe of editorialRecipesBatch81) {
+    for (const recipe of editorialRecipesBatch83) {
       expect(recipe.ingredients.length, recipe.externalId).toBeGreaterThanOrEqual(8)
       expect(recipe.steps.length, recipe.externalId).toBeGreaterThanOrEqual(5)
       expect(recipe.steps.every(step => step.length >= 12), recipe.externalId).toBe(true)
