@@ -3,6 +3,7 @@ import type { Allergen, Category, Recipe } from '../domain/types'
 import { editorialRecipesBatch69 } from './editorialRecipesBatch69'
 import { editorialRecipesBatch70 } from './editorialRecipesBatch70'
 import { editorialRecipesBatch71 } from './editorialRecipesBatch71'
+import { editorialRecipesBatch72 } from './editorialRecipesBatch72'
 
 export type EditorialIngredient = ProviderRecipe['ingredients'][number] & {
   category: Category
@@ -6505,6 +6506,7 @@ export const editorialRecipes: EditorialRecipe[] = [
   ...editorialRecipesBatch69,
   ...editorialRecipesBatch70,
   ...editorialRecipesBatch71,
+  ...editorialRecipesBatch72,
 ]
 
 const evaluated = evaluateProviderPage({ recipes: editorialRecipes, nextCursor: null }, new Date('2026-09-02T12:00:00Z'))
@@ -6514,6 +6516,7 @@ const pendingImageIds = new Set([
   ...editorialRecipesBatch69.map(recipe => recipe.appId),
   ...editorialRecipesBatch70.map(recipe => recipe.appId),
   ...editorialRecipesBatch71.map(recipe => recipe.appId),
+  ...editorialRecipesBatch72.map(recipe => recipe.appId),
   'weisse-bohnen-spargel-dinkel-taboule-erdbeeren',
   'haehnchen-zucchini-hirse-souvlaki-bohnencreme',
   'raeucherforelle-kohlrabi-buchweizen-auflauf',
