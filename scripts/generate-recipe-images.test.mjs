@@ -21,8 +21,16 @@ const response = (contentType, bytes, ok = true, status = 200) => ({
 })
 
 describe('recipe image manifest and prompt contract', () => {
+  it('includes the fifty-seventh recipe batch in the image manifest', () => {
+    expect(recipeImageManifest.slice(-3).map(({ id }) => id)).toEqual([
+      'rote-bete-linsen-dinkel-pasteten-meerrettichkraut',
+      'seelachs-kichererbsen-baellchen-spinat-curry',
+      'puten-bohnen-paprika-pide-joghurtsalat',
+    ])
+  })
+
   it('defines exactly one dish-specific prompt for every local publishable recipe', () => {
-    expect(recipeImageManifest).toHaveLength(189)
+    expect(recipeImageManifest).toHaveLength(192)
     expect(recipeImageManifest.map(({ id }) => id)).toEqual([
       'tomatenpasta', 'kichererbsencurry', 'ofengemuese', 'linsenbolognese',
       'tacos', 'reisbowl', 'shakshuka', 'gnocchi', 'haehnchenblech',
@@ -175,8 +183,11 @@ describe('recipe image manifest and prompt contract', () => {
       'kartoffel-edamame-korokke-kohlsalat',
       'saibling-linsen-spinat-strudel-fenchel',
       'auberginen-hirse-involtini-bohnencreme',
+      'rote-bete-linsen-dinkel-pasteten-meerrettichkraut',
+      'seelachs-kichererbsen-baellchen-spinat-curry',
+      'puten-bohnen-paprika-pide-joghurtsalat',
     ])
-    expect(new Set(recipeImageManifest.map(({ dish }) => dish)).size).toBe(189)
+    expect(new Set(recipeImageManifest.map(({ dish }) => dish)).size).toBe(192)
     expect(recipeImageManifest.every(({ dish }) => dish.length >= 80)).toBe(true)
   })
 
