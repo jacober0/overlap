@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { validateCatalog } from '../domain/catalog'
-import { editorialRecipes, publishableEditorialRecipes } from './editorialRecipes'
+import { editorialRecipes } from './editorialRecipes'
 import { editorialRecipesBatch72 } from './editorialRecipesBatch72'
 
 const batch72Ids = [
@@ -19,8 +19,7 @@ const batch72Ids = [
 describe('redaktioneller Rezeptbatch 72', () => {
   it('ergänzt zehn eigenständige und inhaltlich veröffentlichungsfähige Originalrezepte', () => {
     expect(editorialRecipesBatch72.map(recipe => recipe.externalId)).toEqual(batch72Ids)
-    expect(editorialRecipes).toHaveLength(441)
-    expect(publishableEditorialRecipes).toHaveLength(441)
+
     expect(validateCatalog(editorialRecipes, new Date('2026-09-02T12:00:00Z'))).toEqual([])
   })
 

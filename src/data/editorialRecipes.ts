@@ -18,6 +18,7 @@ import { editorialRecipesBatch83 } from './editorialRecipesBatch83'
 import { editorialRecipesBatch84 } from './editorialRecipesBatch84'
 import { editorialRecipesBatch85 } from './editorialRecipesBatch85'
 import { editorialRecipesBatch86 } from './editorialRecipesBatch86'
+import { editorialRecipesBatch87 } from './editorialRecipesBatch87'
 
 export type EditorialIngredient = ProviderRecipe['ingredients'][number] & {
   category: Category
@@ -6535,12 +6536,14 @@ export const editorialRecipes: EditorialRecipe[] = [
   ...editorialRecipesBatch84,
   ...editorialRecipesBatch85,
   ...editorialRecipesBatch86,
+  ...editorialRecipesBatch87,
 ]
 
 const evaluated = evaluateProviderPage({ recipes: editorialRecipes, nextCursor: null }, new Date('2026-09-02T12:00:00Z'))
 export const publishableEditorialRecipes = evaluated.accepted as EditorialRecipe[]
 
 const pendingImageIds = new Set([
+  ...editorialRecipesBatch87.map(recipe => recipe.appId),
   ...editorialRecipesBatch86.map(recipe => recipe.appId),
   ...editorialRecipesBatch84.map(recipe => recipe.appId),
   ...editorialRecipesBatch83.map(recipe => recipe.appId),
@@ -6698,7 +6701,6 @@ const pendingImageIds = new Set([
   'polenta-bohnen-tamale-auflauf',
   'lupinen-kartoffel-gulasch',
   'ziegenkaese-polenta-pfirsich',
-  'huehnchen-bohnen-jambalaya',
   'lauch-tofu-wan-tan-suppe',
   'forellen-wirsing-kartoffel-auflauf',
   'rinderhack-paprika-buchweizen-pfanne',
@@ -6708,7 +6710,6 @@ const pendingImageIds = new Set([
   'miso-auberginen-edamame-reis',
   'ricotta-spinat-knoedel-tomatenragout',
   'haehnchen-aprikosen-gersten-pilaw',
-  'maronen-rosenkohl-graupenpfanne',
   'schweinegeschnetzeltes-kohlrabi-vollkornreis',
   'okra-linsen-hirse-eintopf',
   'mangold-bohnen-dinkel-strudel',
