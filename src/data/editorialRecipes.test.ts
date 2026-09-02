@@ -3,7 +3,7 @@ import { validateCatalog } from '../domain/catalog'
 import { editorialAppRecipes, editorialRecipes, publishableEditorialRecipes } from './editorialRecipes'
 
 describe('originaler redaktioneller Rezeptkatalog', () => {
-  it('liefert einhundertzweiundneunzig inhaltlich veröffentlichungsfähige Originalrezepte in einundsechzig eigenständigen Batches', () => {
+  it('liefert einhundertfünfundneunzig inhaltlich veröffentlichungsfähige Originalrezepte in zweiundsechzig eigenständigen Batches', () => {
     expect(editorialRecipes.map(recipe => recipe.externalId)).toEqual([
       'overlap-013-rote-linsen-kokos-suppe',
       'overlap-014-pilz-graupen-risotto',
@@ -197,9 +197,12 @@ describe('originaler redaktioneller Rezeptkatalog', () => {
       'overlap-202-kartoffel-linsen-dinkelwaffeln-pilzragout',
       'overlap-203-garnelen-kuerbis-naturreis-congee-pak-choi',
       'overlap-204-puten-wirsing-hirse-kibbeh-rote-bete-joghurt',
+      'overlap-205-lupinen-spinat-dinkel-pelmeni-paprikabruehe',
+      'overlap-206-haehnchen-pastinaken-haferkuechle-lauchgemuese',
+      'overlap-207-bohnen-kuerbis-teff-injera-mangold',
     ])
     expect(validateCatalog(editorialRecipes, new Date('2026-08-31T12:00:00Z'))).toEqual([])
-    expect(publishableEditorialRecipes).toHaveLength(192)
+    expect(publishableEditorialRecipes).toHaveLength(195)
   })
 
   it('enthält Kochanleitung, Preisgrundlage, Allergene, Provenienz und Bildprompt vollständig', () => {
@@ -215,7 +218,7 @@ describe('originaler redaktioneller Rezeptkatalog', () => {
     }
   })
 
-  it('leitet die Preisgrundlage des einundsechzigsten Batches ohne handgepflegte Abweichung aus den Zutaten ab', () => {
+  it('leitet die Preisgrundlage des zweiundsechzigsten Batches ohne handgepflegte Abweichung aus den Zutaten ab', () => {
     for (const recipe of editorialRecipes.slice(-3)) {
       expect(recipe.estimatedPriceCents, recipe.externalId).toBe(
         recipe.ingredients.reduce((total, ingredient) => total + ingredient.estimatedCostCents, 0),
@@ -360,6 +363,9 @@ describe('originaler redaktioneller Rezeptkatalog', () => {
     expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('tofu-rote-bete-buchweizen-nocken-meerrettichkraut')
     expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('herings-apfel-lauch-dinkelflammkuchen-bohnensalat')
     expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('pilz-linsen-kartoffel-zrazy-gurkenschmand')
+    expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('lupinen-spinat-dinkel-pelmeni-paprikabruehe')
+    expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('haehnchen-pastinaken-haferkuechle-lauchgemuese')
+    expect(editorialAppRecipes.map(recipe => recipe.id)).not.toContain('bohnen-kuerbis-teff-injera-mangold')
 
   })
 })
