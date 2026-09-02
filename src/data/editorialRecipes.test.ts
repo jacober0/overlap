@@ -3,7 +3,7 @@ import { validateCatalog } from '../domain/catalog'
 import { editorialAppRecipes, editorialRecipes, publishableEditorialRecipes } from './editorialRecipes'
 
 describe('originaler redaktioneller Rezeptkatalog', () => {
-  it('liefert dreihundertdreiunddreißig inhaltlich veröffentlichungsfähige Originalrezepte in neunundsiebzig eigenständigen Batches', () => {
+  it('liefert dreihundertfünfundvierzig inhaltlich veröffentlichungsfähige Originalrezepte in achtzig eigenständigen Batches', () => {
     expect(editorialRecipes.map(recipe => recipe.externalId)).toEqual([
       'overlap-013-rote-linsen-kokos-suppe',
       'overlap-014-pilz-graupen-risotto',
@@ -338,9 +338,21 @@ describe('originaler redaktioneller Rezeptkatalog', () => {
       'overlap-343-pilz-maronen-hirse-terrine',
       'overlap-344-auberginen-weisse-bohnen-dumplings-tomatensud',
       'overlap-345-haehnchen-spitzkohl-buchweizen-laab',
+      'overlap-346-rosenkohl-bohnen-dinkel-pithivier',
+      'overlap-347-zander-kuerbis-buchweizen-papillote',
+      'overlap-348-rind-linsen-wirsing-manti',
+      'overlap-349-tempeh-rote-bete-hirse-bao',
+      'overlap-350-garnelen-kohlrabi-polenta-spiesse',
+      'overlap-351-kuerbis-lupinen-dinkel-cannelloni',
+      'overlap-352-ente-rotkohl-graupen-kroketten',
+      'overlap-353-brokkoli-kichererbsen-teff-taler',
+      'overlap-354-forelle-lauch-kartoffel-samosa',
+      'overlap-355-pilz-linsen-buchweizen-sarma',
+      'overlap-356-puten-spinat-mais-arepas',
+      'overlap-357-schwarzwurzel-bohnen-hafer-pie',
     ])
     expect(validateCatalog(editorialRecipes, new Date('2026-09-02T12:00:00Z'))).toEqual([])
-    expect(publishableEditorialRecipes).toHaveLength(333)
+    expect(publishableEditorialRecipes).toHaveLength(345)
   })
 
   it('enthält Kochanleitung, Preisgrundlage, Allergene, Provenienz und Bildprompt vollständig', () => {
