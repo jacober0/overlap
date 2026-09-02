@@ -3,7 +3,7 @@ import { validateCatalog } from '../domain/catalog'
 import { editorialAppRecipes, editorialRecipes, publishableEditorialRecipes } from './editorialRecipes'
 
 describe('originaler redaktioneller Rezeptkatalog', () => {
-  it('liefert 461 inhaltlich veröffentlichungsfähige Originalrezepte in 87 eigenständigen Batches', () => {
+  it('liefert 481 inhaltlich veröffentlichungsfähige Originalrezepte in 88 eigenständigen Batches', () => {
     expect(editorialRecipes.map(recipe => recipe.externalId)).toEqual([
       'overlap-013-rote-linsen-kokos-suppe',
       'overlap-014-pilz-graupen-risotto',
@@ -466,9 +466,29 @@ describe('originaler redaktioneller Rezeptkatalog', () => {
       'overlap-471-kabeljau-apfel-wirsing-strudel',
       'overlap-472-auberginen-edamame-buchweizen-nudeln',
       'overlap-473-schwein-birne-graupen-kohlrouladen',
+      'overlap-474-spitzkohl-kichererbsen-hirse-krapfen',
+      'overlap-475-saibling-pastinaken-buchweizen-gratin',
+      'overlap-476-rind-mangold-polenta-pastete',
+      'overlap-477-tofu-quitte-reis-baellchen',
+      'overlap-478-schellfisch-rote-bete-linsen-terrine',
+      'overlap-479-kuerbis-pilz-dinkel-dampfnudeln',
+      'overlap-480-pute-rosenkohl-graupen-salat',
+      'overlap-481-bohnen-sellerie-hafer-wellington',
+      'overlap-482-garnelen-lauch-teff-puffer',
+      'overlap-483-lamm-wirsing-buchweizen-pie',
+      'overlap-484-edamame-blumenkohl-reis-dumplings',
+      'overlap-485-forelle-karotte-hirse-souffle',
+      'overlap-486-schwein-steckruebe-linsen-ragout',
+      'overlap-487-kohlrabi-lupinen-dinkel-tarte',
+      'overlap-488-muschel-kuerbis-buchweizen-paella',
+      'overlap-489-haehnchen-fenchel-hafer-roulade',
+      'overlap-490-linsen-apfel-polenta-schnitten',
+      'overlap-491-zander-rotkohl-hirse-strudel',
+      'overlap-492-tempeh-brokkoli-graupen-bibimbap',
+      'overlap-493-kalb-kuerbis-teff-klopse',
     ])
     expect(validateCatalog(editorialRecipes, new Date('2026-09-02T12:00:00Z'))).toEqual([])
-    expect(publishableEditorialRecipes).toHaveLength(461)
+    expect(publishableEditorialRecipes).toHaveLength(481)
   })
 
   it('enthält Kochanleitung, Preisgrundlage, Allergene, Provenienz und Bildprompt vollständig', () => {
