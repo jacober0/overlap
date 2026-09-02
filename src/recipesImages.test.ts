@@ -1,17 +1,39 @@
+import { existsSync } from 'node:fs'
+import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
+import { editorialRecipes, publishableEditorialRecipes } from './data/editorialRecipes'
+import { filterRecipesBySearch, rankRecipes } from './domain/engine'
+import type { Preferences } from './domain/types'
 import { recipes } from './recipes'
 
-describe('local recipe image manifest', () => {
-  it('serves every publishable recipe from its deterministic local JPEG asset', () => {
-    expect(recipes).toHaveLength(83)
-    expect(recipes.slice(-3).map(recipe => recipe.id)).toEqual([
-      'herings-kartoffel-rote-bete-salat',
-      'spargel-dinkel-crepes-kraeuterquark',
-      'huehnchen-bohnen-jambalaya',
-    ])
+const fallback = '/recipe-placeholder.svg'
+const permissivePreferences: Preferences = {
+  diet: 'omnivor', maxMinutes: 1440, budgetFocus: 0.5, variety: 0.5,
+  anchorTags: [], allergens: [], excludedIngredients: [], pantryIngredients: [], servings: 2, targetMeals: 5,
+}
+
+describe('beta catalog visibility and image fallback', () => {
+  it('makes every accepted original plus all twelve legacy seeds available without broken image requests', () => {
+    expect(editorialRecipes).toHaveLength(500)
+    expect(publishableEditorialRecipes).toHaveLength(500)
+    expect(recipes).toHaveLength(512)
+    expect(new Set(recipes.map(recipe => recipe.id)).size).toBe(512)
+
     for (const recipe of recipes) {
-      expect(recipe.image).toBe(`/recipes/${recipe.id}.jpg`)
-      expect(recipe.image).not.toContain('unsplash')
+      expect(['individual-visual-pass', 'neutral-fallback']).toContain(recipe.imageStatus)
+      if (recipe.imageStatus === 'individual-visual-pass') {
+        expect(recipe.image).toBe(`/recipes/${recipe.id}.jpg`)
+        expect(existsSync(join(process.cwd(), 'public', recipe.image))).toBe(true)
+      } else {
+        expect(recipe.image).toBe(fallback)
+      }
     }
+    expect(existsSync(join(process.cwd(), 'public', fallback))).toBe(true)
+  })
+
+  it('keeps the complete beta catalog reachable through search and recommendations', () => {
+    expect(filterRecipesBySearch(recipes, '')).toHaveLength(512)
+    expect(rankRecipes(recipes, [], permissivePreferences)).toHaveLength(512)
+    expect(filterRecipesBySearch(recipes, 'Sellerie Erbsen Dinkel Bao').map(recipe => recipe.id)).toEqual(['sellerie-erbsen-dinkel-bao'])
   })
 })

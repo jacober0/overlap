@@ -23,7 +23,7 @@ describe('redaktioneller Rezeptbatch 80', () => {
     expect(editorialRecipesBatch80.map(recipe => [recipe.externalId, recipe.title])).toEqual(expected)
 
     expect(validateCatalog(editorialRecipes, new Date('2026-09-02T23:59:00Z'))).toEqual([])
-    for (const recipe of editorialRecipesBatch80) expect(editorialAppRecipes.map(item => item.id)).not.toContain(recipe.appId)
+    for (const recipe of editorialRecipesBatch80) expect(editorialAppRecipes.find(item => item.id === recipe.appId)?.imageStatus).toBe('neutral-fallback')
   })
 
   it('enthält vollständige, kalkulierte und bildspezifische redaktionelle Daten', () => {

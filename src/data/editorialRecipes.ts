@@ -20,6 +20,7 @@ import { editorialRecipesBatch85 } from './editorialRecipesBatch85'
 import { editorialRecipesBatch86 } from './editorialRecipesBatch86'
 import { editorialRecipesBatch87 } from './editorialRecipesBatch87'
 import { editorialRecipesBatch88 } from './editorialRecipesBatch88'
+import { editorialRecipesBatch89 } from './editorialRecipesBatch89'
 
 export type EditorialIngredient = ProviderRecipe['ingredients'][number] & {
   category: Category
@@ -6539,12 +6540,14 @@ export const editorialRecipes: EditorialRecipe[] = [
   ...editorialRecipesBatch86,
   ...editorialRecipesBatch87,
   ...editorialRecipesBatch88,
+  ...editorialRecipesBatch89,
 ]
 
 const evaluated = evaluateProviderPage({ recipes: editorialRecipes, nextCursor: null }, new Date('2026-09-02T12:00:00Z'))
 export const publishableEditorialRecipes = evaluated.accepted as EditorialRecipe[]
 
 const pendingImageIds = new Set([
+  ...editorialRecipesBatch89.map(recipe => recipe.appId),
   ...editorialRecipesBatch88.map(recipe => recipe.appId),
   ...editorialRecipesBatch87.map(recipe => recipe.appId),
   ...editorialRecipesBatch86.map(recipe => recipe.appId),
@@ -6738,12 +6741,12 @@ const pendingImageIds = new Set([
 ])
 
 export const editorialAppRecipes: Recipe[] = publishableEditorialRecipes
-  .filter(recipe => !pendingImageIds.has(recipe.appId))
   .map(recipe => ({
   id: recipe.appId,
   title: recipe.title,
   description: recipe.description,
-  image: `/recipes/${recipe.appId}.jpg`,
+  image: pendingImageIds.has(recipe.appId) ? '/recipe-placeholder.svg' : `/recipes/${recipe.appId}.jpg`,
+  imageStatus: pendingImageIds.has(recipe.appId) ? 'neutral-fallback' : 'individual-visual-pass',
   minutes: recipe.totalMinutes,
   activeMinutes: recipe.activeMinutes,
   servings: recipe.servings,

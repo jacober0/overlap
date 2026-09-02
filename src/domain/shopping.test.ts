@@ -3,7 +3,7 @@ import { buildShoppingList } from './shopping'
 import type { Recipe } from './types'
 
 const base: Omit<Recipe, 'id' | 'title' | 'ingredients'> = {
-  description: '', image: '', minutes: 20, activeMinutes: 10, servings: 2,
+  description: '', image: '', imageStatus: 'neutral-fallback', minutes: 20, activeMinutes: 10, servings: 2,
   pricePerServing: 2, difficulty: 'Einfach', diet: 'vegan', tags: [],
   nutrition: { kcal: 400, protein: 15, carbs: 50, fat: 12, fiber: 8 }, steps: ['Kochen'],
 }

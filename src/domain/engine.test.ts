@@ -4,14 +4,14 @@ import type { Preferences, Recipe } from './types'
 
 const recipes: Recipe[] = [
   {
-    id: 'pasta', title: 'Tomatenpasta', description: '', image: '', minutes: 20, activeMinutes: 15,
+    id: 'pasta', title: 'Tomatenpasta', description: '', image: '', imageStatus: 'neutral-fallback', minutes: 20, activeMinutes: 15,
     servings: 2, pricePerServing: 2.5, difficulty: 'Einfach', diet: 'vegetarisch',
     tags: ['italienisch', 'comfort'], nutrition: { kcal: 520, protein: 18, carbs: 78, fat: 14, fiber: 7 },
     ingredients: [{ id: 'pasta', name: 'Pasta', amount: 200, unit: 'g', category: 'Trockenwaren', estimatedCost: 1.6, allergens: ['gluten'] }],
     steps: ['Kochen'],
   },
   {
-    id: 'steak', title: 'Steak', description: '', image: '', minutes: 35, activeMinutes: 30,
+    id: 'steak', title: 'Steak', description: '', image: '', imageStatus: 'neutral-fallback', minutes: 35, activeMinutes: 30,
     servings: 2, pricePerServing: 8, difficulty: 'Mittel', diet: 'omnivor', tags: ['proteinreich'],
     nutrition: { kcal: 700, protein: 60, carbs: 10, fat: 40, fiber: 2 },
     ingredients: [{ id: 'rind', name: 'Rind', amount: 400, unit: 'g', category: 'Fleisch', estimatedCost: 12 }], steps: ['Braten'],

@@ -5,7 +5,7 @@ export type Category = 'Gemüse' | 'Obst' | 'Trockenwaren' | 'Kühlregal' | 'Fle
 export interface Nutrition { kcal: number; protein: number; carbs: number; fat: number; fiber: number }
 export interface Ingredient { id: string; name: string; amount: number; unit: string; category: Category; estimatedCost: number; allergens?: Allergen[] }
 export interface Recipe {
-  id: string; title: string; description: string; image: string; minutes: number; activeMinutes: number;
+  id: string; title: string; description: string; image: string; imageStatus: 'individual-visual-pass' | 'neutral-fallback'; minutes: number; activeMinutes: number;
   servings: number; pricePerServing: number; difficulty: 'Einfach' | 'Mittel'; diet: Diet; tags: string[];
   nutrition: Nutrition; ingredients: Ingredient[]; steps: string[]
 }
