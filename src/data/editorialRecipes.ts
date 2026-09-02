@@ -16,6 +16,7 @@ import { editorialRecipesBatch81 } from './editorialRecipesBatch81'
 import { editorialRecipesBatch82 } from './editorialRecipesBatch82'
 import { editorialRecipesBatch83 } from './editorialRecipesBatch83'
 import { editorialRecipesBatch84 } from './editorialRecipesBatch84'
+import { editorialRecipesBatch85 } from './editorialRecipesBatch85'
 
 export type EditorialIngredient = ProviderRecipe['ingredients'][number] & {
   category: Category
@@ -6531,6 +6532,7 @@ export const editorialRecipes: EditorialRecipe[] = [
   ...editorialRecipesBatch82,
   ...editorialRecipesBatch83,
   ...editorialRecipesBatch84,
+  ...editorialRecipesBatch85,
 ]
 
 const evaluated = evaluateProviderPage({ recipes: editorialRecipes, nextCursor: null }, new Date('2026-09-02T12:00:00Z'))
@@ -6705,8 +6707,27 @@ const pendingImageIds = new Set([
   'haehnchen-aprikosen-gersten-pilaw',
   'maronen-rosenkohl-graupenpfanne',
   'schweinegeschnetzeltes-kohlrabi-vollkornreis',
-  'birnen-bohnen-kartoffel-eintopf',
   'okra-linsen-hirse-eintopf',
+  'mangold-bohnen-dinkel-strudel',
+  'kabeljau-steckrueben-graupen-chowder',
+  'tofu-pilz-hirse-terrine',
+  'rind-kuerbis-linsen-samosas',
+  'fenchel-erbsen-buchweizen-risotto',
+  'saibling-wirsing-polenta-roulade',
+  'kichererbsen-rote-bete-teff-baellchen',
+  'pute-lauch-kartoffel-pie',
+  'auberginen-lupinen-reis-kofta',
+  'muschel-tomaten-dinkel-paella',
+  'schwarzwurzel-linsen-hafer-gratin',
+  'haehnchen-brokkoli-buchweizen-momos',
+  'kuerbis-bohnen-mais-pozole',
+  'forelle-kohlrabi-dinkel-frikadellen',
+  'tempeh-pastinaken-gersten-tagine',
+  'schwein-spinat-hirse-cannelloni',
+  'blumenkohl-erbsen-reis-dosa',
+  'zander-apfel-wirsing-kroketten',
+  'linsen-paprika-polenta-tarte',
+  'kalb-maronen-dinkel-ragout',
 ])
 
 export const editorialAppRecipes: Recipe[] = publishableEditorialRecipes

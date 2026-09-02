@@ -27,10 +27,13 @@ const expected = [
 
 describe('redaktioneller Rezeptbatch 84', () => {
   it('ergänzt zwanzig eigenständige und inhaltlich veröffentlichungsfähige Originalrezepte', () => {
-    const actual = editorialRecipes.filter(recipe => Number(recipe.externalId.split('-')[1]) >= 394)
+    const actual = editorialRecipes.filter(recipe => {
+      const number = Number(recipe.externalId.split('-')[1])
+      return number >= 394 && number <= 413
+    })
     expect(actual.map(recipe => [recipe.externalId, recipe.title])).toEqual(expected)
-    expect(editorialRecipes).toHaveLength(401)
-    expect(publishableEditorialRecipes).toHaveLength(401)
+    expect(editorialRecipes).toHaveLength(421)
+    expect(publishableEditorialRecipes).toHaveLength(421)
     expect(validateCatalog(editorialRecipes, new Date('2026-09-02T23:59:00Z'))).toEqual([])
   })
 })
