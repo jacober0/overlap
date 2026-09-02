@@ -3,7 +3,7 @@ import { validateCatalog } from '../domain/catalog'
 import { editorialAppRecipes, editorialRecipes, publishableEditorialRecipes } from './editorialRecipes'
 
 describe('originaler redaktioneller Rezeptkatalog', () => {
-  it('liefert zweihundertneunundneunzig inhaltlich veröffentlichungsfähige Originalrezepte in sechsundsiebzig eigenständigen Batches', () => {
+  it('liefert dreihundertneun inhaltlich veröffentlichungsfähige Originalrezepte in siebenundsiebzig eigenständigen Batches', () => {
     expect(editorialRecipes.map(recipe => recipe.externalId)).toEqual([
       'overlap-013-rote-linsen-kokos-suppe',
       'overlap-014-pilz-graupen-risotto',
@@ -304,9 +304,19 @@ describe('originaler redaktioneller Rezeptkatalog', () => {
       'overlap-309-garnelen-wirsing-reisnudel-pfanne',
       'overlap-310-sellerie-kichererbsen-dinkel-klopse',
       'overlap-311-entenbrust-rote-bete-graupen-salat',
+      'overlap-312-kuerbis-lupinen-dinkel-strudel',
+      'overlap-313-kabeljau-spitzkohl-linsen-topf',
+      'overlap-314-pilz-kartoffel-hirse-moussaka',
+      'overlap-315-pute-rote-bete-buchweizen-pfanne',
+      'overlap-316-brokkoli-bohnen-polenta-tarte',
+      'overlap-317-forelle-wirsing-graupen-paeckchen',
+      'overlap-318-tofu-pastinaken-soba-gratin',
+      'overlap-319-lamm-kohlrabi-kichererbsen-eintopf',
+      'overlap-320-apfel-quark-hafer-auflauf',
+      'overlap-321-rote-linsen-fenchel-dinkel-pide',
     ])
     expect(validateCatalog(editorialRecipes, new Date('2026-09-02T12:00:00Z'))).toEqual([])
-    expect(publishableEditorialRecipes).toHaveLength(299)
+    expect(publishableEditorialRecipes).toHaveLength(309)
   })
 
   it('enthält Kochanleitung, Preisgrundlage, Allergene, Provenienz und Bildprompt vollständig', () => {
@@ -322,7 +332,7 @@ describe('originaler redaktioneller Rezeptkatalog', () => {
     }
   })
 
-  it('leitet die Preisgrundlage des sechsundsiebzigsten Batches ohne handgepflegte Abweichung aus den Zutaten ab', () => {
+  it('leitet die Preisgrundlage des siebenundsiebzigsten Batches ohne handgepflegte Abweichung aus den Zutaten ab', () => {
     for (const recipe of editorialRecipes.slice(-10)) {
       expect(recipe.estimatedPriceCents, recipe.externalId).toBe(
         recipe.ingredients.reduce((total, ingredient) => total + ingredient.estimatedCostCents, 0),

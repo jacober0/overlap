@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { validateCatalog } from '../domain/catalog'
 import { editorialRecipes, publishableEditorialRecipes } from './editorialRecipes'
+import { editorialRecipesBatch69 } from './editorialRecipesBatch69'
 
 const batch69Ids = [
   'overlap-226-linsen-polenta-schnitten-pilzragout',
@@ -19,14 +20,14 @@ const batch69Ids = [
 
 describe('redaktioneller Rezeptbatch 69', () => {
   it('ergänzt zwölf eigenständige und inhaltlich veröffentlichungsfähige Originalrezepte', () => {
-    expect(editorialRecipes.slice(-86, -74).map(recipe => recipe.externalId)).toEqual(batch69Ids)
-    expect(editorialRecipes).toHaveLength(299)
-    expect(publishableEditorialRecipes).toHaveLength(299)
+    expect(editorialRecipesBatch69.map(recipe => recipe.externalId)).toEqual(batch69Ids)
+    expect(editorialRecipes).toHaveLength(309)
+    expect(publishableEditorialRecipes).toHaveLength(309)
     expect(validateCatalog(editorialRecipes, new Date('2026-09-02T12:00:00Z'))).toEqual([])
   })
 
   it('enthält vollständige Koch-, Kosten-, Rechte- und Bilddaten', () => {
-    for (const recipe of editorialRecipes.slice(-36, -24)) {
+    for (const recipe of editorialRecipesBatch69) {
       expect(recipe.ingredients.length, recipe.externalId).toBeGreaterThanOrEqual(7)
       expect(recipe.steps.length, recipe.externalId).toBeGreaterThanOrEqual(5)
       expect(recipe.steps.every(step => step.length >= 12), recipe.externalId).toBe(true)

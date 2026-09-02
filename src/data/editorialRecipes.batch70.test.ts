@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { validateCatalog } from '../domain/catalog'
 import { editorialRecipes, publishableEditorialRecipes } from './editorialRecipes'
+import { editorialRecipesBatch70 } from './editorialRecipesBatch70'
 
 const batch70Ids = [
   'overlap-238-schwarzwurzel-hafer-roesti-linsen-remoulade',
@@ -19,14 +20,14 @@ const batch70Ids = [
 
 describe('redaktioneller Rezeptbatch 70', () => {
   it('ergänzt zwölf eigenständige und inhaltlich veröffentlichungsfähige Originalrezepte', () => {
-    expect(editorialRecipes.slice(-74, -62).map(recipe => recipe.externalId)).toEqual(batch70Ids)
-    expect(editorialRecipes).toHaveLength(299)
-    expect(publishableEditorialRecipes).toHaveLength(299)
+    expect(editorialRecipesBatch70.map(recipe => recipe.externalId)).toEqual(batch70Ids)
+    expect(editorialRecipes).toHaveLength(309)
+    expect(publishableEditorialRecipes).toHaveLength(309)
     expect(validateCatalog(editorialRecipes, new Date('2026-09-02T12:00:00Z'))).toEqual([])
   })
 
   it('weist plausible Nährwerte pro Portion statt Zwei-Portionen-Summen aus', () => {
-    for (const recipe of editorialRecipes.slice(-24, -12)) {
+    for (const recipe of editorialRecipesBatch70) {
       expect(recipe.nutrition.kcal, recipe.externalId).toBeGreaterThanOrEqual(400)
       expect(recipe.nutrition.kcal, recipe.externalId).toBeLessThanOrEqual(950)
       expect(recipe.nutrition.protein, recipe.externalId).toBeLessThanOrEqual(80)
@@ -35,7 +36,7 @@ describe('redaktioneller Rezeptbatch 70', () => {
   })
 
   it('enthält vollständige Koch-, Kosten-, Rechte- und Bilddaten', () => {
-    for (const recipe of editorialRecipes.slice(-24, -12)) {
+    for (const recipe of editorialRecipesBatch70) {
       expect(recipe.ingredients.length, recipe.externalId).toBeGreaterThanOrEqual(7)
       expect(recipe.steps.length, recipe.externalId).toBeGreaterThanOrEqual(5)
       expect(recipe.steps.every(step => step.length >= 12), recipe.externalId).toBe(true)

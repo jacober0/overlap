@@ -1,31 +1,30 @@
 import { describe, expect, it } from 'vitest'
 import { validateCatalog } from '../domain/catalog'
 import { editorialRecipes, publishableEditorialRecipes } from './editorialRecipes'
-import { editorialRecipesBatch74 } from './editorialRecipesBatch74'
 
-const batch74Ids = [
-  'overlap-282-kichererbsen-artischocken-dinkel-paella',
-  'overlap-283-pute-pastinake-buchweizen-rouladen',
-  'overlap-284-forelle-erbsen-kartoffel-souffle',
-  'overlap-285-schwarze-bohnen-kuerbis-empanadas',
-  'overlap-286-kalb-mangold-hirse-frikassee',
-  'overlap-287-tofu-fenchel-soba-taschen',
-  'overlap-288-ei-rote-bete-linsen-tortilla',
-  'overlap-289-kaninchen-wirsing-polenta-schmortopf',
-  'overlap-290-blumenkohl-weisse-bohnen-dinkel-gnudi',
-  'overlap-291-muschel-lauch-graupen-chowder',
+const batch77Ids = [
+  'overlap-312-kuerbis-lupinen-dinkel-strudel',
+  'overlap-313-kabeljau-spitzkohl-linsen-topf',
+  'overlap-314-pilz-kartoffel-hirse-moussaka',
+  'overlap-315-pute-rote-bete-buchweizen-pfanne',
+  'overlap-316-brokkoli-bohnen-polenta-tarte',
+  'overlap-317-forelle-wirsing-graupen-paeckchen',
+  'overlap-318-tofu-pastinaken-soba-gratin',
+  'overlap-319-lamm-kohlrabi-kichererbsen-eintopf',
+  'overlap-320-apfel-quark-hafer-auflauf',
+  'overlap-321-rote-linsen-fenchel-dinkel-pide',
 ]
 
-describe('redaktioneller Rezeptbatch 74', () => {
+describe('redaktioneller Rezeptbatch 77', () => {
   it('ergänzt zehn eigenständige und inhaltlich veröffentlichungsfähige Originalrezepte', () => {
-    expect(editorialRecipesBatch74.map(recipe => recipe.externalId)).toEqual(batch74Ids)
+    expect(editorialRecipes.slice(-10).map(recipe => recipe.externalId)).toEqual(batch77Ids)
     expect(editorialRecipes).toHaveLength(309)
     expect(publishableEditorialRecipes).toHaveLength(309)
-    expect(validateCatalog(editorialRecipes, new Date('2026-09-02T18:00:00Z'))).toEqual([])
+    expect(validateCatalog(editorialRecipes, new Date('2026-09-02T22:00:00Z'))).toEqual([])
   })
 
   it('enthält vollständige, kalkulierte und bildspezifische redaktionelle Daten', () => {
-    for (const recipe of editorialRecipesBatch74) {
+    for (const recipe of editorialRecipes.slice(-10)) {
       expect(recipe.ingredients.length, recipe.externalId).toBeGreaterThanOrEqual(8)
       expect(recipe.steps.length, recipe.externalId).toBeGreaterThanOrEqual(5)
       expect(recipe.steps.every(step => step.length >= 12), recipe.externalId).toBe(true)
