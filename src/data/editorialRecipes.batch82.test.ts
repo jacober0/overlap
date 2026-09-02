@@ -1,34 +1,34 @@
 import { describe, expect, it } from 'vitest'
 import { validateCatalog } from '../domain/catalog'
 import { editorialAppRecipes, editorialRecipes, publishableEditorialRecipes } from './editorialRecipes'
-import { editorialRecipesBatch80 } from './editorialRecipesBatch80'
+import { editorialRecipesBatch82 } from './editorialRecipesBatch82'
 
 const expected = [
-  ['overlap-346-rosenkohl-bohnen-dinkel-pithivier', 'Rosenkohl-Bohnen-Dinkel-Pithivier'],
-  ['overlap-347-zander-kuerbis-buchweizen-papillote', 'Zander-Kürbis-Buchweizen-Papillote'],
-  ['overlap-348-rind-linsen-wirsing-manti', 'Rind-Linsen-Wirsing-Manti'],
-  ['overlap-349-tempeh-rote-bete-hirse-bao', 'Tempeh-Rote-Bete-Hirse-Bao'],
-  ['overlap-350-garnelen-kohlrabi-polenta-spiesse', 'Garnelen-Kohlrabi-Polenta-Spieße'],
-  ['overlap-351-kuerbis-lupinen-dinkel-cannelloni', 'Kürbis-Lupinen-Dinkel-Cannelloni'],
-  ['overlap-352-ente-rotkohl-graupen-kroketten', 'Enten-Rotkohl-Graupen-Kroketten'],
-  ['overlap-353-brokkoli-kichererbsen-teff-taler', 'Brokkoli-Kichererbsen-Teff-Taler'],
-  ['overlap-354-forelle-lauch-kartoffel-samosa', 'Forellen-Lauch-Kartoffel-Samosa'],
-  ['overlap-355-pilz-linsen-buchweizen-sarma', 'Pilz-Linsen-Buchweizen-Sarma'],
-  ['overlap-356-puten-spinat-mais-arepas', 'Puten-Spinat-Mais-Arepas'],
-  ['overlap-357-schwarzwurzel-bohnen-hafer-pie', 'Schwarzwurzel-Bohnen-Hafer-Pie'],
+  ['overlap-370-schwarzkohl-bohnen-graupen-suppe', 'Schwarzkohl-Bohnen-Graupen-Suppe mit Zitronenpesto'],
+  ['overlap-371-seehecht-spinat-polenta-roulade', 'Seehecht-Spinat-Polenta-Roulade'],
+  ['overlap-372-haehnchen-rote-bete-quinoa-taboule', 'Hähnchen-Rote-Bete-Quinoa-Taboulé'],
+  ['overlap-373-linsen-pilz-dinkel-tourte', 'Linsen-Pilz-Dinkel-Tourte mit Wurzelgemüse'],
+  ['overlap-374-tofu-brokkoli-buchweizen-tempura', 'Tofu-Brokkoli-Buchweizen-Tempura mit Rotkohlsalat'],
+  ['overlap-375-kalb-kohlrabi-hirse-klopse', 'Kalb-Kohlrabi-Hirse-Klopse in Kapernsauce'],
+  ['overlap-376-kuerbis-ricotta-graupen-gnocchi', 'Kürbis-Ricotta-Graupen-Gnocchi mit Salbei'],
+  ['overlap-377-muschel-lauch-bohnen-pot-pie', 'Muschel-Lauch-Bohnen-Pot-Pie'],
+  ['overlap-378-tempeh-wirsing-kartoffel-roesti', 'Tempeh-Wirsing-Kartoffel-Rösti mit Apfel-Senf-Salat'],
+  ['overlap-379-lamm-auberginen-teff-kofta', 'Lamm-Auberginen-Teff-Kofta auf Tomatenbohnen'],
+  ['overlap-380-zander-rote-linsen-fenchel-baellchen', 'Zander-Rote-Linsen-Fenchel-Bällchen mit Mangold'],
+  ['overlap-381-pastinaken-edamame-reis-tteok', 'Pastinaken-Edamame-Reis-Tteok in Pilzbrühe'],
 ] as const
 
-describe('redaktioneller Rezeptbatch 80', () => {
+describe('redaktioneller Rezeptbatch 82', () => {
   it('ergänzt zwölf eigenständige und inhaltlich veröffentlichungsfähige Originalrezepte', () => {
-    expect(editorialRecipesBatch80.map(recipe => [recipe.externalId, recipe.title])).toEqual(expected)
+    expect(editorialRecipesBatch82.map(recipe => [recipe.externalId, recipe.title])).toEqual(expected)
     expect(editorialRecipes).toHaveLength(369)
     expect(publishableEditorialRecipes).toHaveLength(369)
     expect(validateCatalog(editorialRecipes, new Date('2026-09-02T23:59:00Z'))).toEqual([])
-    for (const recipe of editorialRecipesBatch80) expect(editorialAppRecipes.map(item => item.id)).not.toContain(recipe.appId)
+    for (const recipe of editorialRecipesBatch82) expect(editorialAppRecipes.map(item => item.id)).not.toContain(recipe.appId)
   })
 
   it('enthält vollständige, kalkulierte und bildspezifische redaktionelle Daten', () => {
-    for (const recipe of editorialRecipesBatch80) {
+    for (const recipe of editorialRecipesBatch82) {
       expect(recipe.ingredients.length, recipe.externalId).toBeGreaterThanOrEqual(8)
       expect(recipe.steps.length, recipe.externalId).toBeGreaterThanOrEqual(5)
       expect(recipe.steps.every(step => step.length >= 12), recipe.externalId).toBe(true)
