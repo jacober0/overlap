@@ -21,16 +21,16 @@ const response = (contentType, bytes, ok = true, status = 200) => ({
 })
 
 describe('recipe image manifest and prompt contract', () => {
-  it('includes the fifty-ninth recipe batch in the image manifest', () => {
+  it('includes the sixtieth recipe batch in the image manifest', () => {
     expect(recipeImageManifest.slice(-3).map(({ id }) => id)).toEqual([
-      'tofu-rote-bete-buchweizen-nocken-meerrettichkraut',
-      'herings-apfel-lauch-dinkelflammkuchen-bohnensalat',
-      'pilz-linsen-kartoffel-zrazy-gurkenschmand',
+      'erbsen-tofu-dinkel-siu-mai-pak-choi',
+      'lachs-rote-bete-kartoffel-galette-bohnensalat',
+      'rind-sellerie-hirse-manti-paprikajoghurt',
     ])
   })
 
   it('defines exactly one dish-specific prompt for every local publishable recipe', () => {
-    expect(recipeImageManifest).toHaveLength(198)
+    expect(recipeImageManifest).toHaveLength(201)
     expect(recipeImageManifest.map(({ id }) => id)).toEqual([
       'tomatenpasta', 'kichererbsencurry', 'ofengemuese', 'linsenbolognese',
       'tacos', 'reisbowl', 'shakshuka', 'gnocchi', 'haehnchenblech',
@@ -192,8 +192,11 @@ describe('recipe image manifest and prompt contract', () => {
       'tofu-rote-bete-buchweizen-nocken-meerrettichkraut',
       'herings-apfel-lauch-dinkelflammkuchen-bohnensalat',
       'pilz-linsen-kartoffel-zrazy-gurkenschmand',
+      'erbsen-tofu-dinkel-siu-mai-pak-choi',
+      'lachs-rote-bete-kartoffel-galette-bohnensalat',
+      'rind-sellerie-hirse-manti-paprikajoghurt',
     ])
-    expect(new Set(recipeImageManifest.map(({ dish }) => dish)).size).toBe(198)
+    expect(new Set(recipeImageManifest.map(({ dish }) => dish)).size).toBe(201)
     expect(recipeImageManifest.every(({ dish }) => dish.length >= 80)).toBe(true)
   })
 
