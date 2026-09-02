@@ -3,7 +3,7 @@ import { validateCatalog } from '../domain/catalog'
 import { editorialAppRecipes, editorialRecipes, publishableEditorialRecipes } from './editorialRecipes'
 
 describe('originaler redaktioneller Rezeptkatalog', () => {
-  it('liefert zweihundertvier inhaltlich veröffentlichungsfähige Originalrezepte in fünfundsechzig eigenständigen Batches', () => {
+  it('liefert zweihundertsieben inhaltlich veröffentlichungsfähige Originalrezepte in sechsundsechzig eigenständigen Batches', () => {
     expect(editorialRecipes.map(recipe => recipe.externalId)).toEqual([
       'overlap-013-rote-linsen-kokos-suppe',
       'overlap-014-pilz-graupen-risotto',
@@ -209,9 +209,12 @@ describe('originaler redaktioneller Rezeptkatalog', () => {
       'overlap-214-rote-bete-buchweizen-galettes-linsencreme',
       'overlap-215-seelachs-kartoffel-erbsen-pie',
       'overlap-216-schweinefilet-apfel-wirsing-polenta',
+      'overlap-217-wels-kuerbis-dinkel-ragout-meerrettich',
+      'overlap-218-blumenkohl-lupinen-hirse-bobotie',
+      'overlap-219-kaninchen-bohnen-oliven-schmortopf',
     ])
     expect(validateCatalog(editorialRecipes, new Date('2026-08-31T12:00:00Z'))).toEqual([])
-    expect(publishableEditorialRecipes).toHaveLength(204)
+    expect(publishableEditorialRecipes).toHaveLength(207)
   })
 
   it('enthält Kochanleitung, Preisgrundlage, Allergene, Provenienz und Bildprompt vollständig', () => {
@@ -227,7 +230,7 @@ describe('originaler redaktioneller Rezeptkatalog', () => {
     }
   })
 
-  it('leitet die Preisgrundlage des fünfundsechzigsten Batches ohne handgepflegte Abweichung aus den Zutaten ab', () => {
+  it('leitet die Preisgrundlage des sechsundsechzigsten Batches ohne handgepflegte Abweichung aus den Zutaten ab', () => {
     for (const recipe of editorialRecipes.slice(-3)) {
       expect(recipe.estimatedPriceCents, recipe.externalId).toBe(
         recipe.ingredients.reduce((total, ingredient) => total + ingredient.estimatedCostCents, 0),
