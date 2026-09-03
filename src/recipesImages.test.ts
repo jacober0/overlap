@@ -47,6 +47,10 @@ describe('beta catalog visibility and image fallback', () => {
     )
   })
 
+  it('publishes the individually reviewed aubergine image from the current QA batch', () => {
+    expect(recipes.find(recipe => recipe.id === 'miso-auberginen-edamame-reis')?.imageStatus).toBe('individual-visual-pass')
+  })
+
   it('enriches every legacy seed with cookable five-step instructions', () => {
     const legacyRecipes = recipes.filter(recipe => !editorialRecipes.some(editorial => editorial.appId === recipe.id))
 
