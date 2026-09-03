@@ -47,6 +47,10 @@ describe('beta catalog visibility and image fallback', () => {
     )
   })
 
+  it('publishes the individually reviewed plum quark casserole image from the current QA pass', () => {
+    expect(recipes.find(recipe => recipe.id === 'pflaumen-quark-buchweizen-auflauf-mandeln')?.imageStatus).toBe('individual-visual-pass')
+  })
+
   it('publishes the individually reviewed aubergine image from the current QA batch', () => {
     expect(recipes.find(recipe => recipe.id === 'miso-auberginen-edamame-reis')?.imageStatus).toBe('individual-visual-pass')
   })
