@@ -67,6 +67,19 @@ describe('beta catalog visibility and image fallback', () => {
     )
   })
 
+  it('publishes only the four dish-faithful images from the current generated batch', () => {
+    const reviewedIds = [
+      'schweinegeschnetzeltes-kohlrabi-vollkornreis',
+      'buchweizen-pilz-blini-rote-bete-quark',
+      'lupinen-kartoffel-gulasch',
+      'polenta-bohnen-tamale-auflauf',
+    ]
+
+    expect(recipes.filter(recipe => reviewedIds.includes(recipe.id)).map(recipe => recipe.imageStatus)).toEqual(
+      reviewedIds.map(() => 'individual-visual-pass'),
+    )
+  })
+
   it('enriches every legacy seed with cookable five-step instructions', () => {
     const legacyRecipes = recipes.filter(recipe => !editorialRecipes.some(editorial => editorial.appId === recipe.id))
 
