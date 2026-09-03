@@ -92,6 +92,18 @@ describe('beta catalog visibility and image fallback', () => {
     )
   })
 
+  it('publishes only the three dish-faithful images from the final pending-assets review', () => {
+    const reviewedIds = [
+      'kartoffel-linsen-bao-rotkohl',
+      'mais-quark-nocken-pilzragout',
+      'kabeljau-erbsen-graupen-pie-lauch',
+    ]
+
+    expect(recipes.filter(recipe => reviewedIds.includes(recipe.id)).map(recipe => recipe.imageStatus)).toEqual(
+      reviewedIds.map(() => 'individual-visual-pass'),
+    )
+  })
+
   it('enriches every legacy seed with cookable five-step instructions', () => {
     const legacyRecipes = recipes.filter(recipe => !editorialRecipes.some(editorial => editorial.appId === recipe.id))
 

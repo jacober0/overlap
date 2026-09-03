@@ -6735,6 +6735,9 @@ const pendingImageIds = new Set([
 ])
 
 const individuallyApprovedImageIds = new Set([
+  'kartoffel-linsen-bao-rotkohl',
+  'mais-quark-nocken-pilzragout',
+  'kabeljau-erbsen-graupen-pie-lauch',
   'ei-pilz-buchweizen-bibimbap',
   'schellfisch-lauch-hafer-crumble',
   'rind-kuerbis-reis-kohlrouladen-paprikasauce',
