@@ -33,6 +33,20 @@ describe('beta catalog visibility and image fallback', () => {
     ])
   })
 
+  it('publishes the individually reviewed image batch from the final QA pass', () => {
+    const reviewedIds = [
+      'ei-pilz-buchweizen-bibimbap',
+      'schellfisch-lauch-hafer-crumble',
+      'rind-kuerbis-reis-kohlrouladen-paprikasauce',
+      'zucchini-lamm-bulgur-rollen-tomatensauce',
+      'kichererbsen-fenchel-panisse-ratatouille',
+    ]
+
+    expect(recipes.filter(recipe => reviewedIds.includes(recipe.id)).map(recipe => recipe.imageStatus)).toEqual(
+      reviewedIds.map(() => 'individual-visual-pass'),
+    )
+  })
+
   it('makes every accepted original plus all twelve legacy seeds available without broken image requests', () => {
     expect(editorialRecipes).toHaveLength(500)
     expect(publishableEditorialRecipes).toHaveLength(500)

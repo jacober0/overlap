@@ -6734,13 +6734,23 @@ const pendingImageIds = new Set([
   'kalb-maronen-dinkel-ragout',
 ])
 
+const individuallyApprovedImageIds = new Set([
+  'ei-pilz-buchweizen-bibimbap',
+  'schellfisch-lauch-hafer-crumble',
+  'rind-kuerbis-reis-kohlrouladen-paprikasauce',
+  'zucchini-lamm-bulgur-rollen-tomatensauce',
+  'kichererbsen-fenchel-panisse-ratatouille',
+])
+
+const usesNeutralImageFallback = (id: string) => pendingImageIds.has(id) && !individuallyApprovedImageIds.has(id)
+
 export const editorialAppRecipes: Recipe[] = publishableEditorialRecipes
   .map(recipe => ({
   id: recipe.appId,
   title: recipe.title,
   description: recipe.description,
-  image: pendingImageIds.has(recipe.appId) ? '/recipe-placeholder.svg' : `/recipes/${recipe.appId}.jpg`,
-  imageStatus: pendingImageIds.has(recipe.appId) ? 'neutral-fallback' : 'individual-visual-pass',
+  image: usesNeutralImageFallback(recipe.appId) ? '/recipe-placeholder.svg' : `/recipes/${recipe.appId}.jpg`,
+  imageStatus: usesNeutralImageFallback(recipe.appId) ? 'neutral-fallback' : 'individual-visual-pass',
   minutes: recipe.totalMinutes,
   activeMinutes: recipe.activeMinutes,
   servings: recipe.servings,
