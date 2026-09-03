@@ -6636,7 +6636,6 @@ const pendingImageIds = new Set([
   'sardinen-fenchel-kartoffel-tortilla',
   'zucchini-lamm-bulgur-rollen-tomatensauce',
   'weisse-bohnen-mangold-ribollita-polenta-crostini',
-  'forellen-spinat-kartoffel-piroggen-rote-bete-salat',
   'rind-kuerbis-reis-kohlrouladen-paprikasauce',
   'schwarze-bohnen-mais-arepas-kuerbis-salsa',
   'ei-pilz-buchweizen-bibimbap',

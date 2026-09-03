@@ -19,9 +19,11 @@ describe('beta catalog visibility and image fallback', () => {
       'forellen-mais-buchweizen-tacos-krautsalat',
       'kartoffel-linsen-dinkelwaffeln-pilzragout',
       'blumenkohl-kaese-graupen-kroketten-lauchcreme',
+      'forellen-spinat-kartoffel-piroggen-rote-bete-salat',
     ]
 
     expect(recipes.filter(recipe => approvedIds.includes(recipe.id)).map(recipe => recipe.imageStatus)).toEqual([
+      'individual-visual-pass',
       'individual-visual-pass',
       'individual-visual-pass',
       'individual-visual-pass',
