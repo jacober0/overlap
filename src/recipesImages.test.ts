@@ -104,6 +104,20 @@ describe('beta catalog visibility and image fallback', () => {
     )
   })
 
+  it('publishes the five additional images that passed individual and contact-sheet QA', () => {
+    const reviewedIds = [
+      'rote-bete-linsen-dinkel-pasteten-meerrettichkraut',
+      'seelachs-kichererbsen-baellchen-spinat-curry',
+      'puten-bohnen-paprika-pide-joghurtsalat',
+      'garnelen-kuerbis-naturreis-congee-pak-choi',
+      'blumenkohl-lupinen-hirse-bobotie',
+    ]
+
+    expect(recipes.filter(recipe => reviewedIds.includes(recipe.id)).map(recipe => recipe.imageStatus)).toEqual(
+      reviewedIds.map(() => 'individual-visual-pass'),
+    )
+  })
+
   it('enriches every legacy seed with cookable five-step instructions', () => {
     const legacyRecipes = recipes.filter(recipe => !editorialRecipes.some(editorial => editorial.appId === recipe.id))
 
