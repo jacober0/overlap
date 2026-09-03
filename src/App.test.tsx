@@ -33,6 +33,20 @@ describe('Overlap app flow', () => {
     expect(screen.getByRole('heading', { name: 'Kein passendes Gericht gefunden' })).toBeInTheDocument()
   })
 
+  it('macht auch akzeptierte Gerichte über 60 Minuten über die Suche erreichbar', async () => {
+    localStorage.clear()
+    localStorage.setItem('overlap-stage', 'discover')
+    localStorage.setItem('overlap-selected', '[]')
+    localStorage.setItem('overlap-preferences', JSON.stringify({
+      diet: 'omnivor', maxMinutes: 120, budgetFocus: .7, variety: .45,
+      anchorTags: [], allergens: [], excludedIngredients: [], pantryIngredients: [], servings: 2, targetMeals: 5,
+    }))
+    render(<App />)
+
+    await userEvent.type(screen.getByRole('searchbox', { name: 'Katalog durchsuchen' }), 'Borschtsch')
+    expect(screen.getByRole('heading', { name: 'Rind-Rote-Bete-Borschtsch mit Dill' })).toBeInTheDocument()
+  })
+
   it('speichert Mahlzeitenziel, Portionen und ausgeschlossene Zutaten', async () => {
     localStorage.clear()
     render(<App />)

@@ -6642,7 +6642,6 @@ const pendingImageIds = new Set([
   'schellfisch-lauch-hafer-crumble',
   'sellerie-adzuki-miso-blech-sesam-hirse',
   'mangold-linsen-goezleme-paprika-joghurt',
-  'haehnchen-shiitake-gyoza-spitzkohlsalat',
   'tomaten-dill-gigantes-gerste-mangold',
   'lachs-kohl-okonomiyaki-edamame',
   'kuerbis-quark-knoedel-pilzragout',
