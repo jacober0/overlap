@@ -47,6 +47,13 @@ describe('beta catalog visibility and image fallback', () => {
     )
   })
 
+  it('enriches every legacy seed with cookable five-step instructions', () => {
+    const legacyRecipes = recipes.filter(recipe => !editorialRecipes.some(editorial => editorial.appId === recipe.id))
+
+    expect(legacyRecipes).toHaveLength(12)
+    expect(legacyRecipes.every(recipe => recipe.steps.length >= 5)).toBe(true)
+  })
+
   it('makes every accepted original plus all twelve legacy seeds available without broken image requests', () => {
     expect(editorialRecipes).toHaveLength(500)
     expect(publishableEditorialRecipes).toHaveLength(500)
