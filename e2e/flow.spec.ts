@@ -31,6 +31,18 @@ test('vollständiger lokaler MVP-Flow funktioniert', async ({ page }, testInfo) 
   await expect(page.getByRole('heading', { name: /Eine Woche, die zusammenpasst/ })).toBeVisible()
   await page.locator('.day-cook').first().click()
   await expect(page.getByText('Schritt 1 von 5')).toBeVisible()
+  const backBox = await page.getByRole('button', { name: '← Wochenplan', exact: true }).boundingBox()
+  const eyebrowBox = await page.locator('.cook-hero .eyebrow').boundingBox()
+  expect(backBox).not.toBeNull()
+  expect(eyebrowBox).not.toBeNull()
+  const headerItemsHaveVisibleGap = Boolean(backBox && eyebrowBox && (
+    backBox.x + backBox.width + 16 <= eyebrowBox.x
+    || backBox.y + backBox.height + 16 <= eyebrowBox.y
+    || eyebrowBox.x + eyebrowBox.width + 16 <= backBox.x
+    || eyebrowBox.y + eyebrowBox.height + 16 <= backBox.y
+  ))
+  expect(headerItemsHaveVisibleGap, 'Kochmodus-Kopfzeile braucht sichtbaren Abstand zum Zurück-Link').toBe(true)
+  await page.screenshot({ path: `artifacts/${testInfo.project.name}-cook-header.png` })
   await page.getByRole('button', { name: 'Nächster Schritt' }).click()
   await expect(page.getByText('Schritt 2 von 5')).toBeVisible()
   await page.reload()
