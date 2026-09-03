@@ -80,6 +80,18 @@ describe('beta catalog visibility and image fallback', () => {
     )
   })
 
+  it('publishes only the three dish-faithful images from the pending-image review', () => {
+    const reviewedIds = [
+      'blumenkohl-linsen-socca-tomatenrelish',
+      'rotbarsch-bohnen-rote-bete-paeckchen-dillkartoffeln',
+      'auberginen-hirse-involtini-bohnencreme',
+    ]
+
+    expect(recipes.filter(recipe => reviewedIds.includes(recipe.id)).map(recipe => recipe.imageStatus)).toEqual(
+      reviewedIds.map(() => 'individual-visual-pass'),
+    )
+  })
+
   it('enriches every legacy seed with cookable five-step instructions', () => {
     const legacyRecipes = recipes.filter(recipe => !editorialRecipes.some(editorial => editorial.appId === recipe.id))
 

@@ -6749,6 +6749,9 @@ const individuallyApprovedImageIds = new Set([
   'buchweizen-pilz-blini-rote-bete-quark',
   'lupinen-kartoffel-gulasch',
   'polenta-bohnen-tamale-auflauf',
+  'blumenkohl-linsen-socca-tomatenrelish',
+  'rotbarsch-bohnen-rote-bete-paeckchen-dillkartoffeln',
+  'auberginen-hirse-involtini-bohnencreme',
 ])
 
 const usesNeutralImageFallback = (id: string) => pendingImageIds.has(id) && !individuallyApprovedImageIds.has(id)
