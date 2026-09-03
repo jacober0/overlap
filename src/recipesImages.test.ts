@@ -55,6 +55,18 @@ describe('beta catalog visibility and image fallback', () => {
     expect(recipes.find(recipe => recipe.id === 'miso-auberginen-edamame-reis')?.imageStatus).toBe('individual-visual-pass')
   })
 
+  it('publishes only the three individually reviewed images from the latest strict QA pass', () => {
+    const reviewedIds = [
+      'tempeh-kuerbis-reisnudel-laab-rotkohl',
+      'rind-sellerie-hirse-manti-paprikajoghurt',
+      'lupinen-spinat-dinkel-pelmeni-paprikabruehe',
+    ]
+
+    expect(recipes.filter(recipe => reviewedIds.includes(recipe.id)).map(recipe => recipe.imageStatus)).toEqual(
+      reviewedIds.map(() => 'individual-visual-pass'),
+    )
+  })
+
   it('enriches every legacy seed with cookable five-step instructions', () => {
     const legacyRecipes = recipes.filter(recipe => !editorialRecipes.some(editorial => editorial.appId === recipe.id))
 

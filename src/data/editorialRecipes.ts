@@ -6742,6 +6742,9 @@ const individuallyApprovedImageIds = new Set([
   'kichererbsen-fenchel-panisse-ratatouille',
   'miso-auberginen-edamame-reis',
   'pflaumen-quark-buchweizen-auflauf-mandeln',
+  'tempeh-kuerbis-reisnudel-laab-rotkohl',
+  'rind-sellerie-hirse-manti-paprikajoghurt',
+  'lupinen-spinat-dinkel-pelmeni-paprikabruehe',
 ])
 
 const usesNeutralImageFallback = (id: string) => pendingImageIds.has(id) && !individuallyApprovedImageIds.has(id)
