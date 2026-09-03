@@ -118,6 +118,17 @@ describe('beta catalog visibility and image fallback', () => {
     )
   })
 
+  it('publishes only the two images that pass both individual and contact-sheet QA in the quota-blocked review', () => {
+    const reviewedIds = [
+      'haehnchen-mais-dinkel-tamales-bohnen-salsa',
+      'zucchini-ricotta-dinkel-ravioli-tomatensauce',
+    ]
+
+    expect(recipes.filter(recipe => reviewedIds.includes(recipe.id)).map(recipe => recipe.imageStatus)).toEqual(
+      reviewedIds.map(() => 'individual-visual-pass'),
+    )
+  })
+
   it('enriches every legacy seed with cookable five-step instructions', () => {
     const legacyRecipes = recipes.filter(recipe => !editorialRecipes.some(editorial => editorial.appId === recipe.id))
 
