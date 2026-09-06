@@ -7,8 +7,6 @@ import type { Allergen, Diet, Preferences, Recipe } from './domain/types'
 import { recipes } from './recipes'
 import { AccountPanel } from './components/AccountPanel'
 import { useAccount } from './auth/useAccount'
-import { getAccessMode } from './auth/access'
-import { BetaAccessGate } from './components/BetaAccessGate'
 import { loadProfilePreferences, resolveLocalProfileForUser, resolveProfileSynchronization, saveProfilePreferences } from './data/profileRepository'
 import { activateLocalAccountData } from './data/localAccountState'
 
@@ -240,8 +238,8 @@ export default function App() {
     URL.revokeObjectURL(url)
   }
 
-  const accessMode = getAccessMode({ configured: account.configured, loading: account.loading, authenticated: Boolean(account.session) })
-  if (accessMode === 'loading' || accessMode === 'login') return <BetaAccessGate account={account} />
+  // Öffentlicher Zugriff: Es gibt keinen Login-Gate mehr. Ohne Session läuft
+  // alles lokal im Browser; mit Session wird zusätzlich sicher synchronisiert.
 
   return <div className="app">
     <header><Logo /><nav aria-label="Hauptnavigation">
