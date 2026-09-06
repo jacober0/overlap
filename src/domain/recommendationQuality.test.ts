@@ -5,7 +5,7 @@ import type { Diet, Preferences } from './types'
 
 const base: Preferences = {
   diet: 'omnivor', maxMinutes: 60, budgetFocus: .7, variety: .45,
-  anchorTags: [], allergens: [], excludedIngredients: [], pantryIngredients: [], servings: 2, targetMeals: 5,
+  anchorTags: [], allergens: [], excludedIngredients: [], pantryIngredients: [], servings: 2, targetMeals: 5, planDays: 7,
 }
 
 describe('recommendation quality invariants', () => {

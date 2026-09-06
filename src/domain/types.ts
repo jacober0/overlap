@@ -11,7 +11,7 @@ export interface Recipe {
 }
 export interface Preferences {
   diet: Diet; maxMinutes: number; budgetFocus: number; variety: number; anchorTags: string[];
-  allergens: Allergen[]; excludedIngredients: string[]; pantryIngredients: string[]; servings: number; targetMeals: number
+  allergens: Allergen[]; excludedIngredients: string[]; pantryIngredients: string[]; servings: number; targetMeals: number; planDays: number
 }
 export interface ScoreBreakdown { overlap: number; anchorMatch: number; costFit: number; diversity: number; newIngredientPenalty: number }
 export interface RankedRecipe { recipe: Recipe; total: number; breakdown: ScoreBreakdown; reasons: string[] }

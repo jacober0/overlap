@@ -12,7 +12,7 @@ describe('Overlap app flow', () => {
   it('führt vom Onboarding in die Rezeptauswahl', async () => {
     localStorage.clear()
     render(<App />)
-    expect(screen.getByRole('heading', { name: /Was soll diese Woche leichter machen/i })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: /Lecker kochen muss/ })).toBeInTheDocument()
     await userEvent.click(screen.getByRole('button', { name: /Vorschläge entdecken/i }))
     expect(screen.getByRole('heading', { name: /Dein nächster Treffer/i })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /Geil/i })).toBeInTheDocument()
@@ -39,7 +39,7 @@ describe('Overlap app flow', () => {
     localStorage.setItem('overlap-selected', '[]')
     localStorage.setItem('overlap-preferences', JSON.stringify({
       diet: 'omnivor', maxMinutes: 120, budgetFocus: .7, variety: .45,
-      anchorTags: [], allergens: [], excludedIngredients: [], pantryIngredients: [], servings: 2, targetMeals: 5,
+      anchorTags: [], allergens: [], excludedIngredients: [], pantryIngredients: [], servings: 2, targetMeals: 5, planDays: 7,
     }))
     render(<App />)
 
@@ -60,6 +60,16 @@ describe('Overlap app flow', () => {
       servings: 4,
       excludedIngredients: ['tomate'],
     })
+  })
+
+  it('persistiert den Vorausplanungszeitraum in Tagen', async () => {
+    localStorage.clear()
+    render(<App />)
+    await userEvent.selectOptions(screen.getByLabelText('Tage vorausplanen'), '3')
+    await userEvent.click(screen.getByRole('button', { name: /Vorschläge entdecken/i }))
+
+    expect(JSON.parse(localStorage.getItem('overlap-preferences') || '{}')).toMatchObject({ planDays: 3 })
+    expect(JSON.parse(localStorage.getItem('overlap-preferences') || '{}')).toMatchObject({ targetMeals: Math.max(5, 3) })
   })
 
   it('speichert Allergene getrennt und filtert zugeordnete Zutaten', async () => {
@@ -90,7 +100,7 @@ describe('Overlap app flow', () => {
     localStorage.setItem('overlap-selected', 'keine-liste')
 
     expect(() => render(<App />)).not.toThrow()
-    expect(screen.getByRole('heading', { name: /Was soll diese Woche/i })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: /Lecker kochen muss/i })).toBeInTheDocument()
   })
 
   it('bereinigt strukturell ungültige Browserdaten vor dem Rendern', () => {
@@ -106,7 +116,7 @@ describe('Overlap app flow', () => {
     }))
 
     expect(() => render(<App />)).not.toThrow()
-    expect(screen.getByRole('heading', { name: /Was soll diese Woche leichter machen/i })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: /Lecker kochen muss/ })).toBeInTheDocument()
     expect(screen.getByLabelText('Maximale Kochzeit')).toHaveValue('35')
     expect(screen.getByLabelText('Portionen pro Gericht')).toHaveValue('2')
     expect(screen.getByLabelText('Mahlzeiten pro Woche')).toHaveValue('5')
@@ -195,7 +205,7 @@ describe('Overlap app flow', () => {
     localStorage.setItem('overlap-stage', 'discover')
     localStorage.setItem('overlap-preferences', JSON.stringify({
       diet: 'vegetarisch', maxMinutes: 35, budgetFocus: .7, variety: .45,
-      anchorTags: ['italienisch'], excludedIngredients: [], servings: 2, targetMeals: 3,
+      anchorTags: ['italienisch'], allergens: [], excludedIngredients: [], pantryIngredients: [], servings: 2, targetMeals: 3, planDays: 7,
     }))
     render(<App />)
 

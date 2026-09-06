@@ -9,7 +9,7 @@ import { recipes } from './recipes'
 const fallback = '/recipe-placeholder.svg'
 const permissivePreferences: Preferences = {
   diet: 'omnivor', maxMinutes: 1440, budgetFocus: 0.5, variety: 0.5,
-  anchorTags: [], allergens: [], excludedIngredients: [], pantryIngredients: [], servings: 2, targetMeals: 5,
+  anchorTags: [], allergens: [], excludedIngredients: [], pantryIngredients: [], servings: 2, targetMeals: 5, planDays: 7,
 }
 
 describe('beta catalog visibility and image fallback', () => {

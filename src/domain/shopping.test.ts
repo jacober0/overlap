@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { buildShoppingList } from './shopping'
+import { buildShoppingList, categorizeCustomItem } from './shopping'
 import type { Recipe } from './types'
 
 const base: Omit<Recipe, 'id' | 'title' | 'ingredients'> = {
@@ -24,5 +24,21 @@ describe('buildShoppingList', () => {
   it('skaliert Mengen und Kosten auf die gewünschte Portionszahl', () => {
     const list = buildShoppingList([recipes[0]], 4)
     expect(list[0]).toMatchObject({ amount: 600, estimatedCost: 2.4 })
+  })
+})
+
+describe('categorizeCustomItem', () => {
+  it('sortiert eigene Ergänzungen in die passende Kategorie', () => {
+    expect(categorizeCustomItem('Hafermilch')).toBe('Kühlregal')
+    expect(categorizeCustomItem('Nudeln')).toBe('Trockenwaren')
+    expect(categorizeCustomItem('Tomaten')).toBe('Gemüse')
+    expect(categorizeCustomItem('Apfel')).toBe('Obst')
+    expect(categorizeCustomItem('Rinderhack')).toBe('Fleisch')
+    expect(categorizeCustomItem('Vollkornbrot')).toBe('Backwaren')
+    expect(categorizeCustomItem('Mehl')).toBe('Trockenwaren')
+  })
+
+  it('fällt für unbekannte Positionen auf Trockenwaren zurück', () => {
+    expect(categorizeCustomItem('Spülschwamm')).toBe('Trockenwaren')
   })
 })

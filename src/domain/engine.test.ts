@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { filterRecipesBySearch, rankRecipes } from './engine'
+import { filterRecipesBySearch, rankRecipes, resolvePantryIngredients } from './engine'
 import type { Preferences, Recipe } from './types'
 
 const recipes: Recipe[] = [
@@ -20,7 +20,7 @@ const recipes: Recipe[] = [
 
 const preferences: Preferences = {
   diet: 'vegetarisch', maxMinutes: 30, budgetFocus: 0.7, variety: 0.3,
-  anchorTags: ['italienisch'], allergens: [], excludedIngredients: [], pantryIngredients: [], servings: 2, targetMeals: 5,
+  anchorTags: ['italienisch'], allergens: [], excludedIngredients: [], pantryIngredients: [], servings: 2, targetMeals: 5, planDays: 7,
 }
 
 describe('rankRecipes', () => {
@@ -52,5 +52,12 @@ describe('rankRecipes', () => {
     expect(filterRecipesBySearch(recipes, 'protein reich').map(recipe => recipe.id)).toEqual(['steak'])
     expect(filterRecipesBySearch(recipes, 'Pasta').map(recipe => recipe.id)).toEqual(['pasta'])
     expect(filterRecipesBySearch(recipes, '   ')).toEqual(recipes)
+  })
+
+  it('löst freie Vorratseingaben auf kanonische Zutaten-IDs auf', () => {
+    expect(resolvePantryIngredients(recipes, ['Pasta'])).toEqual(['pasta'])
+    expect(resolvePantryIngredients(recipes, ['Rind', 'Pasta'])).toEqual(['rind', 'pasta'])
+    // Unbekannte Eingaben werden normalisiert beibehalten und zählen nur bei echtem Treffer.
+    expect(resolvePantryIngredients(recipes, ['Petersilie'])).toEqual(['petersilie'])
   })
 })

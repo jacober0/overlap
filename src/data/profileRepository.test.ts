@@ -4,7 +4,7 @@ import { assertProfileWriteResult, createProfileSaveQueue, mergeProfilePreferenc
 
 const local: Preferences = {
   diet: 'vegetarisch', maxMinutes: 35, budgetFocus: .7, variety: .45,
-  anchorTags: ['italienisch'], allergens: [], excludedIngredients: [], pantryIngredients: [], servings: 2, targetMeals: 5,
+  anchorTags: ['italienisch'], allergens: [], excludedIngredients: [], pantryIngredients: [], servings: 2, targetMeals: 5, planDays: 7,
 }
 
 describe('profile synchronization mapping', () => {

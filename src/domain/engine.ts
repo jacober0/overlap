@@ -22,6 +22,24 @@ export function filterRecipesBySearch(recipes: Recipe[], query: string) {
   })
 }
 
+/**
+ * Resolves a free-text list of ingredients ("was liegt im Vorrat?") to recipe
+ * ingredient IDs. An unmatched free-text token is kept as a normalized id so the
+ * recommendation engine can still count it — but it scores as an overlap only
+ * where a recipe actually lists a matching ingredient.
+ */
+export function resolvePantryIngredients(recipes: Recipe[], pantryInput: string[]): string[] {
+  const byToken = new Map<string, string>()
+  for (const recipe of recipes) {
+    for (const ingredient of recipe.ingredients) {
+      for (const token of [normalizeSearch(ingredient.id), normalizeSearch(ingredient.name)]) {
+        if (token && !byToken.has(token)) byToken.set(token, ingredient.id)
+      }
+    }
+  }
+  return pantryInput.map(normalizeSearch).filter(Boolean).map(term => byToken.get(term) ?? term.replace(/\s+/g, '-'))
+}
+
 export function rankRecipes(recipes: Recipe[], selected: Recipe[], preferences: Preferences): RankedRecipe[] {
   const selectedIngredientIds = new Set([...preferences.pantryIngredients, ...selected.flatMap((recipe) => recipe.ingredients.map((item) => item.id))])
   const selectedTags = new Set(selected.flatMap((recipe) => recipe.tags))

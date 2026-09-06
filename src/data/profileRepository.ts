@@ -113,6 +113,7 @@ export function preserveConcurrentProfileEdits(
     pantryIngredients: value('pantryIngredients'),
     servings: value('servings'),
     targetMeals: value('targetMeals'),
+    planDays: value('planDays'),
   }
 }
 

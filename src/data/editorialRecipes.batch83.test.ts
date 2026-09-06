@@ -23,7 +23,11 @@ describe('redaktioneller Rezeptbatch 83', () => {
     expect(editorialRecipesBatch83.map(recipe => [recipe.externalId, recipe.title])).toEqual(expected)
 
     expect(validateCatalog(editorialRecipes, new Date('2026-09-02T23:59:00Z'))).toEqual([])
-    for (const recipe of editorialRecipesBatch83) expect(editorialAppRecipes.find(item => item.id === recipe.appId)?.imageStatus).toBe('neutral-fallback')
+    const withGeneratedImage = new Set(['steckrueben-kichererbsen-kulcha', 'forelle-lauch-buchweizen-kulebjaka', 'rind-wirsing-reis-lemper'])
+    for (const recipe of editorialRecipesBatch83) {
+      expect(editorialAppRecipes.find(item => item.id === recipe.appId)?.imageStatus)
+        .toBe(withGeneratedImage.has(recipe.appId) ? 'individual-visual-pass' : 'neutral-fallback')
+    }
   })
 
   it('enthält vollständige, kalkulierte und bildspezifische redaktionelle Daten', () => {

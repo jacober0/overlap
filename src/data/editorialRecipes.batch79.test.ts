@@ -40,7 +40,7 @@ describe('redaktioneller Rezeptbatch 79', () => {
 
     expect(validateCatalog(editorialRecipes, new Date('2026-09-02T23:30:00Z'))).toEqual([])
     for (const recipe of editorialRecipesBatch79) {
-      expect(editorialAppRecipes.find(item => item.id === recipe.appId)?.imageStatus).toBe('neutral-fallback')
+      expect(editorialAppRecipes.find(item => item.id === recipe.appId)?.imageStatus).toBe('individual-visual-pass')
     }
   })
 
