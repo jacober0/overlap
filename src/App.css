@@ -9,7 +9,7 @@
 
 /* ---- Verbesserungen: heute-Hervorhebung, Vorrat & Einkaufskategorien ---- */
 .overlap-mark span:nth-child(2){background:var(--apricot);margin-top:16px;color:var(--dark)}
-.week-grid{grid-template-columns:repeat(7,1fr)}
+.week-grid{grid-template-columns:repeat(var(--cols, 7), 1fr)}
 .day.today{border-color:var(--green);border-width:2px;box-shadow:0 0 0 3px rgba(14,107,73,.14);background:#f2f7ef}
 .day.today>span{color:var(--green)}
 .today-badge{display:inline-block;background:var(--lime);color:var(--dark);font-size:12px;font-weight:700;padding:8px 12px;border-radius:3px;margin-top:14px}
@@ -31,5 +31,5 @@
 .dishes-footer .primary{background:var(--lime);color:var(--dark)}
 .custom-add-row{margin:0 0 16px;background:var(--paper);border:1px solid var(--line);padding:2px 24px}
 .custom-add-row small{display:block;color:#6b7973;padding-bottom:8px;font-size:10px}
-@media(max-width:850px) and (min-width:520px){.week-grid{grid-template-columns:repeat(4,1fr)}}
-@media(max-width:519px){.week-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:850px) and (min-width:520px){.week-grid{grid-template-columns:repeat(min(4, var(--cols, 7)), 1fr)}}
+@media(max-width:519px){.week-grid{grid-template-columns:repeat(min(2, var(--cols, 7)), 1fr)}}
