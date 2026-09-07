@@ -10,7 +10,7 @@ import { useAccount } from './auth/useAccount'
 import { loadProfilePreferences, resolveLocalProfileForUser, resolveProfileSynchronization, saveProfilePreferences } from './data/profileRepository'
 import { activateLocalAccountData } from './data/localAccountState'
 
-type Stage = 'onboarding' | 'discover' | 'plan' | 'shopping' | 'cook'
+type Stage = 'onboarding' | 'discover' | 'dishes' | 'plan' | 'shopping' | 'cook'
 type SelectionAction = { kind: 'accepted' | 'rejected'; recipeId: string }
 const initialPreferences: Preferences = { diet: 'vegetarisch', maxMinutes: 35, budgetFocus: .7, variety: .45, anchorTags: ['italienisch'], allergens: [], excludedIngredients: [], pantryIngredients: [], servings: 2, targetMeals: 5, planDays: 7 }
 const allergenLabels: { id: Allergen; name: string }[] = [
@@ -22,7 +22,7 @@ const money = (value: number) => value.toLocaleString('de-DE', { style: 'currenc
 const days = ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So']
 const fullDays = ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag']
 const pantryLabelMap: Record<string, string> = { tomate: 'Tomaten', kichererbse: 'Kichererbsen', reis: 'Reis', spinat: 'Spinat', karotte: 'Karotten', zwiebel: 'Zwiebeln', knoblauch: 'Knoblauch' }
-const stages: Stage[] = ['onboarding', 'discover', 'plan', 'shopping', 'cook']
+const stages: Stage[] = ['onboarding', 'discover', 'dishes', 'plan', 'shopping', 'cook']
 const diets: Diet[] = ['omnivor', 'vegetarisch', 'vegan']
 const knownAllergens = new Set(allergenLabels.map(item => item.id))
 
@@ -74,7 +74,13 @@ function readStage(): Stage {
   const saved = localStorage.getItem('overlap-stage') as Stage
   if (!stages.includes(saved)) return 'onboarding'
   if (['plan', 'shopping', 'cook'].includes(saved)) {
-    if (!parseSelected().valid) return 'onboarding'
+    const hasHardWishes = (() => {
+      try {
+        const raw = JSON.parse(localStorage.getItem('overlap-hard-wishes') || '[]')
+        return Array.isArray(raw) && raw.length > 0
+      } catch { return false }
+    })()
+    if (!parseSelected().valid && !hasHardWishes) return 'onboarding'
   }
   return saved
 }
@@ -103,6 +109,7 @@ export default function App() {
   const [detail, setDetail] = useState(false)
   const [checked, setChecked] = useState<string[]>(() => readJson('overlap-checked', [], value => Array.isArray(value) && value.every(item => typeof item === 'string')))
   const [customItems, setCustomItems] = useState<string[]>(() => readJson('overlap-custom-items', [], value => Array.isArray(value) && value.every(item => typeof item === 'string')))
+  const [hardWishes, setHardWishes] = useState<string[]>(() => readJson('overlap-hard-wishes', [], value => Array.isArray(value) && value.every(item => typeof item === 'string')))
   const [customDraft, setCustomDraft] = useState('')
   const [pantryDraft, setPantryDraft] = useState('')
   const [initialCookingProgress] = useState(() => readCookingProgress(selected))
@@ -138,6 +145,7 @@ export default function App() {
     setSelectionHistory([])
     setChecked([])
     setCustomItems([])
+    setHardWishes([])
     setCustomDraft('')
     setCookingIndex(0)
     setCookingStep(0)
@@ -183,11 +191,15 @@ export default function App() {
   const current = ranked[0]
   const shopping = useMemo(() => buildShoppingList(selected, preferences.servings), [selected, preferences.servings])
   const total = shopping.reduce((sum, item) => sum + item.estimatedCost, 0)
-  const cookingRecipe = selected[cookingIndex]
   const todayIndex = Math.max(0, (new Date().getDay() + 6) % 7)
   // Der Wochenplan beginnt immer mit dem heutigen Tag: Slot 0 ist "heute".
   const todaySlot = 0
-  const planDaysList = Array.from({ length: Math.max(1, Math.min(preferences.planDays, 7), selected.length) }, (_, i) => {
+  // Harte Wünsche (Tab "Gerichte") landen immer im Wochenplan. Die Empfehlungs-Engine
+  // füllt den Rest der Woche nach Overlap-Prinzip auf.
+  const hardWishRecipes = hardWishes.map(id => recipes.find(r => r.id === id)).filter((r): r is Recipe => Boolean(r))
+  const planRecipes = [...hardWishRecipes, ...selected.filter(r => !hardWishes.includes(r.id))]
+  const cookingRecipe = planRecipes[cookingIndex]
+  const planDaysList = Array.from({ length: Math.max(1, Math.min(preferences.planDays, 7), planRecipes.length) }, (_, i) => {
     const shifted = (todayIndex + i) % 7
     return `${days[shifted]}. ${fullDays[shifted]}`
   })
@@ -197,7 +209,7 @@ export default function App() {
   ] as Category[]
 
   const saveCookingProgress = (index: number, step: number) => {
-    const recipe = selected[index]
+    const recipe = planRecipes[index]
     if (recipe) localStorage.setItem('overlap-cooking', JSON.stringify({ recipeId: recipe.id, step }))
   }
   const startCooking = (index: number) => { setCookingIndex(index); setCookingStep(0); saveCookingProgress(index, 0); persist('cook') }
@@ -229,10 +241,19 @@ export default function App() {
     }
     setSelected(next); setSelectionHistory([...selectionHistory, ...actions]); localStorage.setItem('overlap-selected', JSON.stringify(next))
   }
-  const removeSelected = (index: number) => { const next = selected.filter((_, itemIndex) => itemIndex !== index); setSelected(next); localStorage.setItem('overlap-selected', JSON.stringify(next)) }
+  const removeSelected = (index: number) => {
+    const recipe = planRecipes[index]
+    if (!recipe) return
+    if (hardWishes.includes(recipe.id)) {
+      toggleHardWish(recipe.id)
+    } else {
+      const next = selected.filter(item => item.id !== recipe.id)
+      setSelected(next); localStorage.setItem('overlap-selected', JSON.stringify(next))
+    }
+  }
   const duplicateSelected = (index: number) => {
-    if (selected.length >= Math.min(preferences.targetMeals, 7) || !selected[index]) return
-    const next = [...selected, selected[index]]; setSelected(next); localStorage.setItem('overlap-selected', JSON.stringify(next))
+    if (planRecipes.length >= Math.min(preferences.targetMeals, 7) || !planRecipes[index]) return
+    const next = [...selected, planRecipes[index]]; setSelected(next); localStorage.setItem('overlap-selected', JSON.stringify(next))
   }
   const toggleChecked = (itemKey: string) => {
     const next = checked.includes(itemKey) ? checked.filter(key => key !== itemKey) : [...checked, itemKey]
@@ -256,6 +277,10 @@ export default function App() {
     }
     setPreferences({ ...preferences, pantryIngredients: next }); setPantryDraft('')
   }
+  const toggleHardWish = (recipeId: string) => {
+    const next = hardWishes.includes(recipeId) ? hardWishes.filter(id => id !== recipeId) : [...hardWishes, recipeId]
+    setHardWishes(next); localStorage.setItem('overlap-hard-wishes', JSON.stringify(next))
+  }
   const downloadPlan = () => {
     const blob = new Blob([createPlanExport(selected, shopping, preferences.servings, customItems)], { type: 'text/plain;charset=utf-8' })
     const url = URL.createObjectURL(blob)
@@ -270,7 +295,8 @@ export default function App() {
   return <div className="app">
     <header><Logo /><nav aria-label="Hauptnavigation">
       <button className={stage === 'discover' ? 'active' : ''} onClick={() => persist('discover')}>Entdecken</button>
-      <button className={stage === 'plan' || stage === 'cook' ? 'active' : ''} onClick={() => persist('plan')}>Wochenplan <b>{selected.length || ''}</b></button>
+      <button className={stage === 'dishes' ? 'active' : ''} onClick={() => persist('dishes')}>Gerichte <b>{hardWishes.length || ''}</b></button>
+      <button className={stage === 'plan' || stage === 'cook' ? 'active' : ''} onClick={() => persist('plan')}>Wochenplan <b>{planRecipes.length || ''}</b></button>
       <button className={stage === 'shopping' ? 'active' : ''} onClick={() => persist('shopping')}>Einkauf</button>
     </nav><button className="avatar" onClick={() => setAccountOpen(true)} aria-label="Profil und Konto öffnen">JR</button></header>
     {syncError && <div className="sync-alert" role="status"><span>{syncError}</span><button onClick={()=>account.session && void saveRemoteProfile(account.session.user.id, preferences)}>Erneut versuchen</button></div>}
@@ -307,7 +333,14 @@ export default function App() {
       </section>
     </main>}
 
-    {stage === 'plan' && <main className="page"><div className="page-title"><div><span className="eyebrow">Deine Planung</span><h1>{preferences.planDays} Tage, die zusammenpassen.</h1></div><button className="primary" onClick={()=>persist('discover')}>+ Gericht ergänzen</button></div><div className="week-grid">{planDaysList.map((label,index)=>{const recipe=selected[index];const isToday=index===todaySlot;return <article className={`${recipe?'day filled':'day'} ${isToday?'today':''}`} key={label}><span>{label}{isToday?' · heute':''}</span>{recipe?<><img src={recipe.image} alt=""/><h3>{recipe.title}</h3><p>{recipe.minutes} Min. · {money(recipe.pricePerServing)}</p><div className="day-actions"><button className="day-cook" aria-label={`${recipe.title} kochen`} onClick={()=>startCooking(index)}>{isToday?'Heute kochen':'Kochen'}</button><button className="day-repeat" aria-label={`${recipe.title} als Meal Prep wiederholen`} onClick={()=>duplicateSelected(index)} disabled={selected.length>=Math.min(preferences.targetMeals,7)}>+ Prep</button><button className="day-remove" aria-label={`${recipe.title} entfernen`} onClick={()=>removeSelected(index)}>Entfernen</button></div></>:<><div className="plus">+</div><p>Noch frei</p></>}</article>})}</div><section className="plan-summary"><div><span>Geschätzter Einkauf</span><strong>{money(total)}</strong><small>auf Basis der Seed-Preise</small></div><div><span>Gemeinsame Zutaten</span><strong>{shopping.filter(item=>item.recipes.length>1).length}</strong><small>in mehreren Gerichten</small></div><button className="primary" disabled={!selected.length} onClick={()=>persist('shopping')}>Einkaufsliste erstellen →</button></section></main>}
+    {stage === 'dishes' && <main className="page dishes">
+      <div className="page-title"><div><span className="eyebrow">Definitiv kochen</span><h1>Deine Gerichte für diese Woche.</h1><p>Wähle, was du diese Woche <b>unbedingt</b> kochen willst – unabhängig von Zutaten oder Overlap. Diese Wünsche landen immer im Wochenplan, den Rest füllt die Empfehlungs-Engine auf.</p></div><button className="primary" onClick={()=>persist('plan')}>Wochenplan öffnen →</button></div>
+      <div className="catalog-search"><label htmlFor="dishes-search">Katalog durchsuchen</label><div><span aria-hidden="true">⌕</span><input id="dishes-search" type="search" value={searchQuery} onChange={event=>setSearchQuery(event.target.value)} placeholder="Gericht, Zutat oder Küche"/>{searchQuery && <button onClick={()=>setSearchQuery('')} aria-label="Suche löschen">×</button>}</div></div>
+      <div className="dishes-grid">{filterRecipesBySearch(recipes, searchQuery).map(recipe=>{const active=hardWishes.includes(recipe.id);return <article className={`dish-card ${active?'active':''}`} key={recipe.id}><img src={recipe.image} alt={recipe.title}/><div className="dish-body"><h3>{recipe.title}</h3><p>{recipe.minutes} Min. · {money(recipe.pricePerServing)} · {recipe.diet}</p><button className={active?'dish-toggle on':'dish-toggle'} aria-pressed={active} onClick={()=>toggleHardWish(recipe.id)}>{active?'✓ In dieser Woche':'+ Diese Woche kochen'}</button></div></article>})}</div>
+      <div className="dishes-footer"><span>{hardWishes.length} Gericht(e) definitiv geplant</span><button className="primary" disabled={!hardWishes.length} onClick={()=>persist('plan')}>Zum Wochenplan →</button></div>
+    </main>}
+
+    {stage === 'plan' && <main className="page"><div className="page-title"><div><span className="eyebrow">Deine Planung</span><h1>{preferences.planDays} Tage, die zusammenpassen.</h1></div><button className="primary" onClick={()=>persist('discover')}>+ Gericht ergänzen</button></div><div className="week-grid">{planDaysList.map((label,index)=>{const recipe=planRecipes[index];const isToday=index===todaySlot;return <article className={`${recipe?'day filled':'day'} ${isToday?'today':''}`} key={label}><span>{label}{isToday?' · heute':''}</span>{recipe?<><img src={recipe.image} alt=""/><h3>{recipe.title}</h3><p>{recipe.minutes} Min. · {money(recipe.pricePerServing)}</p><div className="day-actions"><button className="day-cook" aria-label={`${recipe.title} kochen`} onClick={()=>startCooking(index)}>{isToday?'Heute kochen':'Kochen'}</button><button className="day-repeat" aria-label={`${recipe.title} als Meal Prep wiederholen`} onClick={()=>duplicateSelected(index)} disabled={planRecipes.length>=Math.min(preferences.targetMeals,7)}>+ Prep</button><button className="day-remove" aria-label={`${recipe.title} entfernen`} onClick={()=>removeSelected(index)}>Entfernen</button></div></>:<><div className="plus">+</div><p>Noch frei</p></>}</article>})}</div><section className="plan-summary"><div><span>Geschätzter Einkauf</span><strong>{money(total)}</strong><small>auf Basis der Seed-Preise</small></div><div><span>Gemeinsame Zutaten</span><strong>{shopping.filter(item=>item.recipes.length>1).length}</strong><small>in mehreren Gerichten</small></div><button className="primary" disabled={!planRecipes.length} onClick={()=>persist('shopping')}>Einkaufsliste erstellen →</button></section></main>}
 
     {stage === 'cook' && <main className="cook-page">{cookingRecipe ? <><section className="cook-hero"><button className="cook-back" onClick={()=>persist('plan')}>← Wochenplan</button><span className="eyebrow">Kochmodus · {preferences.servings} Portionen{cookingIndex===todaySlot?` · Heute (${fullDays[todayIndex]})`:''}</span><h1>{cookingRecipe.title}</h1><p>{cookingRecipe.description}</p><img src={cookingRecipe.image} alt={cookingRecipe.title}/>{cookingIndex===todaySlot&&<div className="today-badge">Heute kochen – guten Appetit!</div>}</section><section className="cook-workspace"><aside className="cook-ingredients"><h2>Zutaten</h2>{cookingRecipe.ingredients.map(ingredient=>{const amount=Math.round(ingredient.amount*(preferences.servings/cookingRecipe.servings)*100)/100;return <div key={`${ingredient.id}:${ingredient.unit}`}><span>{ingredient.name}</span><b>{amount} {ingredient.unit}</b></div>})}</aside><article className="cook-step"><span className="eyebrow">Schritt {cookingStep+1} von {cookingRecipe.steps.length}</span><progress max={cookingRecipe.steps.length} value={cookingStep+1}/><p>{cookingRecipe.steps[cookingStep]}</p><div><button disabled={cookingStep===0} onClick={()=>moveCookingStep(Math.max(0,cookingStep-1))}>Zurück</button><button className="primary" aria-label={cookingStep===cookingRecipe.steps.length-1?'Kochen abschließen':'Nächster Schritt'} onClick={()=>cookingStep===cookingRecipe.steps.length-1?completeCooking():moveCookingStep(cookingStep+1)}>{cookingStep===cookingRecipe.steps.length-1?'Fertig':'Nächster Schritt'} →</button></div></article></section></> : <div className="empty"><h2>Kein Gericht ausgewählt</h2><button onClick={()=>persist('plan')}>Zum Wochenplan</button></div>}</main>}
 

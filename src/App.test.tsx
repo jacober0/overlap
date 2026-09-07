@@ -246,4 +246,26 @@ describe('Overlap app flow', () => {
     expect(screen.getByText('Lokaler Testmodus')).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /Essensprofil bearbeiten/i })).toBeInTheDocument()
   })
+
+  it('wählt im Gerichte-Tab harte Wünsche aus und zeigt sie im Wochenplan', async () => {
+    localStorage.clear()
+    localStorage.setItem('overlap-stage', 'dishes')
+    render(<App />)
+
+    await userEvent.click(screen.getAllByRole('button', { name: /Diese Woche kochen/i })[0])
+    expect(JSON.parse(localStorage.getItem('overlap-hard-wishes') || '[]')).toHaveLength(1)
+
+    await userEvent.click(screen.getByRole('button', { name: /Zum Wochenplan/i }))
+    expect(screen.getByRole('heading', { name: /Tage, die zusammenpassen/i })).toBeInTheDocument()
+  })
+
+  it('entfernt einen harten Wunsch über den Wochenplan', async () => {
+    localStorage.clear()
+    localStorage.setItem('overlap-stage', 'plan')
+    localStorage.setItem('overlap-hard-wishes', JSON.stringify([recipes[0].id]))
+    render(<App />)
+
+    await userEvent.click(screen.getByRole('button', { name: 'Cremige Tomatenpasta entfernen' }))
+    expect(JSON.parse(localStorage.getItem('overlap-hard-wishes') || '[]')).toEqual([])
+  })
 })
