@@ -223,6 +223,21 @@ describe('Overlap app flow', () => {
     expect(JSON.parse(localStorage.getItem('overlap-selected') || '[]')).toHaveLength(2)
   })
 
+  it('zeigt im Wochenplan auch dann alle gewählten Gerichte, wenn mehr Mahlzeiten als Vorausplanungstage gewählt sind', async () => {
+    localStorage.clear()
+    localStorage.setItem('overlap-stage', 'plan')
+    localStorage.setItem('overlap-selected', JSON.stringify([recipes[0], recipes[1], recipes[2]]))
+    localStorage.setItem('overlap-preferences', JSON.stringify({
+      diet: 'vegetarisch', maxMinutes: 35, budgetFocus: .7, variety: .45,
+      anchorTags: ['italienisch'], allergens: [], excludedIngredients: [], pantryIngredients: [], servings: 2, targetMeals: 5, planDays: 2,
+    }))
+    render(<App />)
+
+    expect(screen.getByText('Cremige Tomatenpasta')).toBeInTheDocument()
+    expect(screen.getByText('Kichererbsen-Curry')).toBeInTheDocument()
+    expect(screen.getByText('Ofengemüse mit Feta')).toBeInTheDocument()
+  })
+
   it('kennzeichnet den lokalen Modus transparent im Account-Panel', async () => {
     localStorage.clear()
     render(<App />)

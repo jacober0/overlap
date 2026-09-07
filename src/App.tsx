@@ -187,7 +187,7 @@ export default function App() {
   const todayIndex = Math.max(0, (new Date().getDay() + 6) % 7)
   // Der Wochenplan beginnt immer mit dem heutigen Tag: Slot 0 ist "heute".
   const todaySlot = 0
-  const planDaysList = Array.from({ length: Math.max(1, Math.min(preferences.planDays, 7)) }, (_, i) => {
+  const planDaysList = Array.from({ length: Math.max(1, Math.min(preferences.planDays, 7), selected.length) }, (_, i) => {
     const shifted = (todayIndex + i) % 7
     return `${days[shifted]}. ${fullDays[shifted]}`
   })
