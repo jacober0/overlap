@@ -248,9 +248,13 @@ export default function App() {
   const addPantryItem = () => {
     const raw = pantryDraft.trim()
     if (!raw) return
-    const resolved = resolvePantryIngredients(recipes, raw.split(',').map(part => part.trim()))[0]
-    if (!resolved || preferences.pantryIngredients.includes(resolved)) { setPantryDraft(''); return }
-    setPreferences({ ...preferences, pantryIngredients: [...preferences.pantryIngredients, resolved] }); setPantryDraft('')
+    // Mehrere kommagetrennte Zutaten auf einmal verarbeiten (z. B. "Kichererbsen, Reis, Tomaten").
+    const resolved = resolvePantryIngredients(recipes, raw.split(',').map(part => part.trim()))
+    const next = [...preferences.pantryIngredients]
+    for (const item of resolved) {
+      if (item && !next.includes(item)) next.push(item)
+    }
+    setPreferences({ ...preferences, pantryIngredients: next }); setPantryDraft('')
   }
   const downloadPlan = () => {
     const blob = new Blob([createPlanExport(selected, shopping, preferences.servings, customItems)], { type: 'text/plain;charset=utf-8' })
