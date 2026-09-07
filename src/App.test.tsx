@@ -268,4 +268,26 @@ describe('Overlap app flow', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Cremige Tomatenpasta entfernen' }))
     expect(JSON.parse(localStorage.getItem('overlap-hard-wishes') || '[]')).toEqual([])
   })
+
+  it('wechselt im Kochmodus ohne Rückkehr zwischen den Gerichten der Woche', async () => {
+    localStorage.clear()
+    localStorage.setItem('overlap-stage', 'plan')
+    localStorage.setItem('overlap-selected', JSON.stringify([recipes[0], recipes[1], recipes[2]]))
+    render(<App />)
+
+    await userEvent.click(screen.getByRole('button', { name: 'Cremige Tomatenpasta kochen' }))
+    expect(screen.getByText('Schritt 1 von 5', { exact: false })).toBeInTheDocument()
+    expect(screen.getByText('1 / 3')).toBeInTheDocument()
+
+    await userEvent.click(screen.getByRole('button', { name: 'Nächstes Gericht' }))
+    expect(screen.getByText('2 / 3')).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Kichererbsen-Curry' })).toBeInTheDocument()
+
+    await userEvent.click(screen.getByRole('button', { name: 'Nächstes Gericht' }))
+    expect(screen.getByText('3 / 3')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Nächstes Gericht' })).toBeDisabled()
+
+    await userEvent.click(screen.getByRole('button', { name: 'Vorheriges Gericht' }))
+    expect(screen.getByText('2 / 3')).toBeInTheDocument()
+  })
 })
