@@ -290,4 +290,30 @@ describe('Overlap app flow', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Vorheriges Gericht' }))
     expect(screen.getByText('2 / 3')).toBeInTheDocument()
   })
+
+  it('bietet im Entdecken-Tab einen direkten Weg zurück zum Profil', async () => {
+    localStorage.clear()
+    localStorage.setItem('overlap-stage', 'discover')
+    localStorage.setItem('overlap-selected', '[]')
+    render(<App />)
+
+    await userEvent.click(screen.getByRole('button', { name: /Profil & Vorlieben anpassen/i }))
+    expect(screen.getByRole('heading', { name: /Lecker kochen muss/ })).toBeInTheDocument()
+  })
+
+  it('hält die Suche im Gerichte-Tab getrennt von der Entdecken-Suche', async () => {
+    localStorage.clear()
+    localStorage.setItem('overlap-stage', 'discover')
+    localStorage.setItem('overlap-selected', '[]')
+    render(<App />)
+
+    // Suche im Entdecken-Tab einschränken
+    await userEvent.type(screen.getByRole('searchbox', { name: 'Katalog durchsuchen' }), 'Erdnüsse')
+    expect(screen.getByRole('heading', { name: 'Crunchy Nudel-Salat' })).toBeInTheDocument()
+
+    // In den Gerichte-Tab wechseln: dort ist die Suche leer und zeigt alle Gerichte
+    const navButtons = screen.getByRole('navigation', { name: 'Hauptnavigation' }).querySelectorAll('button')
+    await userEvent.click(navButtons[1])
+    expect(screen.getByRole('searchbox', { name: 'Katalog durchsuchen' })).toHaveValue('')
+  })
 })
